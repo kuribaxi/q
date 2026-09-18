@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quran · Böner & Skydd</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg:#F0EDF8; --surface:#fff; --surface2:#F7F5FC; --border:#E4DEFC;
+      --primary:#6C47E8; --primary-soft:#EDE8FC; --primary-glow:rgba(108,71,232,0.18);
+      --emerald:#22C08A; --emerald-soft:#DCFDF2;
+      --rose:#F05E7A; --rose-soft:#FDEDF0;
+      --amber:#F59E0B; --amber-soft:#FEF3C7;
+      --text:#1E1535; --text2:#7168A0; --text3:#A89FCE;
+      --r:20px; --rsm:14px;
+      --shadow:0 4px 24px rgba(108,71,232,0.10);
+      --shadow-sm:0 2px 10px rgba(108,71,232,0.07);
+      --font:'Times New Roman',Times,serif;
+    }
+    body.night {
+      --bg:#211D42; --surface:#2C2761; --surface2:#373072; --border:#4B4392;
+      --primary-soft:#3E3680; --emerald-soft:#123B2C; --rose-soft:#3D1826; --amber-soft:#3C2C00;
+      --text:#F4F1FC; --text2:#BDB6E0; --text3:#8A82BE;
+      --shadow:0 4px 24px rgba(0,0,0,0.22);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:var(--font);
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      transition:background .3s,color .3s;
+      padding:20px 16px 60px;
+      line-height:1.6;
+    }
+    .container{max-width:680px;margin:0 auto}
+    .hdr{
+      background:var(--surface);
+      border-radius:var(--r);
+      padding:20px 22px;
+      margin-bottom:22px;
+      box-shadow:var(--shadow-sm);
+      border:1.5px solid var(--border);
+      display:flex;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .hdr-logo{
+      width:52px;height:52px;border-radius:16px;
+      background:linear-gradient(135deg,var(--primary),#9B59E8);
+      display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:24px;flex-shrink:0;
+      box-shadow:0 4px 14px var(--primary-glow);
+    }
+    .hdr-info{flex:1;min-width:0}
+    .hdr-title{font-size:20px;font-weight:900;color:var(--text);line-height:1.2}
+    .hdr-sub{font-size:13px;color:var(--text3);font-weight:600;margin-top:2px}
+    .night-btn{
+      width:46px;height:46px;border-radius:15px;
+      border:1.5px solid var(--border);background:var(--surface2);
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      color:var(--text2);font-size:18px;transition:all .2s;
+    }
+    .night-btn:active{background:var(--primary-soft);color:var(--primary);transform:scale(.92)}
+    .section{
+      background:var(--surface);
+      border-radius:var(--r);
+      padding:22px 20px;
+      margin-bottom:20px;
+      box-shadow:var(--shadow-sm);
+      border:1.5px solid var(--border);
+    }
+    .section-title{
+      font-size:17px;
+      font-weight:900;
+      color:var(--primary);
+      margin-bottom:14px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding-bottom:10px;
+      border-bottom:2px solid var(--border);
+    }
+    .section-title i{font-size:18px}
+    .arabic{
+      font-family:'Traditional Arabic','Amiri','Times New Roman',serif;
+      font-size:24px;
+      line-height:2.1;
+      direction:rtl;
+      text-align:right;
+      color:var(--text);
+      padding:12px 16px;
+      background:var(--surface2);
+      border-radius:var(--rsm);
+      border-right:5px solid var(--primary);
+      margin-bottom:14px;
+      word-break:break-word;
+    }
+    .arabic-small{
+      font-size:20px;
+      line-height:1.9;
+      padding:10px 14px;
+    }
+    .translit{
+      font-size:14px;
+      color:var(--text2);
+      font-style:italic;
+      padding:8px 12px;
+      background:var(--primary-soft);
+      border-radius:10px;
+      margin-bottom:14px;
+    }
+    .translation{
+      font-size:15px;
+      color:var(--text2);
+      padding:6px 12px;
+      margin-bottom:16px;
+      border-left:3px solid var(--emerald);
+    }
+    .label{
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--text3);
+      margin-bottom:6px;
+      display:block;
+    }
+    .divider{
+      height:1px;
+      background:var(--border);
+      margin:20px 0;
+      border:none;
+    }
+    .pill{
+      display:inline-block;
+      font-size:12px;
+      font-weight:800;
+      padding:4px 12px;
+      border-radius:50px;
+      background:var(--primary-soft);
+      color:var(--primary);
+      margin-bottom:10px;
+    }
+    .footer{
+      text-align:center;
+      font-size:13px;
+      color:var(--text3);
+      padding:20px 0 10px;
+      font-weight:600;
+    }
+    @media (max-width:480px){
+      body{padding:12px 10px 50px}
+      .section{padding:16px 14px}
+      .arabic{font-size:21px;line-height:2;padding:10px 12px}
+      .arabic-small{font-size:18px}
+      .hdr{padding:16px}
+      .hdr-logo{width:44px;height:44px;font-size:20px}
+      .hdr-title{font-size:17px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-logo"><i class="fas fa-book-open"></i></div>
+    <div class="hdr-info">
+      <div class="hdr-title">Quran · Böner & Skydd</div>
+      <div class="hdr-sub">آیة الکرسی · قنوت · الفاتحة · ٤ قل</div>
+    </div>
+    <button class="night-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
+      <i class="fas fa-moon" id="nightIcon"></i>
+    </button>
+  </div>
+
+  <!-- ===== AYAT AL-KURSI ===== -->
+  <div class="section">
+    <div class="section-title"><i class="fas fa-star"></i> آیة الکرسی · Ayat al-Kursi</div>
+    <div class="arabic">
+      اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ
+    </div>
+    <div class="translation">”Allah – det finns ingen gud utom Han, den Levande, den Evigt Bestående. Varken slummer eller sömn drabbar Honom. Honom tillhör allt i himlarna och på jorden. Vem kan väl tala för någon inför Honom utan Hans tillstånd? Han vet vad som varit och vad som ska komma, och de omfattar inget av Hans kunskap utom vad Han vill. Hans tron omfattar himlarna och jorden, och att bevara dem är inte betungande för Honom. Han är den Upphöjde, den Väldige.”</div>
+  </div>
+
+  <!-- ===== QUNUT ===== -->
+  <div class="section">
+    <div class="section-title"><i class="fas fa-hands-praying"></i> قنوت · Qunūt</div>
+    <div class="arabic arabic-small">
+      اللَّهُمَّ إِنَّا نَسْتَعِينُكَ وَنَسْتَغْفِرُكَ وَنُؤْمِنُ بِكَ وَنَتَوَكَّلُ عَلَيْكَ وَنُثْنِي عَلَيْكَ الْخَيْرَ وَنَشْكُرُكَ وَلَا نَكْفُرُكَ وَنَخْلَعُ وَنَتْرُكُ مَنْ يَفْجُرُكَ
+    </div>
+    <div class="arabic arabic-small">
+      اللَّهُمَّ إِيَّاكَ نَعْبُدُ وَلَكَ نُصَلِّي وَنَسْجُدُ وَلَكَ نَسْعَى وَنَحْفِدُ نَرْجُو رَحْمَتَكَ وَنَخْشَى عَذَابَكَ إِنَّ عَذَابَكَ بِالْكُفَّارِ مُلْحِقٌ
+    </div>
+    <div class="arabic arabic-small">
+      وَلَا يَعِزُّ مَنْ عَادَيْتَ وَلَا يَذِلُّ مَنْ وَالَيْتَ
+    </div>
+    <div class="translation">”O Allah, vi söker Din hjälp och ber Dig om förlåtelse, vi tror på Dig och förlitar oss på Dig. Vi prisar Dig för allt gott, vi tackar Dig och är inte otacksamma. Vi tar avstånd från och överger den som är olydig mot Dig. O Allah, Dig tillber vi, för Dig ber vi och bugar vi, för Dig strävar vi och skyndar vi. Vi hoppas på Din nåd och fruktar Ditt straff. Sannerligen, Ditt straff drabbar de otrogna. Den som Du tar som fiende blir inte upphöjd, och den som Du tar som vän blir inte förödmjukad.”</div>
+  </div>
+
+  <!-- ===== AL-FATIHA ===== -->
+  <div class="section">
+    <div class="section-title"><i class="fas fa-book"></i> الفاتحة · Al-Fātiha</div>
+    <div class="arabic">
+      بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾
+    </div>
+    <div class="translation">”I Guds, den Nåderikes, den Barmhärtiges namn. All lov och pris tillhör Allah, världarnas Herre, den Nåderike, den Barmhärtige, Domedagens Konung. Dig tillber vi och Dig ber vi om hjälp. Led oss på den raka vägen – vägen för dem som Du har välsignat, inte för dem som har drabbats av vrede eller för dem som har gått vilse.”</div>
+  </div>
+
+  <!-- ===== 4 QUL ===== -->
+  <div class="section">
+    <div class="section-title"><i class="fas fa-shield-halved"></i> ٤ قل · De fyra ”Qul”</div>
+
+    <span class="pill">١ · Al-Kāfirūn</span>
+    <div class="arabic arabic-small">
+      قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ ﴿٤﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾
+    </div>
+    <div class="translation">”Säg: O ni otrogna! Jag tillber inte det ni tillber, och ni tillber inte det jag tillber. Jag är inte en tillbedjare av det ni tillber, och ni är inte tillbedjare av det jag tillber. Ni har er religion och jag har min religion.”</div>
+
+    <hr class="divider">
+
+    <span class="pill">٢ · Al-Ikhlāṣ</span>
+    <div class="arabic arabic-small">
+      قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾
+    </div>
+    <div class="translation">”Säg: Han är Allah, den Ende. Allah, den Evige, den som allt beror av. Han har inte fött någon och inte blivit född, och ingen är Hans like.”</div>
+
+    <hr class="divider">
+
+    <span class="pill">٣ · Al-Falaq</span>
+    <div class="arabic arabic-small">
+      قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾
+    </div>
+    <div class="translation">”Säg: Jag söker skydd hos morgonrodnadens Herre, mot det onda i det Han har skapat, mot mörkrets ondska när den sänker sig, mot ondska från dem som blåser på knutar, och mot en avundsjuk mans ondska när han avundas.”</div>
+
+    <hr class="divider">
+
+    <span class="pill">٤ · An-Nās</span>
+    <div class="arabic arabic-small">
+      قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾
+    </div>
+    <div class="translation">”Säg: Jag söker skydd hos människornas Herre, människornas Konung, människornas Gud, mot det onda i den smygande ingivaren, som viskar i människornas bröst, bland jinn och människor.”</div>
+  </div>
+
+  <!-- ===== EXTRA SKYDDSBÖNER ===== -->
+  <div class="section">
+    <div class="section-title"><i class="fas fa-heart"></i> Skyddsböner & Rukya</div>
+
+    <div class="arabic arabic-small">
+      بِسْمِ اللَّهِ أَرْقِيكَ، مِنْ كُلِّ شَيْءٍ يُؤْذِيكَ، مِنْ شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ، اللَّهُ يَشْفِيكَ، بِسْمِ اللَّهِ أَرْقِيكَ
+    </div>
+    <div class="translation">”I Guds namn besvär jag dig, från allt som skadar dig, från ondskan hos varje själ eller avundsjukt öga. Allah botar dig, i Guds namn besvär jag dig.”</div>
+
+    <hr class="divider">
+
+    <div class="arabic arabic-small">
+      اللَّهُمَّ رَبَّ النَّاسِ، أَذْهِبْ الْبَاسَ، اشْفِهِ وَأَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا
+    </div>
+    <div class="translation">”O Allah, människornas Herre, ta bort lidandet. Bota honom, för Du är den som botar. Det finns ingen bot utom Din bot – en bot som inte lämnar någon sjukdom kvar.”</div>
+
+    <hr class="divider">
+
+    <div class="arabic arabic-small">
+      بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ
+    </div>
+    <div class="translation">”I Guds namn, vid vars namn inget på jorden eller i himlen kan skada, och Han är den Hörande, den Vetande.”</div>
+
+    <hr class="divider">
+
+    <div class="arabic arabic-small">
+      اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا
+    </div>
+    <div class="translation">”O Allah, inget är lätt utom det Du gör lätt, och Du gör sorgen lätt när Du vill.”</div>
+  </div>
+
+  <!-- ===== NUR-BÖNEN ===== -->
+  <div class="section">
+    <div class="section-title"><i class="fas fa-sun"></i> دعاء النور · Ljusets bön</div>
+    <div class="arabic arabic-small">
+      بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>
+      بِسْمِ اللَّهِ النُّورِ<br>
+      بِسْمِ اللَّهِ نُورِ النُّورِ<br>
+      بِسْمِ اللَّهِ نُورٌ عَلَى نُورٍ<br>
+      بِسْمِ اللَّهِ الَّذِي هُوَ مُدَبِّرُ الْأُمُورِ<br>
+      بِسْمِ اللَّهِ الَّذِي خَلَقَ النُّورَ مِنَ النُّورِ<br>
+      الْحَمْدُ لِلَّهِ الَّذِي خَلَقَ النُّورَ مِنَ النُّورِ<br>
+      وَأَنْزَلَ النُّورَ عَلَى الطُّورِ<br>
+      فِي كِتَابٍ مَسْطُورٍ<br>
+      فِي رَقٍّ مَنْشُورٍ<br>
+      بِقَدَرٍ مَقْدُورٍ<br>
+      عَلَى نَبِيٍّ مَحْبُورٍ<br>
+      الْحَمْدُ لِلَّهِ الَّذِي هُوَ بِالْعِزِّ مَذْكُورٌ<br>
+      وَبِالْفَخْرِ مَشْهُورٌ<br>
+      وَعَلَى السَّرَّاءِ وَالضَّرَّاءِ مَشْكُورٌ<br>
+      وَصَلَّى اللَّهُ عَلَى سَيِّدِنَا مُحَمَّدٍ وَآلِهِ الطَّاهِرِينَ
+    </div>
+    <div class="translation">”I Guds, den Nåderikes, den Barmhärtiges namn. I Guds namn, Ljuset. I Guds namn, ljusets Ljus. I Guds namn, ett ljus över ett ljus. I Guds namn, Han som styr allt. I Guds namn, Han som skapade ljuset av ljuset. Lov och pris till Allah, som skapade ljuset av ljuset och sände ner ljuset på berget, i en skriven bok, på ett utbrett blad, efter ett bestämt mått, till en älskad profet. Lov och pris till Allah, som nämns med ära och är känd för sin stolthet, och som tackas i medgång och motgång. Må Allah välsigna vår herre Muhammad och hans rena familj.”</div>
+    <div class="translation" style="border-left-color:var(--rose);font-size:13px;margin-top:8px">
+      <i class="fas fa-info-circle"></i> Denna bön läses vanligen morgon och kväll och tillskrivs Sayyida Fatima al-Zahra (a.s.) som ett skydd och en bön för bot och skydd mot feber och sjukdomar.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <i class="fas fa-mosque"></i> Familjens Planerare · Quran‑del<br>
+    <span style="font-size:12px">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</span>
+  </div>
+
+</div>
+
+<script>
+  // Nattläge
+  let night = localStorage.getItem('quranNightMode') === 'true';
+  function applyNight(){
+    document.body.classList.toggle('night', night);
+    const icon = document.getElementById('nightIcon');
+    if(night){
+      icon.className = 'fas fa-sun';
+      document.getElementById('nightBtn').style.color = 'var(--amber)';
+    } else {
+      icon.className = 'fas fa-moon';
+      document.getElementById('nightBtn').style.color = '';
+    }
+  }
+  function toggleNight(){
+    night = !night;
+    localStorage.setItem('quranNightMode', night);
+    applyNight();
+  }
+  applyNight();
+</script>
+
+</body>
+</html>
