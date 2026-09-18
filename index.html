@@ -6,9 +6,28 @@
   <title>Quran · Böner & Skydd</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600;700&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- K24 Kurdish Fonts – samma som Kurdistan24 använder -->
+  <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishRegular-Regular.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishBold-Bold.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* K24 Kurdish Font Family – samma som Kurdistan24.net använder */
+    @font-face {
+      font-family: 'K24 Kurdish';
+      src: url('https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishRegular-Regular.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'K24 Kurdish';
+      src: url('https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishBold-Bold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root {
       --bg:#EFEAF9; --surface:#fff; --surface2:#F7F5FC; --border:#E4DEFC;
       --primary:#6C47E8; --primary-soft:#EDE8FC; --primary-glow:rgba(108,71,232,0.18);
@@ -22,8 +41,8 @@
       --font:'Times New Roman',Times,serif;
       /* Koran-font – klassisk naskh */
       --quran-font:'Amiri Quran','Scheherazade New','Amiri','Traditional Arabic','Noto Naskh Arabic',serif;
-      /* Kurdisk Sorani-font – modern, tydlig, matchar bilden */
-      --kurdish-font:'Noto Naskh Arabic','Vazirmatn','Noto Kufi Arabic','Amiri','Tahoma',sans-serif;
+      /* Kurdisk/Persisk font – K24 Kurdish (samma som Kurdistan24) */
+      --kurdish-font:'K24 Kurdish','Noto Naskh Arabic','Vazirmatn','Amiri','Tahoma',sans-serif;
       /* Sektionsfärger */
       --section-bg-1:#FBF8FF;
       --section-bg-2:#F3F0FB;
@@ -130,6 +149,31 @@
       display:flex;align-items:center;gap:8px;
       position:relative;z-index:1;
     }
+    /* Språkväljare inuti dagens aya – övre delen */
+    .daily-aya-lang{
+      display:flex;gap:5px;margin-bottom:14px;
+      position:relative;z-index:1;flex-wrap:wrap;
+    }
+    .daily-aya-lang button{
+      flex:1;min-width:58px;height:34px;
+      border:1.5px solid rgba(255,255,255,.35);
+      background:rgba(255,255,255,.12);
+      color:#fff;border-radius:10px;
+      font-family:var(--font);font-size:12px;font-weight:800;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;justify-content:center;gap:4px;
+      backdrop-filter:blur(4px);
+    }
+    .daily-aya-lang button.active{
+      background:rgba(255,255,255,.95);color:var(--primary);
+      border-color:#fff;
+    }
+    .daily-aya-lang button:active{transform:scale(.96)}
+    .daily-aya-lang button[data-lang="ku"],
+    .daily-aya-lang button[data-lang="fa"]{
+      font-family:var(--kurdish-font);
+      font-size:13px;
+    }
     .daily-aya-ref{
       font-size:12px;font-weight:800;opacity:.95;
       background:rgba(255,255,255,.22);
@@ -160,19 +204,23 @@
       font-style:italic;
       text-shadow:0 1px 2px rgba(0,0,0,.1);
     }
-    /* Kurdisk text i dagens aya använder kurdisk font */
-    .daily-aya-text.ku{
-      font-family:var(--kurdish-font);
-      font-style:normal;
-      font-size:19px;
-      line-height:1.9;
-    }
-    /* Persisk text */
+    /* Kurdisk/Persisk text i dagens aya använder K24 Kurdish */
+    .daily-aya-text.ku,
     .daily-aya-text.fa{
       font-family:var(--kurdish-font);
       font-style:normal;
       font-size:19px;
       line-height:1.9;
+    }
+    /* Fonetiskt/latinskt uttal */
+    .daily-aya-text.phonetic{
+      font-family:'Times New Roman',Times,serif;
+      font-style:italic;
+      font-size:16px;
+      line-height:1.7;
+      direction:ltr;
+      text-align:left;
+      color:rgba(255,255,255,.95);
     }
     .daily-aya-buttons{
       display:flex;gap:10px;margin-top:18px;
@@ -275,7 +323,7 @@
       line-height:1.65;
       box-shadow:0 2px 8px rgba(34,192,138,.08);
     }
-    /* Kurdisk översättning använder kurdisk font */
+    /* Kurdisk/Persisk översättning använder K24 Kurdish */
     .translation.ku,
     .translation.fa{
       font-family:var(--kurdish-font);
@@ -283,6 +331,16 @@
       line-height:1.9;
       direction:rtl;
       text-align:right;
+    }
+    /* Fonetisk översättning */
+    .translation.phonetic{
+      font-family:'Times New Roman',Times,serif;
+      font-style:italic;
+      font-size:15px;
+      line-height:1.7;
+      direction:ltr;
+      text-align:left;
+      color:var(--text2);
     }
     body.night .translation{
       color:#D8F5E8;
@@ -321,7 +379,7 @@
       box-shadow:0 4px 12px var(--primary-glow);
     }
     .lang-opt:not(.active):active{background:var(--primary-soft);color:var(--primary)}
-    /* Kurdiska & persiska språkvalsknappar använder kurdisk font */
+    /* Kurdiska & persiska språkvalsknappar använder K24 Kurdish */
     .lang-opt[data-lang="ku"],
     .lang-opt[data-lang="fa"]{
       font-family:var(--kurdish-font);
@@ -383,6 +441,14 @@
       direction:rtl;
       text-align:right;
     }
+    .fav-text.phonetic{
+      font-family:'Times New Roman',Times,serif;
+      font-style:italic;
+      font-size:13px;
+      line-height:1.6;
+      direction:ltr;
+      text-align:left;
+    }
     .fav-actions{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
     .fav-actions button{
       width:36px;height:36px;border-radius:10px;border:none;
@@ -441,6 +507,14 @@
       direction:rtl;
       text-align:right;
     }
+    .modal-card .modal-text.phonetic{
+      font-family:'Times New Roman',Times,serif;
+      font-style:italic;
+      font-size:15px;
+      line-height:1.7;
+      direction:ltr;
+      text-align:left;
+    }
     body.night .modal-card .modal-text{color:#D8F5E8}
     .modal-card .modal-close{
       width:100%;height:48px;border-radius:var(--rsm);
@@ -463,6 +537,9 @@
       .daily-aya-text{font-size:17px;line-height:1.7}
       .daily-aya-text.ku,
       .daily-aya-text.fa{font-size:17px;line-height:1.8}
+      .daily-aya-lang button{min-width:52px;height:32px;font-size:11px}
+      .daily-aya-lang button[data-lang="ku"],
+      .daily-aya-lang button[data-lang="fa"]{font-size:12px}
       .icon-btn{width:42px;height:42px;font-size:16px}
       .lang-opt{font-size:12px;height:36px;min-width:55px}
       .lang-opt[data-lang="ku"],
@@ -511,6 +588,16 @@
   <!-- ===== DAGENS AYA ===== -->
   <div class="daily-aya">
     <div class="daily-aya-label"><i class="fas fa-star-and-crescent"></i> Dagens aya</div>
+
+    <!-- Språkväljare i övre delen av dagens aya -->
+    <div class="daily-aya-lang" id="dailyAyaLangPicker">
+      <button data-lang="sv" onclick="setLang('sv')">🇸🇪 SV</button>
+      <button data-lang="en" onclick="setLang('en')">🇬🇧 EN</button>
+      <button data-lang="fa" onclick="setLang('fa')">🇮🇷 فا</button>
+      <button data-lang="ku" onclick="setLang('ku')">🏳️ کو</button>
+      <button data-lang="phonetic" onclick="setLang('phonetic')">🔤 Uttal</button>
+    </div>
+
     <div id="dailyAyaContent">
       <div class="daily-aya-loading">Laddar…</div>
     </div>
@@ -534,13 +621,14 @@
     </div>
   </div>
 
-  <!-- ===== SPRÅKVÄLJARE ===== -->
+  <!-- ===== SPRÅKVÄLJARE (för sektionerna) ===== -->
   <div class="section" style="padding:14px 16px">
     <div class="lang-picker">
       <button class="lang-opt active" data-lang="sv" onclick="setLang('sv')">🇸🇪 Svenska</button>
       <button class="lang-opt" data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
       <button class="lang-opt" data-lang="fa" onclick="setLang('fa')">🇮🇷 فارسی</button>
       <button class="lang-opt" data-lang="ku" onclick="setLang('ku')">🏳️ کوردی</button>
+      <button class="lang-opt" data-lang="phonetic" onclick="setLang('phonetic')">🔤 Uttal</button>
     </div>
   </div>
 
@@ -813,6 +901,25 @@ const TRANSLATIONS = {
 };
 
 /* ============================================================
+   FONETISKA ÖVERSÄTTNINGAR – latinskt uttal
+   Baserat på standardiserad romanisering av arabiska
+   ============================================================ */
+const PHONETIC = {
+  kursi: 'Allāhu lā ilāha illā huwal-ḥayyul-qayyūm. Lā taʾkhudhuhū sinatun wa lā nawm. Lahū mā fis-samāwāti wa mā fil-arḍ. Man dhal-ladhī yashfaʿu ʿindahū illā bi-idhnih. Yaʿlamu mā bayna aydīhim wa mā khalfahum. Wa lā yuḥīṭūna bishayʾin min ʿilmihī illā bimā shāʾ. Wasiʿa kursiyyuhus-samāwāti wal-arḍ. Wa lā yaʾūduhū ḥifẓuhumā. Wa huwal-ʿaliyyul-ʿaẓīm.',
+  qunut: 'Allāhumma-hdinā fīman hadayt, wa ʿāfinā fīman ʿāfayt, wa tawallanā fīman tawallayt, wa bārik lanā fīmā aʿṭayt, wa qinā sharra mā qaḍayt. Fa-innaka taqḍī wa lā yuqḍā ʿalayk. Wa innahū lā yadhillu man wālayt, wa lā yaʿizzu man ʿādayt. Tabārakta rabbanā wa taʿālayt. Fa-lakal-ḥamdu ʿalā mā qaḍayt. Wa nastaghfiruka wa natūbu ilayk. Wa ṣallallāhu ʿalā sayyidinā Muḥammadinin-nabiyyil-ummī wa ʿalā ālihī wa ṣaḥbihī wa sallam.',
+  fatiha: 'Bismillāhir-raḥmānir-raḥīm. Al-ḥamdu lillāhi rabbil-ʿālamīn. Ar-raḥmānir-raḥīm. Māliki yawmid-dīn. Iyyāka naʿbudu wa iyyāka nastaʿīn. Ihdinaṣ-ṣirāṭal-mustaqīm. Ṣirāṭal-ladhīna anʿamta ʿalayhim, ghayril-maghḍūbi ʿalayhim wa laḍ-ḍāllīn.',
+  kafirun: 'Qul yā ayyuhal-kāfirūn. Lā aʿbudu mā taʿbudūn. Wa lā antum ʿābidūna mā aʿbud. Wa lā anā ʿābidun mā ʿabadtum. Wa lā antum ʿābidūna mā aʿbud. Lakum dīnukum wa liya dīn.',
+  ikhlas: 'Qul huwallāhu aḥad. Allāhuṣ-ṣamad. Lam yalid wa lam yūlad. Wa lam yakun lahū kufuwan aḥad.',
+  falaq: 'Qul aʿūdhu bi-rabbil-falaq. Min sharri mā khalaq. Wa min sharri ghāsiqin idhā waqab. Wa min sharrin-naffāthāti fil-ʿuqad. Wa min sharri ḥāsidin idhā ḥasad.',
+  nas: 'Qul aʿūdhu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min sharril-waswāsil-khannās. Alladhī yuwaswisu fī ṣudūrin-nās. Minal-jinnati wan-nās.',
+  ruqya1: 'Bismillāhi arqīka, min kulli shayʾin yuʾdhīka, min sharri kulli nafsin aw ʿayni ḥāsid. Allāhu yashfīka, bismillāhi arqīka.',
+  ruqya2: 'Allāhumma rabban-nās, adhhibil-bāsa, ishfihi wa antash-shāfī, lā shifāʾa illā shifāʾuk, shifāʾan lā yughādiru saqamā.',
+  ruqya3: 'Bismillāhil-ladhī lā yaḍurru maʿasmihī shayʾun fil-arḍi wa lā fis-samāʾ, wa huwas-samīʿul-ʿalīm.',
+  ruqya4: 'Allāhumma lā sahla illā mā jaʿaltahū sahlā, wa anta tajʿalul-ḥazna idhā shiʾta sahlā.',
+  nur: 'Bismillāhir-raḥmānir-raḥīm. Bismillāhin-nūr. Bismillāhi nūrin-nūr. Bismillāhi nūrun ʿalā nūr. Bismillāhil-ladhī huwa mudabbirul-umūr. Bismillāhil-ladhī khalaqan-nūra minan-nūr. Al-ḥamdu lillāhil-ladhī khalaqan-nūra minan-nūr. Wa anzalan-nūra ʿalaṭ-ṭūr. Fī kitābin masṭūr. Fī raqqin manshūr. Bi-qadarin maqdūr. ʿAlā nabiyyin maḥbūr. Al-ḥamdu lillāhil-ladhī huwa bil-ʿizzi madhkūr. Wa bil-fakhri mashhūr. Wa ʿalas-sarrāʾi waḍ-ḍarrāʾi mashkūr. Wa ṣallallāhu ʿalā sayyidinā Muḥammadin wa ālihiṭ-ṭāhirīn.'
+};
+
+/* ============================================================
    SURA-DATA
    ============================================================ */
 const SURAH_NAMES = [
@@ -874,7 +981,8 @@ async function fetchAya(surah, ayah){
       sv: svRes.data.text || enRes.data.text,
       en: enRes.data.text,
       fa: faRes.data.text || enRes.data.text,
-      ku: kuRes.data.text || enRes.data.text
+      ku: kuRes.data.text || enRes.data.text,
+      phonetic: '' // Fonetisk text sätts inte automatiskt – användaren får kopiera arabiskan
     };
     renderDailyAya(ayaData);
   }catch(err){
@@ -892,11 +1000,18 @@ async function fetchRandomAya(){
 function renderDailyAya(data){
   currentAyaData = data;
   const content = document.getElementById('dailyAyaContent');
-  const translation = data[currentLang] || data.sv || data.en;
-  // Sätt klass för rätt font på översättningen
+  let translation = data[currentLang] || data.sv || data.en;
+
+  // Bestäm klass för rätt font/stil
   let extraClass = '';
   if(currentLang === 'ku') extraClass = ' ku';
   else if(currentLang === 'fa') extraClass = ' fa';
+  else if(currentLang === 'phonetic'){
+    extraClass = ' phonetic';
+    // Om fonetisk text saknas, visa en hänvisning
+    translation = data.phonetic || '🔤 Fonetiskt uttal – tryck på en vers i sektionerna nedan för att se uttal.';
+  }
+
   content.innerHTML = `
     <div class="daily-aya-ref">${data.surahName} ${data.surahNum}:${data.ayahNum}</div>
     <div class="daily-aya-arabic">${data.arabic}</div>
@@ -995,6 +1110,7 @@ function saveCurrentAyaAsFavorite(){
     en: currentAyaData.en,
     fa: currentAyaData.fa,
     ku: currentAyaData.ku,
+    phonetic: currentAyaData.phonetic || '',
     savedAt: new Date().toISOString()
   });
   saveFavorites();
@@ -1026,6 +1142,7 @@ function renderFavorites(){
     let extraClass = '';
     if(currentLang === 'ku') extraClass = ' ku';
     else if(currentLang === 'fa') extraClass = ' fa';
+    else if(currentLang === 'phonetic') extraClass = ' phonetic';
     return `
       <div class="fav-item">
         <div class="fav-ref">${f.surahName} ${f.surahNum}:${f.ayahNum}</div>
@@ -1046,6 +1163,7 @@ function viewFavorite(id){
   let extraClass = '';
   if(currentLang === 'ku') extraClass = ' ku';
   else if(currentLang === 'fa') extraClass = ' fa';
+  else if(currentLang === 'phonetic') extraClass = ' phonetic';
   document.getElementById('viewFavContent').innerHTML = `
     <div class="modal-ref">${f.surahName} ${f.surahNum}:${f.ayahNum}</div>
     <div class="modal-arabic">${f.arabic}</div>
@@ -1064,20 +1182,34 @@ function closeViewFav(){
 function setLang(lang){
   currentLang = lang;
   localStorage.setItem('quranLang', lang);
+
+  // Uppdatera alla språkvalsknappar
   document.querySelectorAll('.lang-opt').forEach(b=>{
     b.classList.toggle('active', b.dataset.lang === lang);
   });
+  document.querySelectorAll('.daily-aya-lang button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+
+  // Uppdatera statiska översättningar
   document.querySelectorAll('.translation[data-tr]').forEach(el=>{
     const key = el.dataset.tr;
-    el.textContent = TRANSLATIONS[lang][key] || '';
+    // Välj rätt text beroende på språk
+    if(lang === 'phonetic'){
+      el.textContent = PHONETIC[key] || TRANSLATIONS.sv[key] || '';
+    } else {
+      el.textContent = TRANSLATIONS[lang][key] || '';
+    }
     // Sätt klass för rätt font
-    el.classList.remove('ku','fa');
+    el.classList.remove('ku','fa','phonetic');
     if(lang === 'ku') el.classList.add('ku');
     else if(lang === 'fa') el.classList.add('fa');
+    else if(lang === 'phonetic') el.classList.add('phonetic');
   });
+
   if(currentAyaData) renderDailyAya(currentAyaData);
   renderFavorites();
-  toast('🌐 Språk: ' + ({sv:'Svenska',en:'English',fa:'فارسی',ku:'کوردی'}[lang]));
+  toast('🌐 Språk: ' + ({sv:'Svenska',en:'English',fa:'فارسی',ku:'کوردی',phonetic:'Uttal'}[lang]));
 }
 
 /* ============================================================
