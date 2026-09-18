@@ -39,6 +39,7 @@
       --section-bg-2:#F3F0FB;
       --translation-bg:#E8F9F1;
       --translation-border:#22C08A;
+      --bottom-bar-height: 78px;
     }
     body.night {
       --bg:#1A1733; --surface:#2C2761; --surface2:#373072; --border:#4B4392;
@@ -56,7 +57,7 @@
       background:var(--bg);
       color:var(--text);
       transition:background .3s,color .3s;
-      padding:24px 20px 80px;
+      padding:24px 20px calc(var(--bottom-bar-height) + 30px);
       line-height:1.6;
       background-image:
         radial-gradient(circle at 0% 0%, rgba(108,71,232,.08) 0%, transparent 45%),
@@ -76,9 +77,6 @@
       flex-direction:column;
     }
 
-    /* ============================================================
-       HEADER – med Bismillah i mitten
-       ============================================================ */
     .hdr{
       background:var(--surface);
       border-radius:var(--r);
@@ -91,41 +89,18 @@
       align-items:center;
       gap:16px;
     }
-    .hdr-left{
-      display:flex;
-      align-items:center;
-      gap:16px;
-      min-width:0;
-    }
-    .hdr-right{
-      display:flex;
-      justify-content:flex-end;
-      align-items:center;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    /* Mitten – Bismillah */
+    .hdr-left{display:flex;align-items:center;gap:16px;min-width:0}
+    .hdr-right{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap}
     .hdr-bismillah{
       font-family:var(--quran-font);
-      font-size:34px;
-      font-weight:700;
-      color:var(--primary);
-      text-align:center;
-      line-height:1.3;
-      padding:0 20px;
-      letter-spacing:.02em;
-      white-space:nowrap;
+      font-size:34px;font-weight:700;color:var(--primary);
+      text-align:center;line-height:1.3;padding:0 20px;
+      letter-spacing:.02em;white-space:nowrap;
       text-shadow:0 1px 3px var(--primary-glow);
       transition:all .3s;
     }
-    .hdr-bismillah:hover{
-      color:#9B59E8;
-      text-shadow:0 2px 8px var(--primary-glow);
-    }
-    body.night .hdr-bismillah{
-      color:#C9B8FF;
-      text-shadow:0 1px 4px rgba(201,184,255,.3);
-    }
+    .hdr-bismillah:hover{color:#9B59E8;text-shadow:0 2px 8px var(--primary-glow)}
+    body.night .hdr-bismillah{color:#C9B8FF;text-shadow:0 1px 4px rgba(201,184,255,.3)}
 
     .hdr-logo{
       width:56px;height:56px;border-radius:18px;
@@ -136,35 +111,28 @@
     }
     .hdr-info{flex:1;min-width:0}
     .hdr-title{font-size:22px;font-weight:900;color:var(--text);line-height:1.2}
-    .hdr-sub{
-      font-size:14px;color:var(--text3);font-weight:600;margin-top:2px;
-      font-family:var(--kurdish-font);
-    }
+    .hdr-sub{font-size:14px;color:var(--text3);font-weight:600;margin-top:2px;font-family:var(--kurdish-font)}
     .icon-btn{
       width:48px;height:48px;border-radius:15px;
       border:1.5px solid var(--border);background:var(--surface2);
       cursor:pointer;display:flex;align-items:center;justify-content:center;
-      color:var(--text2);font-size:18px;transition:all .2s;
-      position:relative;
+      color:var(--text2);font-size:18px;transition:all .2s;position:relative;
     }
     .icon-btn:active{background:var(--primary-soft);color:var(--primary);transform:scale(.92)}
     .icon-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
     .bdg{
       position:absolute;top:-4px;right:-4px;
       min-width:18px;height:18px;border-radius:50%;
-      background:var(--rose);color:#fff;
-      font-size:10px;font-weight:800;
+      background:var(--rose);color:#fff;font-size:10px;font-weight:800;
       display:flex;align-items:center;justify-content:center;
       border:2px solid var(--surface);padding:0 3px;
     }
     .bdg.h{display:none}
 
-    /* ===== DAGENS AYA ===== */
     .daily-aya{
       background:linear-gradient(135deg,var(--primary),#9B59E8 60%,#7A3FE0);
       color:#fff;border-radius:var(--r);padding:28px 32px;
-      margin-bottom:24px;
-      box-shadow:0 12px 36px rgba(108,71,232,.35);
+      margin-bottom:24px;box-shadow:0 12px 36px rgba(108,71,232,.35);
       position:relative;overflow:hidden;
     }
     .daily-aya::before{
@@ -185,104 +153,46 @@
       display:flex;align-items:center;gap:8px;
       position:relative;z-index:1;
     }
-    .daily-aya-lang{
-      display:flex;gap:6px;margin-bottom:16px;
-      position:relative;z-index:1;flex-wrap:wrap;
-    }
-    .daily-aya-lang button{
-      flex:1;min-width:70px;height:38px;
-      border:1.5px solid rgba(255,255,255,.35);
-      background:rgba(255,255,255,.12);
-      color:#fff;border-radius:10px;
-      font-family:var(--font);font-size:13px;font-weight:800;
-      cursor:pointer;transition:all .2s;
-      display:flex;align-items:center;justify-content:center;gap:5px;
-      backdrop-filter:blur(4px);
-    }
-    .daily-aya-lang button.active{
-      background:rgba(255,255,255,.95);color:var(--primary);
-      border-color:#fff;
-    }
-    .daily-aya-lang button:active{transform:scale(.96)}
-    .daily-aya-lang button[data-lang="ku"],
-    .daily-aya-lang button[data-lang="fa"]{
-      font-family:var(--kurdish-font);
-      font-size:14px;
-    }
     .daily-aya-ref{
       font-size:13px;font-weight:800;opacity:.95;
       background:rgba(255,255,255,.22);
       padding:5px 14px;border-radius:50px;
       display:inline-block;margin-bottom:16px;
-      position:relative;z-index:1;
-      letter-spacing:.02em;
+      position:relative;z-index:1;letter-spacing:.02em;
     }
     .daily-aya-arabic{
       font-family:var(--quran-font);
-      font-size:34px;
-      line-height:2.4;
-      direction:rtl;
-      text-align:right;
-      margin-bottom:20px;
-      text-shadow:0 2px 4px rgba(0,0,0,.18);
-      position:relative;z-index:1;
-      word-break:break-word;
+      font-size:34px;line-height:2.4;direction:rtl;text-align:right;
+      margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);
+      position:relative;z-index:1;word-break:break-word;
       font-feature-settings:"liga" 1, "calt" 1;
       -webkit-font-smoothing:antialiased;
     }
     .daily-aya-phonetic{
       font-family:'Times New Roman',Times,serif;
-      font-style:italic;
-      font-size:30px;
-      line-height:1.75;
-      direction:ltr;
-      text-align:left;
-      color:rgba(255,255,255,.97);
-      padding:14px 18px;
-      background:rgba(255,255,255,.14);
-      border-radius:14px;
-      border-left:4px solid rgba(255,255,255,.6);
-      margin-bottom:14px;
-      position:relative;z-index:1;
-      text-shadow:0 1px 2px rgba(0,0,0,.15);
-      word-break:break-word;
+      font-style:italic;font-size:30px;line-height:1.75;
+      direction:ltr;text-align:left;color:rgba(255,255,255,.97);
+      padding:14px 18px;background:rgba(255,255,255,.14);
+      border-radius:14px;border-left:4px solid rgba(255,255,255,.6);
+      margin-bottom:14px;position:relative;z-index:1;
+      text-shadow:0 1px 2px rgba(0,0,0,.15);word-break:break-word;
     }
     .daily-aya-phonetic-label{
-      display:block;
-      font-family:var(--font);
-      font-style:normal;
-      font-size:12px;
-      font-weight:800;
-      text-transform:uppercase;
-      letter-spacing:.1em;
-      opacity:.85;
-      margin-bottom:8px;
+      display:block;font-family:var(--font);font-style:normal;
+      font-size:12px;font-weight:800;text-transform:uppercase;
+      letter-spacing:.1em;opacity:.85;margin-bottom:8px;
       color:rgba(255,255,255,.9);
     }
     .daily-aya-text{
-      font-size:36px;
-      line-height:1.8;
+      font-size:36px;line-height:1.8;
       border-top:1.5px solid rgba(255,255,255,.3);
-      padding-top:16px;
-      position:relative;z-index:1;
-      font-style:italic;
-      text-shadow:0 1px 2px rgba(0,0,0,.1);
+      padding-top:16px;position:relative;z-index:1;
+      font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,.1);
     }
     .daily-aya-text.ku,
     .daily-aya-text.fa{
-      font-family:var(--kurdish-font);
-      font-style:normal;
-      font-size:38px;
-      line-height:1.9;
-    }
-    .daily-aya-text.phonetic{
-      font-family:'Times New Roman',Times,serif;
-      font-style:italic;
-      font-size:34px;
-      line-height:1.8;
-      direction:ltr;
-      text-align:left;
-      color:rgba(255,255,255,.97);
+      font-family:var(--kurdish-font);font-style:normal;
+      font-size:38px;line-height:1.9;
     }
     .daily-aya-buttons{
       display:flex;gap:12px;margin-top:20px;
@@ -299,10 +209,7 @@
       backdrop-filter:blur(4px);
     }
     .daily-aya-btn:active{transform:scale(.96);background:rgba(255,255,255,.3)}
-    .daily-aya-btn.saved{
-      background:rgba(255,255,255,.97);color:var(--primary);
-      border-color:#fff;
-    }
+    .daily-aya-btn.saved{background:rgba(255,255,255,.97);color:var(--primary);border-color:#fff}
     .daily-aya-loading{
       font-size:16px;opacity:.85;font-style:italic;
       padding:24px 0;text-align:center;
@@ -311,11 +218,9 @@
     .section{
       background:linear-gradient(135deg, var(--section-bg-1) 0%, var(--section-bg-2) 100%);
       border-radius:var(--r);padding:26px 28px;
-      margin-bottom:22px;
-      box-shadow:var(--shadow-sm);
+      margin-bottom:22px;box-shadow:var(--shadow-sm);
       border:1.5px solid var(--border);
-      position:relative;
-      overflow:hidden;
+      position:relative;overflow:hidden;
     }
     .section::before{
       content:'';position:absolute;top:0;left:0;right:0;height:3px;
@@ -342,69 +247,42 @@
       box-shadow:0 2px 6px rgba(0,0,0,.06);
     }
     .verse-tool:active{transform:scale(.9)}
-    .verse-tool.copied{
-      background:var(--emerald-soft);color:var(--emerald);
-      border-color:var(--emerald);
-    }
+    .verse-tool.copied{background:var(--emerald-soft);color:var(--emerald);border-color:var(--emerald)}
     .arabic{
       font-family:var(--quran-font);
-      font-size:32px;
-      line-height:2.5;
-      direction:rtl;
-      text-align:right;
-      color:var(--text);
-      padding:18px 22px;
+      font-size:32px;line-height:2.5;direction:rtl;text-align:right;
+      color:var(--text);padding:18px 22px;
       background:rgba(255,255,255,.65);
-      border-radius:var(--rsm);
-      border-right:5px solid var(--primary);
-      word-break:break-word;
-      position:relative;
+      border-radius:var(--rsm);border-right:5px solid var(--primary);
+      word-break:break-word;position:relative;
       font-feature-settings:"liga" 1, "calt" 1;
       -webkit-font-smoothing:antialiased;
     }
-    body.night .arabic{
-      background:rgba(255,255,255,.08);
-    }
-    .arabic-small{
-      font-size:28px;
-      line-height:2.3;
-      padding:16px 20px;
-    }
+    body.night .arabic{background:rgba(255,255,255,.08)}
+    .arabic-small{font-size:28px;line-height:2.3;padding:16px 20px}
     .translation{
-      font-size:34px;
-      color:var(--text);
-      padding:14px 20px;
-      margin:12px 0 18px;
+      font-size:34px;color:var(--text);
+      padding:14px 20px;margin:12px 0 18px;
       border-left:4px solid var(--translation-border);
       background:var(--translation-bg);
       border-radius:0 12px 12px 0;
-      min-height:26px;
-      line-height:1.8;
+      min-height:26px;line-height:1.8;
       box-shadow:0 2px 8px rgba(34,192,138,.08);
     }
     .translation.ku,
     .translation.fa{
-      font-family:var(--kurdish-font);
-      font-size:36px;
-      line-height:1.9;
-      direction:rtl;
-      text-align:right;
+      font-family:var(--kurdish-font);font-size:36px;
+      line-height:1.9;direction:rtl;text-align:right;
     }
     .translation.phonetic{
-      font-family:'Times New Roman',Times,serif;
-      font-style:italic;
-      font-size:32px;
-      line-height:1.8;
-      direction:ltr;
-      text-align:left;
+      font-family:'Times New Roman',Times,serif;font-style:italic;
+      font-size:32px;line-height:1.8;direction:ltr;text-align:left;
       color:var(--text2);
     }
     body.night .translation{
-      color:#D8F5E8;
-      border-left-color:var(--emerald);
+      color:#D8F5E8;border-left-color:var(--emerald);
       box-shadow:0 2px 8px rgba(34,192,138,.18);
     }
-
     .divider{height:1px;background:var(--border);margin:22px 0;border:none}
     .pill{
       display:inline-block;font-size:13px;font-weight:800;
@@ -416,33 +294,8 @@
       text-align:center;font-size:14px;color:var(--text3);
       padding:24px 0 12px;font-weight:600;
     }
-    .footer span{
-      font-family:var(--quran-font);
-    }
-    .lang-picker{
-      display:flex;gap:6px;background:var(--surface2);
-      border:1.5px solid var(--border);border-radius:14px;
-      padding:6px;flex-wrap:wrap;
-    }
-    .lang-opt{
-      flex:1;min-width:70px;height:42px;border:none;
-      border-radius:10px;background:transparent;
-      font-family:var(--font);font-size:14px;font-weight:800;
-      color:var(--text2);cursor:pointer;transition:all .2s;
-      display:flex;align-items:center;justify-content:center;gap:5px;
-    }
-    .lang-opt.active{
-      background:var(--primary);color:#fff;
-      box-shadow:0 4px 12px var(--primary-glow);
-    }
-    .lang-opt:not(.active):active{background:var(--primary-soft);color:var(--primary)}
-    .lang-opt[data-lang="ku"],
-    .lang-opt[data-lang="fa"]{
-      font-family:var(--kurdish-font);
-      font-size:15px;
-    }
-
-    .sura-picker{display:flex;gap:10px;flex-wrap:wrap;}
+    .footer span{font-family:var(--quran-font)}
+    .sura-picker{display:flex;gap:10px;flex-wrap:wrap}
     .sura-picker select{
       flex:1;min-width:180px;height:52px;
       border-radius:var(--rsm);border:2px solid var(--border);
@@ -467,10 +320,8 @@
       transition:all .2s;
     }
     .sura-picker button:active{transform:scale(.97);opacity:.9}
-
     .fav-item{
-      background:var(--surface);
-      border:1.5px solid var(--border);
+      background:var(--surface);border:1.5px solid var(--border);
       border-radius:var(--rsm);padding:16px 18px;margin-bottom:12px;
       position:relative;
     }
@@ -489,19 +340,12 @@
     }
     .fav-text.ku,
     .fav-text.fa{
-      font-family:var(--kurdish-font);
-      font-size:32px;
-      line-height:1.85;
-      direction:rtl;
-      text-align:right;
+      font-family:var(--kurdish-font);font-size:32px;
+      line-height:1.85;direction:rtl;text-align:right;
     }
     .fav-text.phonetic{
-      font-family:'Times New Roman',Times,serif;
-      font-style:italic;
-      font-size:30px;
-      line-height:1.7;
-      direction:ltr;
-      text-align:left;
+      font-family:'Times New Roman',Times,serif;font-style:italic;
+      font-size:30px;line-height:1.7;direction:ltr;text-align:left;
     }
     .fav-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
     .fav-actions button{
@@ -513,34 +357,25 @@
     .fav-actions .fav-view{background:var(--primary-soft);color:var(--primary)}
     .fav-actions .fav-del{background:var(--rose-soft);color:var(--rose)}
     .fav-actions button:active{transform:scale(.92)}
-    .fav-empty{
-      text-align:center;padding:28px;color:var(--text3);font-weight:700;
-    }
+    .fav-empty{text-align:center;padding:28px;color:var(--text3);font-weight:700}
     .fav-empty i{font-size:36px;margin-bottom:12px;display:block;opacity:.5}
-
     .modal-ov{
       position:fixed;inset:0;background:rgba(0,0,0,.5);
       backdrop-filter:blur(6px);z-index:200;
-      display:flex;align-items:center;justify-content:center;
-      padding:20px;
+      display:flex;align-items:center;justify-content:center;padding:20px;
     }
     .modal-ov.h{display:none}
     .modal-card{
       background:var(--surface);border-radius:var(--r);
       padding:28px;max-width:700px;width:100%;
       max-height:85vh;overflow-y:auto;
-      border:1.5px solid var(--border);
-      box-shadow:var(--shadow);
+      border:1.5px solid var(--border);box-shadow:var(--shadow);
     }
-    .modal-card .modal-ref{
-      font-size:14px;font-weight:800;color:var(--primary);
-      margin-bottom:12px;
-    }
+    .modal-card .modal-ref{font-size:14px;font-weight:800;color:var(--primary);margin-bottom:12px}
     .modal-card .modal-arabic{
       font-family:var(--quran-font);
       font-size:30px;line-height:2.4;direction:rtl;text-align:right;
-      color:var(--text);
-      padding:18px;background:var(--surface2);
+      color:var(--text);padding:18px;background:var(--surface2);
       border-radius:var(--rsm);border-right:5px solid var(--primary);
       margin-bottom:16px;word-break:break-word;
       font-feature-settings:"liga" 1, "calt" 1;
@@ -554,19 +389,12 @@
     }
     .modal-card .modal-text.ku,
     .modal-card .modal-text.fa{
-      font-family:var(--kurdish-font);
-      font-size:36px;
-      line-height:1.9;
-      direction:rtl;
-      text-align:right;
+      font-family:var(--kurdish-font);font-size:36px;
+      line-height:1.9;direction:rtl;text-align:right;
     }
     .modal-card .modal-text.phonetic{
-      font-family:'Times New Roman',Times,serif;
-      font-style:italic;
-      font-size:32px;
-      line-height:1.8;
-      direction:ltr;
-      text-align:left;
+      font-family:'Times New Roman',Times,serif;font-style:italic;
+      font-size:32px;line-height:1.8;direction:ltr;text-align:left;
     }
     body.night .modal-card .modal-text{color:#D8F5E8}
     .modal-card .modal-close{
@@ -577,16 +405,80 @@
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
+    /* ============================================================
+       FAST SPRÅKVÄLJARE – NEDRE DELEN AV SIDAN
+       ============================================================ */
+    .bottom-lang-bar{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      z-index:100;
+      background:var(--surface);
+      border-top:1.5px solid var(--border);
+      box-shadow:0 -4px 20px rgba(108,71,232,.12);
+      padding:10px 16px max(10px, env(safe-area-inset-bottom));
+      display:flex;
+      justify-content:center;
+      backdrop-filter:blur(10px);
+    }
+    body.night .bottom-lang-bar{
+      background:var(--surface);
+      box-shadow:0 -4px 20px rgba(0,0,0,.3);
+    }
+    .bottom-lang-inner{
+      max-width:1400px;
+      width:100%;
+      display:flex;
+      gap:6px;
+      background:var(--surface2);
+      border:1.5px solid var(--border);
+      border-radius:16px;
+      padding:6px;
+    }
+    .bottom-lang-inner button{
+      flex:1;
+      min-width:60px;
+      height:48px;
+      border:none;
+      border-radius:11px;
+      background:transparent;
+      font-family:var(--font);
+      font-size:14px;
+      font-weight:800;
+      color:var(--text2);
+      cursor:pointer;
+      transition:all .2s;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .bottom-lang-inner button.active{
+      background:var(--primary);
+      color:#fff;
+      box-shadow:0 4px 14px var(--primary-glow);
+    }
+    .bottom-lang-inner button:not(.active):active{
+      background:var(--primary-soft);
+      color:var(--primary);
+    }
+    .bottom-lang-inner button[data-lang="ku"],
+    .bottom-lang-inner button[data-lang="fa"]{
+      font-family:var(--kurdish-font);
+      font-size:15px;
+    }
+
     @media (max-width:768px){
-      body{padding:16px 14px 70px}
+      body{padding:16px 14px calc(var(--bottom-bar-height) + 20px)}
       .section{padding:20px 18px}
       .arabic{font-size:26px;line-height:2.3;padding:14px 16px}
       .arabic-small{font-size:23px;line-height:2.2}
-      .hdr{padding:18px; grid-template-columns: 1fr; gap:12px}
-      .hdr-left{justify-content:center; text-align:center; flex-direction:column; gap:8px}
+      .hdr{padding:18px;grid-template-columns:1fr;gap:12px}
+      .hdr-left{justify-content:center;text-align:center;flex-direction:column;gap:8px}
       .hdr-info{text-align:center}
       .hdr-right{justify-content:center}
-      .hdr-bismillah{font-size:28px; padding:8px 0; white-space:normal; order:-1}
+      .hdr-bismillah{font-size:28px;padding:8px 0;white-space:normal;order:-1}
       .hdr-logo{width:48px;height:48px;font-size:22px}
       .hdr-title{font-size:19px}
       .daily-aya{padding:22px}
@@ -595,20 +487,21 @@
       .daily-aya-text{font-size:30px;line-height:1.75}
       .daily-aya-text.ku,
       .daily-aya-text.fa{font-size:32px;line-height:1.85}
-      .daily-aya-text.phonetic{font-size:28px}
       .translation{font-size:28px;line-height:1.75}
       .translation.ku,
       .translation.fa{font-size:30px;line-height:1.85}
       .translation.phonetic{font-size:26px}
+      .bottom-lang-inner button{font-size:13px;height:46px}
+      .bottom-lang-inner button[data-lang="ku"],
+      .bottom-lang-inner button[data-lang="fa"]{font-size:14px}
     }
-
     @media (max-width:480px){
-      body{padding:12px 10px 60px}
+      body{padding:12px 10px calc(var(--bottom-bar-height) + 15px)}
       .section{padding:16px 14px}
       .arabic{font-size:23px;line-height:2.3;padding:12px 14px}
       .arabic-small{font-size:20px;line-height:2.2}
       .hdr{padding:14px}
-      .hdr-bismillah{font-size:24px; padding:6px 0}
+      .hdr-bismillah{font-size:24px;padding:6px 0}
       .hdr-logo{width:44px;height:44px;font-size:20px}
       .hdr-title{font-size:17px}
       .daily-aya{padding:20px}
@@ -618,14 +511,7 @@
       .daily-aya-text{font-size:26px;line-height:1.75}
       .daily-aya-text.ku,
       .daily-aya-text.fa{font-size:28px;line-height:1.8}
-      .daily-aya-text.phonetic{font-size:24px;line-height:1.7}
-      .daily-aya-lang button{min-width:58px;height:34px;font-size:12px}
-      .daily-aya-lang button[data-lang="ku"],
-      .daily-aya-lang button[data-lang="fa"]{font-size:13px}
       .icon-btn{width:44px;height:44px;font-size:17px}
-      .lang-opt{font-size:13px;height:38px;min-width:60px}
-      .lang-opt[data-lang="ku"],
-      .lang-opt[data-lang="fa"]{font-size:14px}
       .verse-tools{top:6px;left:6px}
       .verse-tool{width:32px;height:32px;font-size:13px}
       .sura-picker select,.sura-picker button{font-size:15px;height:48px}
@@ -643,6 +529,12 @@
       .modal-card .modal-text{font-size:26px}
       .modal-card .modal-text.ku,
       .modal-card .modal-text.fa{font-size:28px}
+      .bottom-lang-bar{padding:8px 10px max(8px, env(safe-area-inset-bottom))}
+      .bottom-lang-inner{padding:5px;border-radius:14px}
+      .bottom-lang-inner button{height:42px;font-size:12px;min-width:50px;padding:0 4px}
+      .bottom-lang-inner button[data-lang="ku"],
+      .bottom-lang-inner button[data-lang="fa"]{font-size:13px}
+      .bottom-lang-inner button i{display:none}
     }
   </style>
 </head>
@@ -650,7 +542,6 @@
 
 <div class="container">
 
-  <!-- ===== HEADER MED BISMILLAH I MITTEN ===== -->
   <div class="hdr">
     <div class="hdr-left">
       <div class="hdr-logo"><i class="fas fa-book-open"></i></div>
@@ -659,10 +550,7 @@
         <div class="hdr-sub">آیة الکرسی · قنوت · الفاتحة · ٤ قل</div>
       </div>
     </div>
-
-    <!-- Bismillah i mitten -->
     <div class="hdr-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-
     <div class="hdr-right">
       <button class="icon-btn" onclick="openFavorites()" title="Favoriter" id="favBtn">
         <i class="fas fa-star"></i>
@@ -679,14 +567,6 @@
 
   <div class="daily-aya">
     <div class="daily-aya-label"><i class="fas fa-star-and-crescent"></i> Dagens aya</div>
-
-    <div class="daily-aya-lang" id="dailyAyaLangPicker">
-      <button data-lang="sv" onclick="setLang('sv')">🇸🇪 SV</button>
-      <button data-lang="en" onclick="setLang('en')">🇬🇧 EN</button>
-      <button data-lang="fa" onclick="setLang('fa')">🇮🇷 فا</button>
-      <button data-lang="ku" onclick="setLang('ku')">🏳️ کو</button>
-      <button data-lang="phonetic" onclick="setLang('phonetic')">🔤 Uttal</button>
-    </div>
 
     <div id="dailyAyaContent">
       <div class="daily-aya-loading">Laddar…</div>
@@ -707,16 +587,6 @@
       <select id="suraSelect"></select>
       <input type="number" id="ayahInput" min="1" value="1" placeholder="Vers">
       <button onclick="goToSuraAyah()"><i class="fas fa-arrow-right"></i> Visa</button>
-    </div>
-  </div>
-
-  <div class="section" style="padding:16px 18px">
-    <div class="lang-picker">
-      <button class="lang-opt active" data-lang="sv" onclick="setLang('sv')">🇸🇪 Svenska</button>
-      <button class="lang-opt" data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
-      <button class="lang-opt" data-lang="fa" onclick="setLang('fa')">🇮🇷 فارسی</button>
-      <button class="lang-opt" data-lang="ku" onclick="setLang('ku')">🏳️ کوردی</button>
-      <button class="lang-opt" data-lang="phonetic" onclick="setLang('phonetic')">🔤 Uttal</button>
     </div>
   </div>
 
@@ -898,6 +768,19 @@
 
 </div>
 
+<!-- ============================================================
+     FAST SPRÅKVÄLJARE – NEDERST PÅ SIDAN
+     ============================================================ -->
+<div class="bottom-lang-bar">
+  <div class="bottom-lang-inner">
+    <button data-lang="sv" onclick="setLang('sv')">🇸🇪 Svenska</button>
+    <button data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
+    <button data-lang="fa" onclick="setLang('fa')">🇮🇷 فارسی</button>
+    <button data-lang="ku" onclick="setLang('ku')">🏳️ کوردی</button>
+    <button data-lang="phonetic" onclick="setLang('phonetic')">🔤 Uttal</button>
+  </div>
+</div>
+
 <div class="modal-ov h" id="favModal" onclick="if(event.target===this)closeFavorites()">
   <div class="modal-card" style="max-width:700px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
@@ -994,19 +877,33 @@ const PHONETIC = {
   nur: 'Bismillāhir-raḥmānir-raḥīm. Bismillāhin-nūr. Bismillāhi nūrin-nūr. Bismillāhi nūrun ʿalā nūr. Bismillāhil-ladhī huwa mudabbirul-umūr. Bismillāhil-ladhī khalaqan-nūra minan-nūr. Al-ḥamdu lillāhil-ladhī khalaqan-nūra minan-nūr. Wa anzalan-nūra ʿalaṭ-ṭūr. Fī kitābin masṭūr. Fī raqqin manshūr. Bi-qadarin maqdūr. ʿAlā nabiyyin maḥbūr. Al-ḥamdu lillāhil-ladhī huwa bil-ʿizzi madhkūr. Wa bil-fakhri mashhūr. Wa ʿalas-sarrāʾi waḍ-ḍarrāʾi mashkūr. Wa ṣallallāhu ʿalā sayyidinā Muḥammadin wa ālihiṭ-ṭāhirīn.'
 };
 
-const AYAH_PHONETIC = {
-  '2:255': PHONETIC.kursi,
-  '1:1':   PHONETIC.fatiha,
-  '109:1': PHONETIC.kafirun,
-  '112:1': PHONETIC.ikhlas,
-  '113:1': PHONETIC.falaq,
-  '114:1': PHONETIC.nas,
-  '94:6':  'Inna maʿal-ʿusri yusrā.',
-  '65:3':  'Wa man yatawakkal ʿalallāhi fahuwa ḥasbuh.',
-  '13:28': 'Alā bidhikrillāhi taṭmaʾinnul-qulūb.',
-  '20:114':'Wa qul rabbi zidnī ʿilmā.',
-  '2:152': 'Fadhkurūnī adhkurkum.'
+/* ============================================================
+   AUTOMATISK TRANSLITTERING
+   ============================================================ */
+const ARABIC_TRANSLIT_MAP = {
+  'ا':'ā','أ':'a','إ':'i','آ':'ā','ٱ':'a','ب':'b','ت':'t','ث':'th','ج':'j','ح':'ḥ',
+  'خ':'kh','د':'d','ذ':'dh','ر':'r','ز':'z','س':'s','ش':'sh','ص':'ṣ','ض':'ḍ',
+  'ط':'ṭ','ظ':'ẓ','ع':'ʿ','غ':'gh','ف':'f','ق':'q','ك':'k','ل':'l','م':'m',
+  'ن':'n','ه':'h','و':'w','ي':'y','ى':'ā','ة':'a','ء':'ʾ','ئ':'ʾ','ؤ':'ʾ',
+  'َ':'a','ُ':'u','ِ':'i','ً':'an','ٌ':'un','ٍ':'in','ْ':'','ّ':'',
+  'ٰ':'ā','ۚ':'','ۖ':'','ۗ':'','ۘ':'','ۙ':'','ۛ':'','ۜ':'','﴿':'','﴾':'',
+  '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9',
+  ' ':' ','\u200f':'','\u200e':''
 };
+
+function autoTransliterate(arabic){
+  if(!arabic) return '';
+  let result = '';
+  for(let i = 0; i < arabic.length; i++){
+    const ch = arabic[i];
+    if(ARABIC_TRANSLIT_MAP[ch] !== undefined){
+      result += ARABIC_TRANSLIT_MAP[ch];
+    } else {
+      result += ch;
+    }
+  }
+  return result.replace(/\s+/g,' ').trim();
+}
 
 const SURAH_NAMES = [
   "Al-Fatiha","Al-Baqarah","Ali 'Imran","An-Nisa","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus",
@@ -1068,7 +965,7 @@ async function fetchAya(surah, ayah){
       en: enRes.data.text,
       fa: faRes.data.text || enRes.data.text,
       ku: kuRes.data.text || enRes.data.text,
-      phonetic: ''
+      phonetic: autoTransliterate(arRes.data.text)
     };
     renderDailyAya(ayaData);
   }catch(err){
@@ -1083,12 +980,6 @@ async function fetchRandomAya(){
   await fetchAya(surah, ayah);
 }
 
-function getPhoneticForAya(data){
-  const key = data.surahNum + ':' + data.ayahNum;
-  if(AYAH_PHONETIC[key]) return AYAH_PHONETIC[key];
-  return '🔤 Fonetiskt uttal finns ännu inte för denna vers. Välj en av de kända (Ayat al-Kursi, Al-Fātiha, de fyra Qul) eller tryck på "Ny aya".';
-}
-
 function renderDailyAya(data){
   currentAyaData = data;
   const content = document.getElementById('dailyAyaContent');
@@ -1101,10 +992,7 @@ function renderDailyAya(data){
   else if(currentLang === 'fa') extraClass = ' fa';
   else if(currentLang === 'phonetic'){
     extraClass = ' phonetic';
-    translation = getPhoneticForAya(data);
-  }
-
-  if(currentLang === 'phonetic'){
+    translation = data.phonetic || autoTransliterate(data.arabic);
     phoneticHtml = `
       <div class="daily-aya-phonetic">
         <span class="daily-aya-phonetic-label">🔤 Fonetiskt uttal</span>
@@ -1132,6 +1020,7 @@ const FALLBACK_AYAS = [
 
 function renderFallbackAya(){
   const data = FALLBACK_AYAS[Math.floor(Math.random() * FALLBACK_AYAS.length)];
+  data.phonetic = autoTransliterate(data.arabic);
   renderDailyAya(data);
 }
 
@@ -1206,7 +1095,7 @@ function saveCurrentAyaAsFavorite(){
     en: currentAyaData.en,
     fa: currentAyaData.fa,
     ku: currentAyaData.ku,
-    phonetic: currentAyaData.phonetic || getPhoneticForAya(currentAyaData),
+    phonetic: currentAyaData.phonetic || autoTransliterate(currentAyaData.arabic),
     savedAt: new Date().toISOString()
   });
   saveFavorites();
@@ -1240,7 +1129,7 @@ function renderFavorites(){
     else if(currentLang === 'fa') extraClass = ' fa';
     else if(currentLang === 'phonetic'){
       extraClass = ' phonetic';
-      text = f.phonetic || '🔤 Fonetiskt uttal saknas';
+      text = f.phonetic || autoTransliterate(f.arabic);
     }
     return `
       <div class="fav-item">
@@ -1264,7 +1153,7 @@ function viewFavorite(id){
   else if(currentLang === 'fa') extraClass = ' fa';
   else if(currentLang === 'phonetic'){
     extraClass = ' phonetic';
-    text = f.phonetic || '🔤 Fonetiskt uttal saknas';
+    text = f.phonetic || autoTransliterate(f.arabic);
   }
   document.getElementById('viewFavContent').innerHTML = `
     <div class="modal-ref">${f.surahName} ${f.surahNum}:${f.ayahNum}</div>
@@ -1282,10 +1171,7 @@ function setLang(lang){
   currentLang = lang;
   localStorage.setItem('quranLang', lang);
 
-  document.querySelectorAll('.lang-opt').forEach(b=>{
-    b.classList.toggle('active', b.dataset.lang === lang);
-  });
-  document.querySelectorAll('.daily-aya-lang button').forEach(b=>{
+  document.querySelectorAll('.bottom-lang-inner button').forEach(b=>{
     b.classList.toggle('active', b.dataset.lang === lang);
   });
 
@@ -1385,7 +1271,7 @@ function toast(msg){
   if(!el){
     el = document.createElement('div');
     el.id = 'qToast';
-    el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.25);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
+    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.25);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
     document.body.appendChild(el);
   }
   el.textContent = msg;
