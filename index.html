@@ -6,7 +6,6 @@
   <title>Quran · Böner & Skydd</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- K24 Kurdish Fonts – samma som Kurdistan24 använder -->
   <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishRegular-Regular.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishBold-Bold.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -77,11 +76,14 @@
         radial-gradient(circle at 0% 0%, rgba(108,71,232,.20) 0%, transparent 45%),
         radial-gradient(circle at 100% 100%, rgba(34,192,138,.12) 0%, transparent 45%);
     }
-    /* Behållaren fyller hela sidan – maxbredd ökad kraftigt */
+    /* Behållaren – EN kolumn, fyller hela sidan */
     .container{
-      max-width:1200px;
+      max-width:1400px;
       width:100%;
       margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:0;
     }
 
     .hdr{
@@ -200,7 +202,6 @@
       font-feature-settings:"liga" 1, "calt" 1;
       -webkit-font-smoothing:antialiased;
     }
-    /* STÖRRE översättningstext */
     .daily-aya-text{
       font-size:22px;
       line-height:1.8;
@@ -210,7 +211,6 @@
       font-style:italic;
       text-shadow:0 1px 2px rgba(0,0,0,.1);
     }
-    /* Kurdisk/Persisk text – ännu större */
     .daily-aya-text.ku,
     .daily-aya-text.fa{
       font-family:var(--kurdish-font);
@@ -218,7 +218,6 @@
       font-size:24px;
       line-height:1.9;
     }
-    /* Fonetiskt uttal – större och tydligare */
     .daily-aya-text.phonetic{
       font-family:'Times New Roman',Times,serif;
       font-style:italic;
@@ -315,7 +314,6 @@
       line-height:2.3;
       padding:16px 20px;
     }
-    /* STÖRRE översättningstext i sektioner */
     .translation{
       font-size:18px;
       color:var(--text);
@@ -328,7 +326,6 @@
       line-height:1.8;
       box-shadow:0 2px 8px rgba(34,192,138,.08);
     }
-    /* Kurdisk/Persisk översättning – ännu större */
     .translation.ku,
     .translation.fa{
       font-family:var(--kurdish-font);
@@ -337,7 +334,6 @@
       direction:rtl;
       text-align:right;
     }
-    /* Fonetisk översättning – större */
     .translation.phonetic{
       font-family:'Times New Roman',Times,serif;
       font-style:italic;
@@ -528,29 +524,6 @@
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
-    /* ===== TVÅ KOLUMNER PÅ STORA SKÄRMAR ===== */
-    @media (min-width: 1024px){
-      .container{
-        display:grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        align-items:start;
-      }
-      .hdr{
-        grid-column: 1 / -1;
-      }
-      .daily-aya{
-        grid-column: 1 / -1;
-      }
-      .section{
-        margin-bottom: 0;
-      }
-    }
-
-    @media (max-width:1023px){
-      .container{max-width:900px}
-    }
-
     @media (max-width:768px){
       body{padding:16px 14px 70px}
       .section{padding:20px 18px}
@@ -577,7 +550,6 @@
       .hdr-title{font-size:17px}
       .daily-aya{padding:20px}
       .daily-aya-arabic{font-size:25px;line-height:2.3}
-      /* Större text även på mobil */
       .daily-aya-text{font-size:18px;line-height:1.75}
       .daily-aya-text.ku,
       .daily-aya-text.fa{font-size:19px;line-height:1.8}
@@ -599,7 +571,6 @@
       .fav-text.fa{font-size:16px}
       .modal-card{padding:20px}
       .modal-card .modal-arabic{font-size:26px;line-height:2.3}
-      /* Större översättningar även på mobil */
       .translation{font-size:16.5px;padding:12px 16px;line-height:1.75}
       .translation.ku,
       .translation.fa{font-size:17px;line-height:1.85}
@@ -856,7 +827,7 @@
   </div>
 
   <!-- FOOTER -->
-  <div class="footer" style="grid-column:1/-1">
+  <div class="footer">
     <i class="fas fa-mosque"></i> Familjens Planerare · Quran‑del<br>
     <span style="font-size:12px">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</span>
   </div>
@@ -947,7 +918,7 @@ const TRANSLATIONS = {
 };
 
 /* ============================================================
-   FONETISKA ÖVERSÄTTNINGAR – latinskt uttal
+   FONETISKA ÖVERSÄTTNINGAR
    ============================================================ */
 const PHONETIC = {
   kursi: 'Allāhu lā ilāha illā huwal-ḥayyul-qayyūm. Lā taʾkhudhuhū sinatun wa lā nawm. Lahū mā fis-samāwāti wa mā fil-arḍ. Man dhal-ladhī yashfaʿu ʿindahū illā bi-idhnih. Yaʿlamu mā bayna aydīhim wa mā khalfahum. Wa lā yuḥīṭūna bishayʾin min ʿilmihī illā bimā shāʾ. Wasiʿa kursiyyuhus-samāwāti wal-arḍ. Wa lā yaʾūduhū ḥifẓuhumā. Wa huwal-ʿaliyyul-ʿaẓīm.',
