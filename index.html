@@ -39,11 +39,8 @@
       --shadow:0 4px 24px rgba(108,71,232,0.10);
       --shadow-sm:0 2px 10px rgba(108,71,232,0.07);
       --font:'Times New Roman',Times,serif;
-      /* Koran-font – klassisk naskh */
       --quran-font:'Amiri Quran','Scheherazade New','Amiri','Traditional Arabic','Noto Naskh Arabic',serif;
-      /* Kurdisk/Persisk font – K24 Kurdish (samma som Kurdistan24) */
       --kurdish-font:'K24 Kurdish','Noto Naskh Arabic','Vazirmatn','Amiri','Tahoma',sans-serif;
-      /* Sektionsfärger */
       --section-bg-1:#FBF8FF;
       --section-bg-2:#F3F0FB;
       --translation-bg:#E8F9F1;
@@ -59,13 +56,16 @@
       --translation-bg:#0F2A22;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html, body{
+      width:100%;
+      min-height:100vh;
+    }
     body{
       font-family:var(--font);
       background:var(--bg);
       color:var(--text);
-      min-height:100vh;
       transition:background .3s,color .3s;
-      padding:20px 16px 60px;
+      padding:24px 20px 80px;
       line-height:1.6;
       background-image:
         radial-gradient(circle at 0% 0%, rgba(108,71,232,.08) 0%, transparent 45%),
@@ -77,35 +77,41 @@
         radial-gradient(circle at 0% 0%, rgba(108,71,232,.20) 0%, transparent 45%),
         radial-gradient(circle at 100% 100%, rgba(34,192,138,.12) 0%, transparent 45%);
     }
-    .container{max-width:680px;margin:0 auto}
+    /* Behållaren fyller hela sidan – maxbredd ökad kraftigt */
+    .container{
+      max-width:1200px;
+      width:100%;
+      margin:0 auto;
+    }
+
     .hdr{
       background:var(--surface);
       border-radius:var(--r);
-      padding:20px 22px;
-      margin-bottom:22px;
+      padding:22px 26px;
+      margin-bottom:24px;
       box-shadow:var(--shadow-sm);
       border:1.5px solid var(--border);
       display:flex;
       align-items:center;
-      gap:14px;
+      gap:16px;
       flex-wrap:wrap;
     }
     .hdr-logo{
-      width:52px;height:52px;border-radius:16px;
+      width:56px;height:56px;border-radius:18px;
       background:linear-gradient(135deg,var(--primary),#9B59E8);
       display:flex;align-items:center;justify-content:center;
-      color:#fff;font-size:24px;flex-shrink:0;
+      color:#fff;font-size:26px;flex-shrink:0;
       box-shadow:0 4px 14px var(--primary-glow);
     }
     .hdr-info{flex:1;min-width:0}
-    .hdr-title{font-size:20px;font-weight:900;color:var(--text);line-height:1.2}
+    .hdr-title{font-size:22px;font-weight:900;color:var(--text);line-height:1.2}
     .hdr-sub{
-      font-size:13px;color:var(--text3);font-weight:600;margin-top:2px;
+      font-size:14px;color:var(--text3);font-weight:600;margin-top:2px;
       font-family:var(--kurdish-font);
     }
     .hdr-actions{display:flex;gap:8px;flex-wrap:wrap}
     .icon-btn{
-      width:46px;height:46px;border-radius:15px;
+      width:48px;height:48px;border-radius:15px;
       border:1.5px solid var(--border);background:var(--surface2);
       cursor:pointer;display:flex;align-items:center;justify-content:center;
       color:var(--text2);font-size:18px;transition:all .2s;
@@ -126,8 +132,8 @@
     /* ===== DAGENS AYA ===== */
     .daily-aya{
       background:linear-gradient(135deg,var(--primary),#9B59E8 60%,#7A3FE0);
-      color:#fff;border-radius:var(--r);padding:24px;
-      margin-bottom:22px;
+      color:#fff;border-radius:var(--r);padding:28px 32px;
+      margin-bottom:24px;
       box-shadow:0 12px 36px rgba(108,71,232,.35);
       position:relative;overflow:hidden;
     }
@@ -144,24 +150,23 @@
       border-radius:50%;pointer-events:none;
     }
     .daily-aya-label{
-      font-size:11px;font-weight:800;text-transform:uppercase;
-      letter-spacing:.14em;opacity:.9;margin-bottom:14px;
+      font-size:12px;font-weight:800;text-transform:uppercase;
+      letter-spacing:.14em;opacity:.9;margin-bottom:16px;
       display:flex;align-items:center;gap:8px;
       position:relative;z-index:1;
     }
-    /* Språkväljare inuti dagens aya – övre delen */
     .daily-aya-lang{
-      display:flex;gap:5px;margin-bottom:14px;
+      display:flex;gap:6px;margin-bottom:16px;
       position:relative;z-index:1;flex-wrap:wrap;
     }
     .daily-aya-lang button{
-      flex:1;min-width:58px;height:34px;
+      flex:1;min-width:70px;height:38px;
       border:1.5px solid rgba(255,255,255,.35);
       background:rgba(255,255,255,.12);
       color:#fff;border-radius:10px;
-      font-family:var(--font);font-size:12px;font-weight:800;
+      font-family:var(--font);font-size:13px;font-weight:800;
       cursor:pointer;transition:all .2s;
-      display:flex;align-items:center;justify-content:center;gap:4px;
+      display:flex;align-items:center;justify-content:center;gap:5px;
       backdrop-filter:blur(4px);
     }
     .daily-aya-lang button.active{
@@ -172,66 +177,67 @@
     .daily-aya-lang button[data-lang="ku"],
     .daily-aya-lang button[data-lang="fa"]{
       font-family:var(--kurdish-font);
-      font-size:13px;
+      font-size:14px;
     }
     .daily-aya-ref{
-      font-size:12px;font-weight:800;opacity:.95;
+      font-size:13px;font-weight:800;opacity:.95;
       background:rgba(255,255,255,.22);
-      padding:4px 12px;border-radius:50px;
-      display:inline-block;margin-bottom:14px;
+      padding:5px 14px;border-radius:50px;
+      display:inline-block;margin-bottom:16px;
       position:relative;z-index:1;
       letter-spacing:.02em;
     }
-    /* Koran-font på arabiskan */
     .daily-aya-arabic{
       font-family:var(--quran-font);
-      font-size:30px;
+      font-size:34px;
       line-height:2.4;
       direction:rtl;
       text-align:right;
-      margin-bottom:18px;
+      margin-bottom:20px;
       text-shadow:0 2px 4px rgba(0,0,0,.18);
       position:relative;z-index:1;
       word-break:break-word;
       font-feature-settings:"liga" 1, "calt" 1;
       -webkit-font-smoothing:antialiased;
     }
+    /* STÖRRE översättningstext */
     .daily-aya-text{
-      font-size:18px;line-height:1.75;
+      font-size:22px;
+      line-height:1.8;
       border-top:1.5px solid rgba(255,255,255,.3);
-      padding-top:14px;
+      padding-top:16px;
       position:relative;z-index:1;
       font-style:italic;
       text-shadow:0 1px 2px rgba(0,0,0,.1);
     }
-    /* Kurdisk/Persisk text i dagens aya använder K24 Kurdish */
+    /* Kurdisk/Persisk text – ännu större */
     .daily-aya-text.ku,
     .daily-aya-text.fa{
       font-family:var(--kurdish-font);
       font-style:normal;
-      font-size:19px;
+      font-size:24px;
       line-height:1.9;
     }
-    /* Fonetiskt/latinskt uttal */
+    /* Fonetiskt uttal – större och tydligare */
     .daily-aya-text.phonetic{
       font-family:'Times New Roman',Times,serif;
       font-style:italic;
-      font-size:16px;
-      line-height:1.7;
+      font-size:20px;
+      line-height:1.8;
       direction:ltr;
       text-align:left;
-      color:rgba(255,255,255,.95);
+      color:rgba(255,255,255,.97);
     }
     .daily-aya-buttons{
-      display:flex;gap:10px;margin-top:18px;
+      display:flex;gap:12px;margin-top:20px;
       position:relative;z-index:1;flex-wrap:wrap;
     }
     .daily-aya-btn{
-      flex:1;min-width:130px;height:44px;
+      flex:1;min-width:140px;height:46px;
       border:1.5px solid rgba(255,255,255,.45);
       background:rgba(255,255,255,.15);
       color:#fff;border-radius:12px;
-      font-family:var(--font);font-size:14px;font-weight:800;
+      font-family:var(--font);font-size:15px;font-weight:800;
       cursor:pointer;transition:all .2s;
       display:flex;align-items:center;justify-content:center;gap:8px;
       backdrop-filter:blur(4px);
@@ -242,15 +248,15 @@
       border-color:#fff;
     }
     .daily-aya-loading{
-      font-size:15px;opacity:.85;font-style:italic;
+      font-size:16px;opacity:.85;font-style:italic;
       padding:24px 0;text-align:center;
     }
 
     /* ===== SEKTIONER ===== */
     .section{
       background:linear-gradient(135deg, var(--section-bg-1) 0%, var(--section-bg-2) 100%);
-      border-radius:var(--r);padding:22px 20px;
-      margin-bottom:20px;
+      border-radius:var(--r);padding:26px 28px;
+      margin-bottom:22px;
       box-shadow:var(--shadow-sm);
       border:1.5px solid var(--border);
       position:relative;
@@ -262,22 +268,22 @@
       opacity:.65;
     }
     .section-title{
-      font-size:17px;font-weight:900;color:var(--primary);
-      margin-bottom:14px;display:flex;align-items:center;gap:10px;
-      padding-bottom:12px;border-bottom:2px solid var(--border);
+      font-size:19px;font-weight:900;color:var(--primary);
+      margin-bottom:16px;display:flex;align-items:center;gap:10px;
+      padding-bottom:14px;border-bottom:2px solid var(--border);
     }
-    .section-title i{font-size:18px}
-    .verse-block{position:relative;margin-bottom:14px}
+    .section-title i{font-size:20px}
+    .verse-block{position:relative;margin-bottom:16px}
     .verse-tools{
       display:flex;gap:6px;position:absolute;
-      top:8px;left:8px;z-index:2;opacity:.9;
+      top:10px;left:10px;z-index:2;opacity:.9;
     }
     .verse-tool{
-      width:34px;height:34px;border-radius:10px;
+      width:38px;height:38px;border-radius:11px;
       border:1.5px solid var(--border);
       background:var(--surface);color:var(--text2);cursor:pointer;
       display:flex;align-items:center;justify-content:center;
-      font-size:13px;transition:all .2s;
+      font-size:14px;transition:all .2s;
       box-shadow:0 2px 6px rgba(0,0,0,.06);
     }
     .verse-tool:active{transform:scale(.9)}
@@ -285,15 +291,14 @@
       background:var(--emerald-soft);color:var(--emerald);
       border-color:var(--emerald);
     }
-    /* Koran-font på arabiskan i sektioner */
     .arabic{
       font-family:var(--quran-font);
-      font-size:28px;
+      font-size:32px;
       line-height:2.5;
       direction:rtl;
       text-align:right;
       color:var(--text);
-      padding:16px 18px;
+      padding:18px 22px;
       background:rgba(255,255,255,.65);
       border-radius:var(--rsm);
       border-right:5px solid var(--primary);
@@ -306,38 +311,38 @@
       background:rgba(255,255,255,.08);
     }
     .arabic-small{
-      font-size:24px;
+      font-size:28px;
       line-height:2.3;
-      padding:14px 16px;
+      padding:16px 20px;
     }
-    /* Översättning */
+    /* STÖRRE översättningstext i sektioner */
     .translation{
-      font-size:15px;
+      font-size:18px;
       color:var(--text);
-      padding:12px 16px;
-      margin:10px 0 16px;
+      padding:14px 20px;
+      margin:12px 0 18px;
       border-left:4px solid var(--translation-border);
       background:var(--translation-bg);
       border-radius:0 12px 12px 0;
-      min-height:24px;
-      line-height:1.65;
+      min-height:26px;
+      line-height:1.8;
       box-shadow:0 2px 8px rgba(34,192,138,.08);
     }
-    /* Kurdisk/Persisk översättning använder K24 Kurdish */
+    /* Kurdisk/Persisk översättning – ännu större */
     .translation.ku,
     .translation.fa{
       font-family:var(--kurdish-font);
-      font-size:16px;
+      font-size:19px;
       line-height:1.9;
       direction:rtl;
       text-align:right;
     }
-    /* Fonetisk översättning */
+    /* Fonetisk översättning – större */
     .translation.phonetic{
       font-family:'Times New Roman',Times,serif;
       font-style:italic;
-      font-size:15px;
-      line-height:1.7;
+      font-size:18px;
+      line-height:1.8;
       direction:ltr;
       text-align:left;
       color:var(--text2);
@@ -348,16 +353,16 @@
       box-shadow:0 2px 8px rgba(34,192,138,.18);
     }
 
-    .divider{height:1px;background:var(--border);margin:20px 0;border:none}
+    .divider{height:1px;background:var(--border);margin:22px 0;border:none}
     .pill{
-      display:inline-block;font-size:12px;font-weight:800;
-      padding:4px 12px;border-radius:50px;
+      display:inline-block;font-size:13px;font-weight:800;
+      padding:5px 14px;border-radius:50px;
       background:var(--primary-soft);color:var(--primary);
-      margin-bottom:10px;
+      margin-bottom:12px;
     }
     .footer{
-      text-align:center;font-size:13px;color:var(--text3);
-      padding:20px 0 10px;font-weight:600;
+      text-align:center;font-size:14px;color:var(--text3);
+      padding:24px 0 12px;font-weight:600;
     }
     .footer span{
       font-family:var(--quran-font);
@@ -365,12 +370,12 @@
     .lang-picker{
       display:flex;gap:6px;background:var(--surface2);
       border:1.5px solid var(--border);border-radius:14px;
-      padding:5px;flex-wrap:wrap;
+      padding:6px;flex-wrap:wrap;
     }
     .lang-opt{
-      flex:1;min-width:60px;height:38px;border:none;
+      flex:1;min-width:70px;height:42px;border:none;
       border-radius:10px;background:transparent;
-      font-family:var(--font);font-size:13px;font-weight:800;
+      font-family:var(--font);font-size:14px;font-weight:800;
       color:var(--text2);cursor:pointer;transition:all .2s;
       display:flex;align-items:center;justify-content:center;gap:5px;
     }
@@ -379,34 +384,33 @@
       box-shadow:0 4px 12px var(--primary-glow);
     }
     .lang-opt:not(.active):active{background:var(--primary-soft);color:var(--primary)}
-    /* Kurdiska & persiska språkvalsknappar använder K24 Kurdish */
     .lang-opt[data-lang="ku"],
     .lang-opt[data-lang="fa"]{
       font-family:var(--kurdish-font);
-      font-size:14px;
+      font-size:15px;
     }
 
     /* ===== SURA-VÄLJARE ===== */
-    .sura-picker{display:flex;gap:8px;flex-wrap:wrap;}
+    .sura-picker{display:flex;gap:10px;flex-wrap:wrap;}
     .sura-picker select{
-      flex:1;min-width:140px;height:48px;
+      flex:1;min-width:180px;height:52px;
       border-radius:var(--rsm);border:2px solid var(--border);
-      background:var(--surface);padding:0 14px;
-      font-family:var(--font);font-size:15px;font-weight:700;
+      background:var(--surface);padding:0 16px;
+      font-family:var(--font);font-size:16px;font-weight:700;
       color:var(--text);cursor:pointer;outline:none;
     }
     .sura-picker input{
-      flex:0 0 90px;height:48px;
+      flex:0 0 110px;height:52px;
       border-radius:var(--rsm);border:2px solid var(--border);
-      background:var(--surface);padding:0 14px;
-      font-family:var(--font);font-size:15px;font-weight:700;
+      background:var(--surface);padding:0 16px;
+      font-family:var(--font);font-size:16px;font-weight:700;
       color:var(--text);outline:none;text-align:center;
     }
     .sura-picker button{
-      flex:1;min-width:120px;height:48px;
+      flex:1;min-width:140px;height:52px;
       border-radius:var(--rsm);border:none;
       background:linear-gradient(135deg,var(--primary),#9B59E8);
-      color:#fff;font-family:var(--font);font-size:15px;font-weight:800;
+      color:#fff;font-family:var(--font);font-size:16px;font-weight:800;
       cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
       box-shadow:0 4px 14px var(--primary-glow);
       transition:all .2s;
@@ -417,26 +421,26 @@
     .fav-item{
       background:var(--surface);
       border:1.5px solid var(--border);
-      border-radius:var(--rsm);padding:14px 16px;margin-bottom:10px;
+      border-radius:var(--rsm);padding:16px 18px;margin-bottom:12px;
       position:relative;
     }
-    .fav-ref{font-size:12px;font-weight:800;color:var(--primary);margin-bottom:6px}
+    .fav-ref{font-size:13px;font-weight:800;color:var(--primary);margin-bottom:8px}
     .fav-arabic{
       font-family:var(--quran-font);
-      font-size:22px;line-height:2.2;direction:rtl;text-align:right;
-      color:var(--text);margin-bottom:8px;word-break:break-word;
+      font-size:26px;line-height:2.2;direction:rtl;text-align:right;
+      color:var(--text);margin-bottom:10px;word-break:break-word;
       font-feature-settings:"liga" 1, "calt" 1;
     }
     .fav-text{
-      font-size:13.5px;color:var(--text);line-height:1.6;
+      font-size:16px;color:var(--text);line-height:1.7;
       border-left:3px solid var(--emerald);
       background:var(--translation-bg);
-      padding:8px 12px;border-radius:0 8px 8px 0;
+      padding:10px 14px;border-radius:0 8px 8px 0;
     }
     .fav-text.ku,
     .fav-text.fa{
       font-family:var(--kurdish-font);
-      font-size:15px;
+      font-size:17px;
       line-height:1.85;
       direction:rtl;
       text-align:right;
@@ -444,15 +448,15 @@
     .fav-text.phonetic{
       font-family:'Times New Roman',Times,serif;
       font-style:italic;
-      font-size:13px;
-      line-height:1.6;
+      font-size:16px;
+      line-height:1.7;
       direction:ltr;
       text-align:left;
     }
-    .fav-actions{display:flex;gap:6px;margin-top:10px;justify-content:flex-end}
+    .fav-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
     .fav-actions button{
-      width:36px;height:36px;border-radius:10px;border:none;
-      cursor:pointer;font-size:14px;
+      width:40px;height:40px;border-radius:11px;border:none;
+      cursor:pointer;font-size:15px;
       display:flex;align-items:center;justify-content:center;
       transition:all .2s;
     }
@@ -460,9 +464,9 @@
     .fav-actions .fav-del{background:var(--rose-soft);color:var(--rose)}
     .fav-actions button:active{transform:scale(.92)}
     .fav-empty{
-      text-align:center;padding:24px;color:var(--text3);font-weight:700;
+      text-align:center;padding:28px;color:var(--text3);font-weight:700;
     }
-    .fav-empty i{font-size:32px;margin-bottom:10px;display:block;opacity:.5}
+    .fav-empty i{font-size:36px;margin-bottom:12px;display:block;opacity:.5}
 
     /* ===== MODAL ===== */
     .modal-ov{
@@ -474,35 +478,35 @@
     .modal-ov.h{display:none}
     .modal-card{
       background:var(--surface);border-radius:var(--r);
-      padding:24px;max-width:520px;width:100%;
+      padding:28px;max-width:600px;width:100%;
       max-height:85vh;overflow-y:auto;
       border:1.5px solid var(--border);
       box-shadow:var(--shadow);
     }
     .modal-card .modal-ref{
-      font-size:13px;font-weight:800;color:var(--primary);
-      margin-bottom:10px;
+      font-size:14px;font-weight:800;color:var(--primary);
+      margin-bottom:12px;
     }
     .modal-card .modal-arabic{
       font-family:var(--quran-font);
-      font-size:26px;line-height:2.4;direction:rtl;text-align:right;
+      font-size:30px;line-height:2.4;direction:rtl;text-align:right;
       color:var(--text);
-      padding:16px;background:var(--surface2);
+      padding:18px;background:var(--surface2);
       border-radius:var(--rsm);border-right:5px solid var(--primary);
-      margin-bottom:14px;word-break:break-word;
+      margin-bottom:16px;word-break:break-word;
       font-feature-settings:"liga" 1, "calt" 1;
     }
     .modal-card .modal-text{
-      font-size:16px;color:var(--text);line-height:1.65;
+      font-size:18px;color:var(--text);line-height:1.75;
       border-left:4px solid var(--emerald);
       background:var(--translation-bg);
-      padding:12px 14px;border-radius:0 10px 10px 0;
-      margin-bottom:18px;
+      padding:14px 16px;border-radius:0 10px 10px 0;
+      margin-bottom:20px;
     }
     .modal-card .modal-text.ku,
     .modal-card .modal-text.fa{
       font-family:var(--kurdish-font);
-      font-size:17px;
+      font-size:19px;
       line-height:1.9;
       direction:rtl;
       text-align:right;
@@ -510,53 +514,96 @@
     .modal-card .modal-text.phonetic{
       font-family:'Times New Roman',Times,serif;
       font-style:italic;
-      font-size:15px;
-      line-height:1.7;
+      font-size:18px;
+      line-height:1.8;
       direction:ltr;
       text-align:left;
     }
     body.night .modal-card .modal-text{color:#D8F5E8}
     .modal-card .modal-close{
-      width:100%;height:48px;border-radius:var(--rsm);
+      width:100%;height:52px;border-radius:var(--rsm);
       border:none;background:var(--primary);color:#fff;
-      font-family:var(--font);font-size:15px;font-weight:800;
+      font-family:var(--font);font-size:16px;font-weight:800;
       cursor:pointer;transition:all .2s;
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
+    /* ===== TVÅ KOLUMNER PÅ STORA SKÄRMAR ===== */
+    @media (min-width: 1024px){
+      .container{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        align-items:start;
+      }
+      .hdr{
+        grid-column: 1 / -1;
+      }
+      .daily-aya{
+        grid-column: 1 / -1;
+      }
+      .section{
+        margin-bottom: 0;
+      }
+    }
+
+    @media (max-width:1023px){
+      .container{max-width:900px}
+    }
+
+    @media (max-width:768px){
+      body{padding:16px 14px 70px}
+      .section{padding:20px 18px}
+      .arabic{font-size:26px;line-height:2.3;padding:14px 16px}
+      .arabic-small{font-size:23px;line-height:2.2}
+      .hdr{padding:18px}
+      .hdr-logo{width:48px;height:48px;font-size:22px}
+      .hdr-title{font-size:19px}
+      .daily-aya{padding:22px}
+      .daily-aya-arabic{font-size:28px;line-height:2.3}
+      .daily-aya-text{font-size:19px;line-height:1.75}
+      .daily-aya-text.ku,
+      .daily-aya-text.fa{font-size:21px;line-height:1.85}
+      .daily-aya-text.phonetic{font-size:18px}
+    }
+
     @media (max-width:480px){
-      body{padding:12px 10px 50px}
+      body{padding:12px 10px 60px}
       .section{padding:16px 14px}
-      .arabic{font-size:24px;line-height:2.3;padding:12px 14px}
-      .arabic-small{font-size:21px;line-height:2.2}
+      .arabic{font-size:23px;line-height:2.3;padding:12px 14px}
+      .arabic-small{font-size:20px;line-height:2.2}
       .hdr{padding:16px}
       .hdr-logo{width:44px;height:44px;font-size:20px}
       .hdr-title{font-size:17px}
       .daily-aya{padding:20px}
-      .daily-aya-arabic{font-size:26px;line-height:2.3}
-      .daily-aya-text{font-size:17px;line-height:1.7}
+      .daily-aya-arabic{font-size:25px;line-height:2.3}
+      /* Större text även på mobil */
+      .daily-aya-text{font-size:18px;line-height:1.75}
       .daily-aya-text.ku,
-      .daily-aya-text.fa{font-size:17px;line-height:1.8}
-      .daily-aya-lang button{min-width:52px;height:32px;font-size:11px}
+      .daily-aya-text.fa{font-size:19px;line-height:1.8}
+      .daily-aya-text.phonetic{font-size:17px;line-height:1.7}
+      .daily-aya-lang button{min-width:58px;height:34px;font-size:12px}
       .daily-aya-lang button[data-lang="ku"],
-      .daily-aya-lang button[data-lang="fa"]{font-size:12px}
-      .icon-btn{width:42px;height:42px;font-size:16px}
-      .lang-opt{font-size:12px;height:36px;min-width:55px}
+      .daily-aya-lang button[data-lang="fa"]{font-size:13px}
+      .icon-btn{width:44px;height:44px;font-size:17px}
+      .lang-opt{font-size:13px;height:38px;min-width:60px}
       .lang-opt[data-lang="ku"],
-      .lang-opt[data-lang="fa"]{font-size:13px}
+      .lang-opt[data-lang="fa"]{font-size:14px}
       .verse-tools{top:6px;left:6px}
-      .verse-tool{width:30px;height:30px;font-size:12px}
-      .sura-picker select,.sura-picker button{font-size:14px;height:44px}
-      .sura-picker input{height:44px;font-size:14px}
-      .fav-arabic{font-size:19px;line-height:2.1}
-      .fav-text{font-size:13px}
+      .verse-tool{width:32px;height:32px;font-size:13px}
+      .sura-picker select,.sura-picker button{font-size:15px;height:48px}
+      .sura-picker input{height:48px;font-size:15px}
+      .fav-arabic{font-size:22px;line-height:2.1}
+      .fav-text{font-size:15px}
       .fav-text.ku,
-      .fav-text.fa{font-size:14px}
-      .modal-card{padding:18px}
-      .modal-card .modal-arabic{font-size:22px;line-height:2.3}
-      .translation{font-size:14.5px;padding:10px 14px}
+      .fav-text.fa{font-size:16px}
+      .modal-card{padding:20px}
+      .modal-card .modal-arabic{font-size:26px;line-height:2.3}
+      /* Större översättningar även på mobil */
+      .translation{font-size:16.5px;padding:12px 16px;line-height:1.75}
       .translation.ku,
-      .translation.fa{font-size:15px}
+      .translation.fa{font-size:17px;line-height:1.85}
+      .translation.phonetic{font-size:16px}
     }
   </style>
 </head>
@@ -589,7 +636,6 @@
   <div class="daily-aya">
     <div class="daily-aya-label"><i class="fas fa-star-and-crescent"></i> Dagens aya</div>
 
-    <!-- Språkväljare i övre delen av dagens aya -->
     <div class="daily-aya-lang" id="dailyAyaLangPicker">
       <button data-lang="sv" onclick="setLang('sv')">🇸🇪 SV</button>
       <button data-lang="en" onclick="setLang('en')">🇬🇧 EN</button>
@@ -622,7 +668,7 @@
   </div>
 
   <!-- ===== SPRÅKVÄLJARE (för sektionerna) ===== -->
-  <div class="section" style="padding:14px 16px">
+  <div class="section" style="padding:16px 18px">
     <div class="lang-picker">
       <button class="lang-opt active" data-lang="sv" onclick="setLang('sv')">🇸🇪 Svenska</button>
       <button class="lang-opt" data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
@@ -810,7 +856,7 @@
   </div>
 
   <!-- FOOTER -->
-  <div class="footer">
+  <div class="footer" style="grid-column:1/-1">
     <i class="fas fa-mosque"></i> Familjens Planerare · Quran‑del<br>
     <span style="font-size:12px">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</span>
   </div>
@@ -819,12 +865,12 @@
 
 <!-- ===== FAVORIT-MODAL ===== -->
 <div class="modal-ov h" id="favModal" onclick="if(event.target===this)closeFavorites()">
-  <div class="modal-card" style="max-width:640px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <div style="font-size:18px;font-weight:900;color:var(--text)">
+  <div class="modal-card" style="max-width:700px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-size:20px;font-weight:900;color:var(--text)">
         <i class="fas fa-star" style="color:var(--amber)"></i> Mina favoriter
       </div>
-      <button onclick="closeFavorites()" style="width:36px;height:36px;border-radius:10px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px">
+      <button onclick="closeFavorites()" style="width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:17px">
         <i class="fas fa-times"></i>
       </button>
     </div>
@@ -902,7 +948,6 @@ const TRANSLATIONS = {
 
 /* ============================================================
    FONETISKA ÖVERSÄTTNINGAR – latinskt uttal
-   Baserat på standardiserad romanisering av arabiska
    ============================================================ */
 const PHONETIC = {
   kursi: 'Allāhu lā ilāha illā huwal-ḥayyul-qayyūm. Lā taʾkhudhuhū sinatun wa lā nawm. Lahū mā fis-samāwāti wa mā fil-arḍ. Man dhal-ladhī yashfaʿu ʿindahū illā bi-idhnih. Yaʿlamu mā bayna aydīhim wa mā khalfahum. Wa lā yuḥīṭūna bishayʾin min ʿilmihī illā bimā shāʾ. Wasiʿa kursiyyuhus-samāwāti wal-arḍ. Wa lā yaʾūduhū ḥifẓuhumā. Wa huwal-ʿaliyyul-ʿaẓīm.',
@@ -982,7 +1027,7 @@ async function fetchAya(surah, ayah){
       en: enRes.data.text,
       fa: faRes.data.text || enRes.data.text,
       ku: kuRes.data.text || enRes.data.text,
-      phonetic: '' // Fonetisk text sätts inte automatiskt – användaren får kopiera arabiskan
+      phonetic: ''
     };
     renderDailyAya(ayaData);
   }catch(err){
@@ -1002,13 +1047,11 @@ function renderDailyAya(data){
   const content = document.getElementById('dailyAyaContent');
   let translation = data[currentLang] || data.sv || data.en;
 
-  // Bestäm klass för rätt font/stil
   let extraClass = '';
   if(currentLang === 'ku') extraClass = ' ku';
   else if(currentLang === 'fa') extraClass = ' fa';
   else if(currentLang === 'phonetic'){
     extraClass = ' phonetic';
-    // Om fonetisk text saknas, visa en hänvisning
     translation = data.phonetic || '🔤 Fonetiskt uttal – tryck på en vers i sektionerna nedan för att se uttal.';
   }
 
@@ -1134,7 +1177,7 @@ function closeFavorites(){
 function renderFavorites(){
   const c = document.getElementById('favList');
   if(!favorites.length){
-    c.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.<br><span style="font-size:12px;font-weight:600">Tryck på ”Spara favorit” vid en aya.</span></div>';
+    c.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.<br><span style="font-size:13px;font-weight:600">Tryck på ”Spara favorit” vid en aya.</span></div>';
     return;
   }
   c.innerHTML = favorites.slice().reverse().map(f => {
@@ -1183,7 +1226,6 @@ function setLang(lang){
   currentLang = lang;
   localStorage.setItem('quranLang', lang);
 
-  // Uppdatera alla språkvalsknappar
   document.querySelectorAll('.lang-opt').forEach(b=>{
     b.classList.toggle('active', b.dataset.lang === lang);
   });
@@ -1191,16 +1233,13 @@ function setLang(lang){
     b.classList.toggle('active', b.dataset.lang === lang);
   });
 
-  // Uppdatera statiska översättningar
   document.querySelectorAll('.translation[data-tr]').forEach(el=>{
     const key = el.dataset.tr;
-    // Välj rätt text beroende på språk
     if(lang === 'phonetic'){
       el.textContent = PHONETIC[key] || TRANSLATIONS.sv[key] || '';
     } else {
       el.textContent = TRANSLATIONS[lang][key] || '';
     }
-    // Sätt klass för rätt font
     el.classList.remove('ku','fa','phonetic');
     if(lang === 'ku') el.classList.add('ku');
     else if(lang === 'fa') el.classList.add('fa');
@@ -1302,7 +1341,7 @@ function toast(msg){
   if(!el){
     el = document.createElement('div');
     el.id = 'qToast';
-    el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 22px;border-radius:14px;font-size:14px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.25);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
+    el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.25);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
     document.body.appendChild(el);
   }
   el.textContent = msg;
