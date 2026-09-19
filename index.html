@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishRegular-Regular.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
   <link href="https://cdn.jsdelivr.net/gh/kurdistan24/k24-fonts@main/K24KurdishBold-Bold.ttf" rel="preload" as="font" type="font/ttf" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Amiri+Quran&family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @font-face {
@@ -33,8 +33,10 @@
       --shadow:0 4px 24px rgba(108,71,232,0.10);
       --shadow-sm:0 2px 10px rgba(108,71,232,0.07);
       --font:'Times New Roman',Times,serif;
+      --latin-font:'Inter','Roboto','Open Sans','Segoe UI',Arial,sans-serif;
       --quran-font:'Amiri Quran','Scheherazade New','Amiri','Traditional Arabic','Noto Naskh Arabic',serif;
       --kurdish-font:'K24 Kurdish','Vazirmatn','Noto Naskh Arabic','Amiri','Tahoma',sans-serif;
+      --tafsir-font-size:19px;
       --section-bg-1:#FBF8FF;
       --section-bg-2:#F3F0FB;
       --translation-bg:#E8F9F1;
@@ -59,7 +61,7 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html, body{width:100%;min-height:100vh}
     body{
-      font-family:var(--font);
+      font-family:var(--latin-font);
       background:var(--bg);
       color:var(--text);
       transition:background .3s,color .3s;
@@ -211,7 +213,7 @@
     .daily-aya-qari-row i{color:#fff;font-size:14px;flex-shrink:0}
     .daily-aya-qari-row select{
       flex:1;height:38px;border:none;background:transparent;
-      color:#fff;font-family:var(--font);font-size:14px;font-weight:700;
+      color:#fff;font-family:var(--latin-font);font-size:14px;font-weight:700;
       outline:none;cursor:pointer;
     }
     .daily-aya-qari-row select option{color:var(--text);background:var(--surface)}
@@ -348,21 +350,21 @@
       flex:1;min-width:180px;height:52px;
       border-radius:var(--rsm);border:2px solid var(--border);
       background:var(--surface);padding:0 16px;
-      font-family:var(--font);font-size:16px;font-weight:700;
+      font-family:var(--latin-font);font-size:16px;font-weight:700;
       color:var(--text);cursor:pointer;outline:none;
     }
     .sura-picker input{
       flex:0 0 110px;height:52px;
       border-radius:var(--rsm);border:2px solid var(--border);
       background:var(--surface);padding:0 16px;
-      font-family:var(--font);font-size:16px;font-weight:700;
+      font-family:var(--latin-font);font-size:16px;font-weight:700;
       color:var(--text);outline:none;text-align:center;
     }
     .sura-picker button{
       flex:1;min-width:140px;height:52px;
       border-radius:var(--rsm);border:none;
       background:linear-gradient(135deg,var(--primary),#9B59E8);
-      color:#fff;font-family:var(--font);font-size:16px;font-weight:800;
+      color:#fff;font-family:var(--latin-font);font-size:16px;font-weight:800;
       cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
       box-shadow:0 4px 14px var(--primary-glow);
       transition:all .2s;
@@ -373,7 +375,7 @@
       flex:1;min-width:170px;height:48px;
       border-radius:var(--rsm);border:2px solid var(--border);
       background:var(--surface);color:var(--text2);
-      font-family:var(--font);font-weight:800;font-size:14px;
+      font-family:var(--latin-font);font-weight:800;font-size:14px;
       cursor:pointer;transition:all .2s;
       display:flex;align-items:center;justify-content:center;gap:8px;
     }
@@ -467,27 +469,43 @@
     .modal-card .modal-close{
       width:100%;height:52px;border-radius:var(--rsm);
       border:none;background:var(--primary);color:#fff;
-      font-family:var(--font);font-size:16px;font-weight:800;
+      font-family:var(--latin-font);font-size:16px;font-weight:800;
       cursor:pointer;transition:all .2s;
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
+    /* ===== TAFSIR ===== */
     .tafsir-card{
       max-width:800px;width:100%;padding:0;
       display:flex;flex-direction:column;
       max-height:90vh;overflow:hidden;
     }
+    /* Fullscreen-läge för tafsir */
+    .tafsir-card.is-fullscreen{
+      max-width:100% !important;
+      width:100% !important;
+      max-height:100vh !important;
+      height:100vh !important;
+      border-radius:0 !important;
+      border:none !important;
+    }
+    #tafsirModal.is-fullscreen{ padding:0 !important; }
     .tafsir-topbar{
       display:flex;justify-content:space-between;align-items:center;
-      padding:22px 24px 14px;flex-shrink:0;
+      padding:22px 24px 14px;flex-shrink:0;gap:8px;
     }
-    .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3}
-    .tafsir-close{
+    .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3;flex:1}
+    .tafsir-topbar-actions{display:flex;gap:6px;flex-shrink:0}
+    .tafsir-close,
+    .tafsir-fs-btn{
       width:40px;height:40px;border-radius:11px;border:none;
       background:var(--surface2);color:var(--text2);cursor:pointer;
       font-size:16px;flex-shrink:0;transition:all .2s;
     }
-    .tafsir-close:active{transform:scale(.92)}
+    .tafsir-close:active,
+    .tafsir-fs-btn:active{transform:scale(.92)}
+    .tafsir-fs-btn.active{background:var(--primary);color:#fff}
+
     .tafsir-lang-bar{
       display:flex;gap:6px;flex-wrap:wrap;
       padding:0 24px 16px;flex-shrink:0;
@@ -497,7 +515,7 @@
       padding:8px 14px;border-radius:50px;
       border:1.5px solid var(--border);
       background:var(--surface2);color:var(--text2);
-      font-family:var(--font);font-size:13px;font-weight:800;
+      font-family:var(--latin-font);font-size:13px;font-weight:800;
       cursor:pointer;transition:all .2s;
       display:flex;align-items:center;gap:6px;
     }
@@ -524,7 +542,7 @@
       padding:6px 12px;border-radius:50px;
       border:1.5px solid var(--border);
       background:var(--surface);color:var(--text2);
-      font-family:var(--font);font-size:12px;font-weight:800;
+      font-family:var(--latin-font);font-size:12px;font-weight:800;
       cursor:pointer;transition:all .2s;
       display:flex;align-items:center;gap:5px;
     }
@@ -533,13 +551,70 @@
     }
     .tafsir-translate-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
 
+    /* Ny verktygsrad för font och storlek */
+    .tafsir-font-bar{
+      display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+      padding:10px 24px;
+      background:var(--surface);
+      border-bottom:1.5px solid var(--border);
+      flex-shrink:0;
+    }
+    .tafsir-font-bar .label{
+      font-size:12px;font-weight:800;color:var(--text3);
+      text-transform:uppercase;letter-spacing:.06em;
+      display:flex;align-items:center;gap:6px;
+      margin-right:4px;
+    }
+    .tafsir-font-bar select{
+      height:36px;border-radius:10px;
+      border:1.5px solid var(--border);
+      background:var(--surface2);color:var(--text);
+      font-family:var(--latin-font);font-size:13px;font-weight:700;
+      padding:0 10px;cursor:pointer;outline:none;
+      max-width:180px;
+    }
+    .tafsir-font-bar .group{
+      display:flex;align-items:center;gap:6px;
+      background:var(--surface2);
+      border:1.5px solid var(--border);
+      border-radius:10px;padding:2px 4px;
+    }
+    .tafsir-font-bar .group button{
+      width:32px;height:32px;border-radius:8px;border:none;
+      background:transparent;color:var(--text2);cursor:pointer;
+      font-size:14px;font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .2s;
+    }
+    .tafsir-font-bar .group button:active{background:var(--primary-soft);color:var(--primary)}
+    .tafsir-font-bar .group .size-val{
+      min-width:44px;text-align:center;
+      font-size:13px;font-weight:800;color:var(--text2);
+    }
+    .tafsir-font-bar .reset-btn{
+      height:36px;padding:0 12px;
+      border-radius:10px;border:1.5px solid var(--border);
+      background:var(--surface2);color:var(--text2);
+      font-family:var(--latin-font);font-size:12px;font-weight:800;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;gap:6px;
+    }
+    .tafsir-font-bar .reset-btn:active{background:var(--primary-soft);color:var(--primary)}
+
     .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
     .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
-    .tafsir-body{font-size:19px;line-height:1.9;color:var(--text)}
-    .tafsir-body.rtl{direction:rtl;text-align:right;font-family:var(--kurdish-font)}
+    .tafsir-body{
+      font-size:var(--tafsir-font-size);
+      line-height:1.9;color:var(--text);
+      font-family:var(--latin-font);
+    }
+    .tafsir-body.rtl{
+      direction:rtl;text-align:right;
+      font-family:var(--kurdish-font);
+    }
     .tafsir-body p{margin-bottom:14px}
     .tafsir-body h2{
-      font-size:16px;font-weight:900;color:var(--primary);
+      font-size:1.05em;font-weight:900;color:var(--primary);
       margin:18px 0 8px;padding-bottom:6px;border-bottom:1.5px solid var(--border);
     }
     .tafsir-body h2:first-child{margin-top:0}
@@ -577,7 +652,7 @@
       flex:1;min-width:60px;height:48px;
       border:none;border-radius:11px;
       background:transparent;
-      font-family:var(--font);font-size:14px;font-weight:800;
+      font-family:var(--latin-font);font-size:14px;font-weight:800;
       color:var(--text2);cursor:pointer;
       transition:all .2s;
       display:flex;align-items:center;justify-content:center;gap:6px;
@@ -659,8 +734,10 @@
       .tafsir-lang-bar button{font-size:12px;padding:7px 11px}
       .tafsir-translate-bar{padding:10px 16px;gap:5px}
       .tafsir-translate-bar button{font-size:11px;padding:5px 10px}
+      .tafsir-font-bar{padding:8px 16px;gap:6px}
+      .tafsir-font-bar select{max-width:140px;font-size:12px;height:32px}
+      .tafsir-font-bar .group button{width:28px;height:28px;font-size:13px}
       .tafsir-scroll{padding:14px 16px 20px}
-      .tafsir-body{font-size:16px;line-height:1.8}
       .modal-card .modal-arabic{font-size:28px;line-height:2.3}
       .translation{font-size:24px;padding:12px 16px;line-height:1.75}
       .translation.ku,
@@ -1004,19 +1081,49 @@
 </div>
 
 <div class="modal-ov h" id="tafsirModal" onclick="if(event.target===this)closeTafsir()">
-  <div class="modal-card tafsir-card">
+  <div class="modal-card tafsir-card" id="tafsirCard">
     <div class="tafsir-topbar">
       <div class="tafsir-title" id="tafsirTitle"><i class="fas fa-book-open"></i> Tafsir</div>
-      <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
+      <div class="tafsir-topbar-actions">
+        <button class="tafsir-fs-btn" id="tafsirFsBtn" onclick="toggleTafsirFullscreen()" title="Helskärm"><i class="fas fa-expand" id="tafsirFsIcon"></i></button>
+        <button class="tafsir-close" onclick="closeTafsir()" title="Stäng"><i class="fas fa-times"></i></button>
+      </div>
     </div>
     <div class="tafsir-lang-bar" id="tafsirLangBar"></div>
     <div class="tafsir-translate-bar" id="tafsirTranslateBar">
-      <span class="label"><i class="fas fa-language"></i> Översätt tafsir:</span>
+      <span class="label"><i class="fas fa-language"></i> Översätt:</span>
       <button data-tl="ku" onclick="translateTafsirTo('ku')">🏳️ کوردی سۆرانی</button>
       <button data-tl="ku-KM" onclick="translateTafsirTo('ku-KM')">🏴 Kurdî Kurmancî</button>
       <button data-tl="fa" onclick="translateTafsirTo('fa')">🇮🇷 فارسی</button>
       <button data-tl="sv" onclick="translateTafsirTo('sv')">🇸🇪 Svenska</button>
       <button data-tl="original" onclick="translateTafsirTo('original')">📄 Original</button>
+    </div>
+    <div class="tafsir-font-bar" id="tafsirFontBar">
+      <span class="label"><i class="fas fa-font"></i> Text:</span>
+      <select id="tafsirLatinFont" onchange="setTafsirFont('latin', this.value)" title="Latinskt typsnitt">
+        <option value="'Inter','Roboto','Open Sans','Segoe UI',Arial,sans-serif">Inter / System</option>
+        <option value="Georgia,'Times New Roman',serif">Georgia</option>
+        <option value="'Times New Roman',Times,serif">Times New Roman</option>
+        <option value="Arial,Helvetica,sans-serif">Arial</option>
+        <option value="'Roboto',sans-serif">Roboto</option>
+        <option value="'Open Sans',sans-serif">Open Sans</option>
+        <option value="Verdana,Geneva,sans-serif">Verdana</option>
+        <option value="'Courier New',monospace">Courier New</option>
+      </select>
+      <select id="tafsirNonLatinFont" onchange="setTafsirFont('nonlatin', this.value)" title="Icke-latinskt typsnitt (arabiska, kurdiska, persiska)">
+        <option value="'K24 Kurdish','Vazirmatn','Noto Naskh Arabic','Amiri','Tahoma',sans-serif">K24 Kurdish</option>
+        <option value="'Amiri Quran','Scheherazade New','Amiri',serif">Amiri Quran</option>
+        <option value="'Scheherazade New',serif">Scheherazade New</option>
+        <option value="'Noto Naskh Arabic',serif">Noto Naskh Arabic</option>
+        <option value="'Vazirmatn',sans-serif">Vazirmatn</option>
+        <option value="'Traditional Arabic','Times New Roman',serif">Traditional Arabic</option>
+      </select>
+      <div class="group" title="Textstorlek">
+        <button onclick="changeTafsirFontSize(-1)" title="Mindre"><i class="fas fa-minus"></i></button>
+        <span class="size-val" id="tafsirSizeVal">19px</span>
+        <button onclick="changeTafsirFontSize(1)" title="Större"><i class="fas fa-plus"></i></button>
+      </div>
+      <button class="reset-btn" onclick="resetTafsirFontSettings()" title="Återställ"><i class="fas fa-undo"></i> Återställ</button>
     </div>
     <div class="tafsir-scroll">
       <div class="tafsir-source" id="tafsirSource"></div>
@@ -1118,8 +1225,7 @@ const PHONETIC = {
 };
 
 /* ============================================================
-   TAFSIR – endast riktiga tafsir-databaser. Översättning av
-   tafsir till andra språk görs via Google Translate-knappar.
+   TAFSIR – riktiga databaser + Google Translate för övriga språk
    ============================================================ */
 const TAFSIRS = [
   { lang:'ar-ibnkathir', flag:'🇸🇦', label:'العربية · ابن كثير', slug:'ar-tafsir-ibn-kathir', name:'تفسير ابن كثير', rtl:true },
@@ -1134,6 +1240,9 @@ let currentTafsirRef = null;
 let currentTafsirLang = localStorage.getItem('quranTafsirLang') || 'ar-ibnkathir';
 let currentTafsirHtml = '';
 let currentTafsirTranslation = localStorage.getItem('quranTafsirTranslation') || 'original';
+let currentTafsirLatinFont = localStorage.getItem('quranTafsirLatinFont') || "'Inter','Roboto','Open Sans','Segoe UI',Arial,sans-serif";
+let currentTafsirNonLatinFont = localStorage.getItem('quranTafsirNonLatinFont') || "'K24 Kurdish','Vazirmatn','Noto Naskh Arabic','Amiri','Tahoma',sans-serif";
+let currentTafsirFontSize = parseInt(localStorage.getItem('quranTafsirFontSize') || '19', 10);
 
 function openTafsirAyah(surah, ayah, title){
   currentTafsirRef = { type:'ayah', surah, ayah };
@@ -1153,12 +1262,85 @@ function openTafsirModalCommon(title){
   document.getElementById('tafsirTitle').innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + title;
   renderTafsirLangBar();
   renderTafsirTranslateBar();
+  applyTafsirFontSettings();
   document.getElementById('tafsirModal').classList.remove('h');
   document.querySelector('.tafsir-scroll').scrollTop = 0;
   loadTafsir(currentTafsirLang);
 }
 function closeTafsir(){
   document.getElementById('tafsirModal').classList.add('h');
+  // Stäng helskärm om det var aktivt
+  const card = document.getElementById('tafsirCard');
+  if(card && card.classList.contains('is-fullscreen')){
+    card.classList.remove('is-fullscreen');
+    document.getElementById('tafsirModal').classList.remove('is-fullscreen');
+    document.getElementById('tafsirFsIcon').className = 'fas fa-expand';
+    document.getElementById('tafsirFsBtn').classList.remove('active');
+  }
+}
+
+/* ============================================================
+   TAFSIR HELSKÄRM
+   ============================================================ */
+function toggleTafsirFullscreen(){
+  const card = document.getElementById('tafsirCard');
+  const modal = document.getElementById('tafsirModal');
+  const icon = document.getElementById('tafsirFsIcon');
+  const btn = document.getElementById('tafsirFsBtn');
+  const isFs = card.classList.toggle('is-fullscreen');
+  modal.classList.toggle('is-fullscreen', isFs);
+  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+  btn.classList.toggle('active', isFs);
+}
+
+/* ============================================================
+   TAFSIR FONTINSTÄLLNINGAR
+   ============================================================ */
+function applyTafsirFontSettings(){
+  const body = document.getElementById('tafsirBody');
+  if(!body) return;
+  // Sätt global font-size via CSS-variabel
+  body.style.fontSize = currentTafsirFontSize + 'px';
+  // Sätt typsnitt på .tafsir-body – latinsk eller icke-latinsk beroende på rtl-klass
+  if(body.classList.contains('rtl')){
+    body.style.fontFamily = currentTafsirNonLatinFont;
+  } else {
+    body.style.fontFamily = currentTafsirLatinFont;
+  }
+  const sizeVal = document.getElementById('tafsirSizeVal');
+  if(sizeVal) sizeVal.textContent = currentTafsirFontSize + 'px';
+  const latinSel = document.getElementById('tafsirLatinFont');
+  if(latinSel) latinSel.value = currentTafsirLatinFont;
+  const nonLatinSel = document.getElementById('tafsirNonLatinFont');
+  if(nonLatinSel) nonLatinSel.value = currentTafsirNonLatinFont;
+}
+
+function setTafsirFont(type, value){
+  if(type === 'latin'){
+    currentTafsirLatinFont = value;
+    localStorage.setItem('quranTafsirLatinFont', value);
+  } else {
+    currentTafsirNonLatinFont = value;
+    localStorage.setItem('quranTafsirNonLatinFont', value);
+  }
+  applyTafsirFontSettings();
+}
+
+function changeTafsirFontSize(delta){
+  currentTafsirFontSize = Math.max(12, Math.min(48, currentTafsirFontSize + delta));
+  localStorage.setItem('quranTafsirFontSize', currentTafsirFontSize);
+  applyTafsirFontSettings();
+}
+
+function resetTafsirFontSettings(){
+  currentTafsirLatinFont = "'Inter','Roboto','Open Sans','Segoe UI',Arial,sans-serif";
+  currentTafsirNonLatinFont = "'K24 Kurdish','Vazirmatn','Noto Naskh Arabic','Amiri','Tahoma',sans-serif";
+  currentTafsirFontSize = 19;
+  localStorage.setItem('quranTafsirLatinFont', currentTafsirLatinFont);
+  localStorage.setItem('quranTafsirNonLatinFont', currentTafsirNonLatinFont);
+  localStorage.setItem('quranTafsirFontSize', currentTafsirFontSize);
+  applyTafsirFontSettings();
+  toast('↺ Textinställningar återställda');
 }
 
 function renderTafsirLangBar(){
@@ -1189,6 +1371,7 @@ function translateTafsirTo(targetLang){
   renderTafsirTranslateBar();
   if(targetLang === 'original'){
     document.getElementById('tafsirBody').innerHTML = currentTafsirHtml;
+    applyTafsirFontSettings();
   } else {
     applyGoogleTranslate(targetLang);
   }
@@ -1219,6 +1402,9 @@ function applyGoogleTranslate(targetLang){
         const dir = ['fa','ku','ckb','ar'].includes(gtLang) ? 'rtl' : 'ltr';
         body.innerHTML = `<div class="tafsir-verse-num" style="background:var(--emerald-soft);color:#0A7B4E">🌐 Översatt med Google Translate (${gtLang.toUpperCase()})</div>
           <p dir="${dir}" style="direction:${dir};text-align:${dir === 'rtl' ? 'right' : 'left'}">${escapeHtml(translated)}</p>`;
+        // Applicera typsnitt för rtl/ltr
+        body.classList.toggle('rtl', dir === 'rtl');
+        applyTafsirFontSettings();
       } else {
         throw new Error('Ingen översättning returnerades');
       }
@@ -1233,6 +1419,7 @@ function applyGoogleTranslate(targetLang){
           eller markera texten och använd webbläsarens inbyggda översättning.
         </span>
       </div>`;
+      applyTafsirFontSettings();
     });
 }
 
@@ -1264,6 +1451,7 @@ async function loadTafsir(lang){
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
   body.classList.toggle('rtl', !!meta.rtl);
   sourceEl.textContent = '';
+  applyTafsirFontSettings();
   
   if(!currentTafsirRef) return;
 
@@ -1276,6 +1464,7 @@ async function loadTafsir(lang){
     if(!result || !result.html || result.html.trim() === ''){
       body.innerHTML = '<div class="fav-empty"><i class="fas fa-circle-info"></i>Tafsir-text saknas för denna vers på detta språk.</div>';
       currentTafsirHtml = '';
+      applyTafsirFontSettings();
       return;
     }
     
@@ -1286,6 +1475,7 @@ async function loadTafsir(lang){
       applyGoogleTranslate(currentTafsirTranslation);
     } else {
       body.innerHTML = currentTafsirHtml;
+      applyTafsirFontSettings();
     }
     
   }catch(err){
@@ -1296,6 +1486,7 @@ async function loadTafsir(lang){
         Kunde inte hämta tafsir just nu.<br>
         <span style="font-size:13px;font-weight:600">${err.message || 'Nätverksfel'}</span>
       </div>`;
+    applyTafsirFontSettings();
   }
 }
 
@@ -1331,7 +1522,7 @@ let currentAyaData = null;
 let currentLang = localStorage.getItem('quranLang') || 'sv';
 
 /* ============================================================
-   QARI (RECITATÖR) – endast 3 som fungerar på 128 kbps
+   QARI (RECITATÖR) – 3 som fungerar på 128 kbps
    ============================================================ */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy' },
@@ -1789,7 +1980,7 @@ function autoTransliterate(arabic){
 }
 
 /* ============================================================
-   DAGENS AYA – kurmanji via quran.com, sorani via alquran.cloud
+   DAGENS AYA
    ============================================================ */
 function safeFetchJson(url){
   return fetch(url)
@@ -2181,7 +2372,7 @@ function toast(msg){
   if(!el){
     el = document.createElement('div');
     el.id = 'qToast';
-    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.25);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
+    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.25);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--latin-font);max-width:90vw;text-align:center';
     document.body.appendChild(el);
   }
   el.textContent = msg;
@@ -2206,6 +2397,7 @@ setTTSEngine(ttsEngine);
 loadSavedElevenState();
 updateFavBadge();
 renderTafsirTranslateBar();
+applyTafsirFontSettings();
 fetchRandomAya();
 </script>
 
