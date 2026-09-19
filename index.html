@@ -192,6 +192,11 @@
       color:var(--amber);
       border-color:#fff;
     }
+    .day-action-btn.playing{
+      background:#fff;
+      color:var(--primary);
+      border-color:#fff;
+    }
     .daily-aya-ref{
       font-size:13px;font-weight:800;opacity:.95;
       background:rgba(255,255,255,.22);
@@ -268,6 +273,9 @@
     }
     .verse-tool:active{transform:scale(.9)}
     .verse-tool.copied{background:#fff;color:var(--emerald);border-color:#fff}
+    .verse-tool.playing{background:#fff;color:var(--arabic-grad-1);border-color:#fff}
+    .verse-tool:disabled{opacity:.35;cursor:not-allowed}
+    .verse-tool:disabled:active{transform:none}
     .arabic{
       font-family:var(--quran-font);
       font-size:40px;line-height:2.5;direction:rtl;text-align:right;
@@ -573,6 +581,9 @@
     <div class="daily-aya-top">
       <div class="daily-aya-label"><i class="fas fa-star-and-crescent"></i> Dagens aya</div>
       <div class="daily-aya-actions">
+        <button class="day-action-btn" id="playDailyBtn" onclick="playDailyAya(this)" title="Spela upp">
+          <i class="fas fa-play"></i>
+        </button>
         <button class="day-action-btn" onclick="nextDailyAya()" title="Ny aya">
           <i class="fas fa-rotate-right"></i>
         </button>
@@ -597,10 +608,18 @@
   </div>
 
   <div class="section">
+    <div class="section-title"><i class="fas fa-microphone-lines"></i> Qari · Recitatör</div>
+    <div class="sura-picker">
+      <select id="qariSelect"></select>
+    </div>
+  </div>
+
+  <div class="section">
     <div class="section-title"><i class="fas fa-star"></i> آیة الکرسی · Ayat al-Kursi</div>
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" onclick="playAyah(2,255,this)" title="Spela upp"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic">
         اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ
@@ -627,6 +646,7 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" onclick="playSurah(1,this)" title="Spela upp"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾
@@ -642,6 +662,7 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" onclick="playSurah(109,this)" title="Spela upp"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ ﴿٤﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾
@@ -655,6 +676,7 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" onclick="playSurah(112,this)" title="Spela upp"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾
@@ -668,6 +690,7 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" onclick="playSurah(113,this)" title="Spela upp"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾
@@ -681,6 +704,7 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" onclick="playSurah(114,this)" title="Spela upp"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾
@@ -936,6 +960,128 @@ const TOTAL_AYAS = 6236;
 let currentAyaData = null;
 let currentLang = localStorage.getItem('quranLang') || 'sv';
 
+/* ============================================================
+   QARI (RECITATÖR) & LJUDUPPSPELNING
+   ============================================================ */
+const QARIS = [
+  { id:'ar.alafasy', name:'Mishary Rashid Alafasy' },
+  { id:'ar.husary', name:'Mahmoud Khalil Al-Husary' },
+  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi' },
+  { id:'ar.abdulbasitmurattal', name:'Abdul Basit (Murattal)' },
+  { id:'ar.abdurrahmaansudais', name:'Abdur-Rahman As-Sudais' },
+  { id:'ar.shaatree', name:'Abu Bakr Al-Shaatree' },
+  { id:'ar.ahmedajamy', name:'Ahmed Al-Ajamy' },
+  { id:'ar.hanirifai', name:'Hani Rifai' }
+];
+
+let currentAudio = null;
+let currentPlayBtn = null;
+
+function getCurrentQari(){
+  return localStorage.getItem('quranQari') || 'ar.alafasy';
+}
+
+function populateQariSelect(){
+  const sel = document.getElementById('qariSelect');
+  if(!sel) return;
+  sel.innerHTML = QARIS.map(q => `<option value="${q.id}">${q.name}</option>`).join('');
+  sel.value = getCurrentQari();
+  sel.addEventListener('change', ()=>{
+    setQari(sel.value);
+  });
+}
+
+function setQari(id){
+  stopCurrentAudio();
+  localStorage.setItem('quranQari', id);
+  const q = QARIS.find(q => q.id === id);
+  toast('🎙️ Qari: ' + (q ? q.name : id));
+}
+
+function getGlobalAyahNumber(surah, ayah){
+  let total = 0;
+  for(let i = 0; i < surah - 1; i++) total += SURAH_AYAH_COUNTS[i];
+  return total + ayah;
+}
+
+function buildAyahAudioUrl(surah, ayah){
+  const global = getGlobalAyahNumber(surah, ayah);
+  return `https://cdn.islamic.network/quran/audio/128/${getCurrentQari()}/${global}.mp3`;
+}
+
+function buildSurahAudioUrl(surah){
+  return `https://cdn.islamic.network/quran/audio-surah/128/${getCurrentQari()}/${surah}.mp3`;
+}
+
+function resetPlayBtn(btn){
+  if(!btn) return;
+  btn.innerHTML = '<i class="fas fa-play"></i>';
+  btn.classList.remove('playing');
+}
+
+function stopCurrentAudio(){
+  if(currentAudio){
+    currentAudio.pause();
+    currentAudio.src = '';
+  }
+  resetPlayBtn(currentPlayBtn);
+  currentAudio = null;
+  currentPlayBtn = null;
+}
+
+function toggleAudio(url, btn){
+  if(!btn) return;
+  // Samma knapp, spelas – pausa
+  if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
+    currentAudio.pause();
+    resetPlayBtn(btn);
+    return;
+  }
+  // Samma knapp, pausad på samma källa – fortsätt
+  if(currentPlayBtn === btn && currentAudio && currentAudio.paused && currentAudio.src === url){
+    currentAudio.play().catch(()=>toast('❌ Kunde inte spela upp ljud'));
+    btn.innerHTML = '<i class="fas fa-pause"></i>';
+    btn.classList.add('playing');
+    return;
+  }
+  stopCurrentAudio();
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  const audio = new Audio(url);
+  currentAudio = audio;
+  currentPlayBtn = btn;
+  audio.addEventListener('playing', ()=>{
+    if(currentAudio === audio){
+      btn.innerHTML = '<i class="fas fa-pause"></i>';
+      btn.classList.add('playing');
+    }
+  });
+  audio.addEventListener('ended', ()=>{
+    if(currentPlayBtn === btn) resetPlayBtn(btn);
+    if(currentAudio === audio){ currentAudio = null; currentPlayBtn = null; }
+  });
+  audio.addEventListener('error', ()=>{
+    toast('❌ Kunde inte spela upp ljud');
+    if(currentPlayBtn === btn) resetPlayBtn(btn);
+    if(currentAudio === audio){ currentAudio = null; currentPlayBtn = null; }
+  });
+  audio.play().catch(()=>{
+    toast('❌ Kunde inte spela upp ljud');
+    resetPlayBtn(btn);
+    if(currentAudio === audio){ currentAudio = null; currentPlayBtn = null; }
+  });
+}
+
+function playAyah(surah, ayah, btn){
+  toggleAudio(buildAyahAudioUrl(surah, ayah), btn);
+}
+function playSurah(surah, btn){
+  toggleAudio(buildSurahAudioUrl(surah), btn);
+}
+function playDailyAya(btn){
+  if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
+  toggleAudio(buildAyahAudioUrl(currentAyaData.surahNum, currentAyaData.ayahNum), btn);
+}
+
 function globalAyaToSurahAya(globalNum){
   let remaining = globalNum;
   for(let i = 0; i < SURAH_AYAH_COUNTS.length; i++){
@@ -948,6 +1094,7 @@ function globalAyaToSurahAya(globalNum){
 }
 
 async function fetchAya(surah, ayah){
+  stopCurrentAudio();
   const content = document.getElementById('dailyAyaContent');
   content.innerHTML = '<div class="daily-aya-loading">Laddar…</div>';
   try{
@@ -1304,6 +1451,7 @@ applyNight();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
+populateQariSelect();
 updateFavBadge();
 fetchRandomAya();
 </script>
