@@ -40,6 +40,9 @@
       --translation-bg:#E8F9F1;
       --translation-border:#22C08A;
       --bottom-bar-height: 78px;
+      --arabic-grad-1:#0E9C74;
+      --arabic-grad-2:#0B7F92;
+      --arabic-glow:rgba(14,156,116,0.30);
     }
     body.night {
       --bg:#1A1733; --surface:#2C2761; --surface2:#373072; --border:#4B4392;
@@ -49,6 +52,9 @@
       --section-bg-1:#2A2560;
       --section-bg-2:#332C6E;
       --translation-bg:#0F2A22;
+      --arabic-grad-1:#0B6E52;
+      --arabic-grad-2:#08596A;
+      --arabic-glow:rgba(11,110,82,0.40);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html, body{width:100%;min-height:100vh}
@@ -195,7 +201,7 @@
     }
     .daily-aya-arabic{
       font-family:var(--quran-font);
-      font-size:34px;line-height:2.4;direction:rtl;text-align:right;
+      font-size:42px;line-height:2.4;direction:rtl;text-align:right;
       margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);
       position:relative;z-index:1;word-break:break-word;
       font-feature-settings:"liga" 1, "calt" 1;
@@ -253,26 +259,29 @@
     }
     .verse-tool{
       width:38px;height:38px;border-radius:11px;
-      border:1.5px solid var(--border);
-      background:var(--surface);color:var(--text2);cursor:pointer;
+      border:1.5px solid rgba(255,255,255,.5);
+      background:rgba(255,255,255,.18);color:#fff;cursor:pointer;
       display:flex;align-items:center;justify-content:center;
       font-size:14px;transition:all .2s;
-      box-shadow:0 2px 6px rgba(0,0,0,.06);
+      box-shadow:0 2px 6px rgba(0,0,0,.12);
+      backdrop-filter:blur(4px);
     }
     .verse-tool:active{transform:scale(.9)}
-    .verse-tool.copied{background:var(--emerald-soft);color:var(--emerald);border-color:var(--emerald)}
+    .verse-tool.copied{background:#fff;color:var(--emerald);border-color:#fff}
     .arabic{
       font-family:var(--quran-font);
-      font-size:32px;line-height:2.5;direction:rtl;text-align:right;
-      color:var(--text);padding:18px 22px;
-      background:rgba(255,255,255,.65);
-      border-radius:var(--rsm);border-right:5px solid var(--primary);
+      font-size:40px;line-height:2.5;direction:rtl;text-align:right;
+      color:#fff;padding:20px 24px;
+      background:linear-gradient(135deg,var(--arabic-grad-1),var(--arabic-grad-2));
+      border-radius:var(--rsm);
+      box-shadow:0 10px 28px var(--arabic-glow);
       word-break:break-word;position:relative;
       font-feature-settings:"liga" 1, "calt" 1;
       -webkit-font-smoothing:antialiased;
+      text-shadow:0 2px 4px rgba(0,0,0,.18);
     }
-    body.night .arabic{background:rgba(255,255,255,.08)}
-    .arabic-small{font-size:28px;line-height:2.3;padding:16px 20px}
+    body.night .arabic{box-shadow:0 10px 28px var(--arabic-glow)}
+    .arabic-small{font-size:34px;line-height:2.3;padding:18px 22px}
     .translation{
       font-size:34px;color:var(--text);
       padding:14px 20px;margin:12px 0 18px;
@@ -387,11 +396,14 @@
     .modal-card .modal-ref{font-size:14px;font-weight:800;color:var(--primary);margin-bottom:12px}
     .modal-card .modal-arabic{
       font-family:var(--quran-font);
-      font-size:30px;line-height:2.4;direction:rtl;text-align:right;
-      color:var(--text);padding:18px;background:var(--surface2);
-      border-radius:var(--rsm);border-right:5px solid var(--primary);
+      font-size:34px;line-height:2.4;direction:rtl;text-align:right;
+      color:#fff;padding:20px;
+      background:linear-gradient(135deg,var(--arabic-grad-1),var(--arabic-grad-2));
+      border-radius:var(--rsm);
+      box-shadow:0 8px 22px var(--arabic-glow);
       margin-bottom:16px;word-break:break-word;
       font-feature-settings:"liga" 1, "calt" 1;
+      text-shadow:0 2px 4px rgba(0,0,0,.18);
     }
     .modal-card .modal-text{
       font-size:34px;color:var(--text);line-height:1.75;
@@ -465,8 +477,8 @@
     @media (max-width:768px){
       body{padding:16px 14px calc(var(--bottom-bar-height) + 20px)}
       .section{padding:20px 18px}
-      .arabic{font-size:26px;line-height:2.3;padding:14px 16px}
-      .arabic-small{font-size:23px;line-height:2.2}
+      .arabic{font-size:32px;line-height:2.3;padding:16px 18px}
+      .arabic-small{font-size:28px;line-height:2.2}
       .hdr{padding:18px;grid-template-columns:1fr;gap:12px}
       .hdr-left{justify-content:center;text-align:center;flex-direction:column;gap:8px}
       .hdr-info{text-align:center}
@@ -475,7 +487,7 @@
       .hdr-logo{width:48px;height:48px;font-size:22px}
       .hdr-title{font-size:19px}
       .daily-aya{padding:22px}
-      .daily-aya-arabic{font-size:28px;line-height:2.3}
+      .daily-aya-arabic{font-size:34px;line-height:2.3}
       .daily-aya-text{font-size:30px;line-height:1.75}
       .daily-aya-text.ku,
       .daily-aya-text.fa{font-size:32px;line-height:1.85}
@@ -491,14 +503,14 @@
     @media (max-width:480px){
       body{padding:12px 10px calc(var(--bottom-bar-height) + 15px)}
       .section{padding:16px 14px}
-      .arabic{font-size:23px;line-height:2.3;padding:12px 14px}
-      .arabic-small{font-size:20px;line-height:2.2}
+      .arabic{font-size:27px;line-height:2.3;padding:14px 16px}
+      .arabic-small{font-size:24px;line-height:2.2}
       .hdr{padding:14px}
       .hdr-bismillah{font-size:24px;padding:6px 0}
       .hdr-logo{width:44px;height:44px;font-size:20px}
       .hdr-title{font-size:17px}
       .daily-aya{padding:18px 16px}
-      .daily-aya-arabic{font-size:25px;line-height:2.3}
+      .daily-aya-arabic{font-size:29px;line-height:2.3}
       .daily-aya-text{font-size:24px;line-height:1.7}
       .daily-aya-text.ku,
       .daily-aya-text.fa{font-size:26px;line-height:1.8}
@@ -514,7 +526,7 @@
       .fav-text.ku,
       .fav-text.fa{font-size:26px}
       .modal-card{padding:20px}
-      .modal-card .modal-arabic{font-size:26px;line-height:2.3}
+      .modal-card .modal-arabic{font-size:28px;line-height:2.3}
       .translation{font-size:24px;padding:12px 16px;line-height:1.75}
       .translation.ku,
       .translation.fa{font-size:26px;line-height:1.85}
