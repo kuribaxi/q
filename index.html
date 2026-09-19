@@ -217,6 +217,10 @@
       outline:none;cursor:pointer;
     }
     .daily-aya-qari-row select option{color:var(--text);background:var(--surface)}
+    .daily-aya-qari-row button{
+      background:rgba(255,255,255,.2);border:none;border-radius:8px;
+      color:#fff;font-size:12px;font-weight:700;padding:6px 12px;cursor:pointer;
+    }
     .daily-aya-ref{
       font-size:13px;font-weight:800;opacity:.95;
       background:rgba(255,255,255,.22);
@@ -370,20 +374,6 @@
       transition:all .2s;
     }
     .sura-picker button:active{transform:scale(.97);opacity:.9}
-    .tts-engine-toggle{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-    .tts-engine-toggle button{
-      flex:1;min-width:170px;height:48px;
-      border-radius:var(--rsm);border:2px solid var(--border);
-      background:var(--surface);color:var(--text2);
-      font-family:var(--latin-font);font-weight:800;font-size:14px;
-      cursor:pointer;transition:all .2s;
-      display:flex;align-items:center;justify-content:center;gap:8px;
-    }
-    .tts-engine-toggle button.active{
-      background:var(--primary);color:#fff;border-color:var(--primary);
-      box-shadow:0 4px 14px var(--primary-glow);
-    }
-    .tts-engine-toggle button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
     .fav-item{
       background:var(--surface);border:1.5px solid var(--border);
       border-radius:var(--rsm);padding:16px 18px;margin-bottom:12px;
@@ -474,13 +464,11 @@
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
-    /* ===== TAFSIR ===== */
     .tafsir-card{
       max-width:800px;width:100%;padding:0;
       display:flex;flex-direction:column;
       max-height:90vh;overflow:hidden;
     }
-    /* Fullscreen-läge för tafsir */
     .tafsir-card.is-fullscreen{
       max-width:100% !important;
       width:100% !important;
@@ -551,7 +539,46 @@
     }
     .tafsir-translate-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
 
-    /* Ny verktygsrad för font och storlek */
+    .tafsir-tts-bar{
+      display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+      padding:10px 24px;
+      background:var(--surface);
+      border-bottom:1.5px solid var(--border);
+      flex-shrink:0;
+    }
+    .tafsir-tts-bar .label{
+      font-size:12px;font-weight:800;color:var(--text3);
+      text-transform:uppercase;letter-spacing:.06em;
+      display:flex;align-items:center;gap:6px;
+      margin-right:4px;
+    }
+    .tafsir-tts-bar select{
+      height:36px;border-radius:10px;
+      border:1.5px solid var(--border);
+      background:var(--surface2);color:var(--text);
+      font-family:var(--latin-font);font-size:13px;font-weight:700;
+      padding:0 10px;cursor:pointer;outline:none;
+      max-width:220px;
+    }
+    .tafsir-tts-bar button{
+      height:36px;padding:0 14px;
+      border-radius:10px;border:1.5px solid var(--border);
+      background:var(--surface2);color:var(--text2);
+      font-family:var(--latin-font);font-size:12px;font-weight:800;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;gap:6px;
+    }
+    .tafsir-tts-bar button.active{
+      background:var(--primary);color:#fff;border-color:var(--primary);
+    }
+    .tafsir-tts-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
+    .tafsir-tts-bar button.play-btn{
+      background:var(--emerald);color:#fff;border-color:var(--emerald);
+    }
+    .tafsir-tts-bar button.play-btn.playing{
+      background:#fff;color:var(--emerald);border-color:var(--emerald);
+    }
+
     .tafsir-font-bar{
       display:flex;gap:8px;flex-wrap:wrap;align-items:center;
       padding:10px 24px;
@@ -734,6 +761,9 @@
       .tafsir-lang-bar button{font-size:12px;padding:7px 11px}
       .tafsir-translate-bar{padding:10px 16px;gap:5px}
       .tafsir-translate-bar button{font-size:11px;padding:5px 10px}
+      .tafsir-tts-bar{padding:8px 16px;gap:6px}
+      .tafsir-tts-bar select{max-width:160px;font-size:12px;height:32px}
+      .tafsir-tts-bar button{font-size:11px;height:32px;padding:0 10px}
       .tafsir-font-bar{padding:8px 16px;gap:6px}
       .tafsir-font-bar select{max-width:140px;font-size:12px;height:32px}
       .tafsir-font-bar .group button{width:28px;height:28px;font-size:13px}
@@ -806,9 +836,19 @@
       </div>
     </div>
 
-    <div class="daily-aya-qari-row">
+    <div class="daily-aya-qari-row" id="qariRow">
       <i class="fas fa-microphone-lines"></i>
       <select id="qariSelect"></select>
+      <button onclick="switchToElevenMode()" title="Byt till ElevenLabs-röst" style="white-space:nowrap">✨ ElevenLabs</button>
+    </div>
+
+    <div class="daily-aya-qari-row" id="elevenQariRow" style="display:none">
+      <i class="fas fa-wand-magic-sparkles"></i>
+      <select id="elevenSurahVoiceSelect">
+        <option value="">Ladda ElevenLabs-röster…</option>
+      </select>
+      <button onclick="loadElevenSurahVoices()" style="white-space:nowrap"><i class="fas fa-rotate"></i> Ladda</button>
+      <button onclick="switchToQariMode()" title="Byt tillbaka till Qari" style="white-space:nowrap">🎙️ Qari</button>
     </div>
 
     <div id="dailyAyaContent">
@@ -822,36 +862,6 @@
       <select id="suraSelect"></select>
       <input type="number" id="ayahInput" min="1" value="1" placeholder="Vers">
       <button onclick="goToSuraAyah()"><i class="fas fa-arrow-right"></i> Visa</button>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title"><i class="fas fa-comment-dots"></i> Röst för böner & duor</div>
-
-    <div class="tts-engine-toggle">
-      <button type="button" id="engineBrowserBtn" onclick="setTTSEngine('browser')"><i class="fas fa-comment"></i> Webbläsarens röst</button>
-      <button type="button" id="engineElevenBtn" onclick="setTTSEngine('eleven')"><i class="fas fa-wand-magic-sparkles"></i> ElevenLabs</button>
-    </div>
-
-    <div id="browserVoicePanel">
-      <div class="sura-picker">
-        <select id="ttsVoiceSelect"></select>
-      </div>
-      <div id="ttsVoiceHint" style="font-size:13px;color:var(--text3);font-weight:600;margin-top:10px;line-height:1.5"></div>
-    </div>
-
-    <div id="elevenVoicePanel" style="display:none">
-      <div class="sura-picker">
-        <input type="password" id="elevenApiKeyInput" placeholder="ElevenLabs API-nyckel" style="flex:1;min-width:200px">
-        <button onclick="saveElevenApiKey()"><i class="fas fa-key"></i> Spara nyckel</button>
-      </div>
-      <div class="sura-picker" style="margin-top:10px">
-        <select id="elevenVoiceSelect"><option value="">Hämta röster med din nyckel ovan…</option></select>
-        <button onclick="fetchElevenVoices()"><i class="fas fa-rotate"></i> Hämta röster</button>
-      </div>
-      <div id="elevenHint" style="font-size:13px;color:var(--text3);font-weight:600;margin-top:10px;line-height:1.5">
-        ElevenLabs ger ultra-naturlig arabiska (Modern Standard Arabic + dialekter). Har du klonat din egen röst på elevenlabs.io dyker den upp här efter att du hämtat röster. Din API-nyckel sparas endast lokalt i din egen webbläsare och skickas direkt till ElevenLabs — aldrig via oss.
-      </div>
     </div>
   </div>
 
@@ -875,7 +885,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small" id="qunutArabic">
         اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ، وَعَافِنَا فِيمَنْ عَافَيْتَ، وَتَوَلَّنَا فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لَنَا فِيمَا أَعْطَيْتَ، وَقِنَا شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، وَنَسْتَغْفِرُكَ وَنَتُوبُ إِلَيْكَ، وَصَلَّى اللَّهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ
@@ -967,7 +976,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         بِسْمِ اللَّهِ أَرْقِيكَ، مِنْ كُلِّ شَيْءٍ يُؤْذِيكَ، مِنْ شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ، اللَّهُ يَشْفِيكَ، بِسْمِ اللَّهِ أَرْقِيكَ
@@ -980,7 +988,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         اللَّهُمَّ رَبَّ النَّاسِ، أَذْهِبْ الْبَاسَ، اشْفِهِ وَأَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا
@@ -993,7 +1000,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ
@@ -1006,7 +1012,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا
@@ -1020,7 +1025,6 @@
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
-        <button class="verse-tool" onclick="playDuaTTS(this)" title="Läs upp (talsyntes)"><i class="fas fa-play"></i></button>
       </div>
       <div class="arabic arabic-small">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ<br>
@@ -1098,6 +1102,18 @@
       <button data-tl="sv" onclick="translateTafsirTo('sv')">🇸🇪 Svenska</button>
       <button data-tl="original" onclick="translateTafsirTo('original')">📄 Original</button>
     </div>
+    <div class="tafsir-tts-bar" id="tafsirTTSBar">
+      <span class="label"><i class="fas fa-volume-high"></i> Lyssna:</span>
+      <button id="tafsirTTSPlayBtn" onclick="toggleTafsirTTS()" class="play-btn">
+        <i class="fas fa-play"></i> Spela upp
+      </button>
+      <select id="tafsirTTSVoiceSelect" onchange="setTafsirTTSVoice(this.value)">
+        <option value="">Laddar röster…</option>
+      </select>
+      <button onclick="stopTafsirTTS()" title="Stoppa">
+        <i class="fas fa-stop"></i>
+      </button>
+    </div>
     <div class="tafsir-font-bar" id="tafsirFontBar">
       <span class="label"><i class="fas fa-font"></i> Text:</span>
       <select id="tafsirLatinFont" onchange="setTafsirFont('latin', this.value)" title="Latinskt typsnitt">
@@ -1110,7 +1126,7 @@
         <option value="Verdana,Geneva,sans-serif">Verdana</option>
         <option value="'Courier New',monospace">Courier New</option>
       </select>
-      <select id="tafsirNonLatinFont" onchange="setTafsirFont('nonlatin', this.value)" title="Icke-latinskt typsnitt (arabiska, kurdiska, persiska)">
+      <select id="tafsirNonLatinFont" onchange="setTafsirFont('nonlatin', this.value)" title="Icke-latinskt typsnitt">
         <option value="'K24 Kurdish','Vazirmatn','Noto Naskh Arabic','Amiri','Tahoma',sans-serif">K24 Kurdish</option>
         <option value="'Amiri Quran','Scheherazade New','Amiri',serif">Amiri Quran</option>
         <option value="'Scheherazade New',serif">Scheherazade New</option>
@@ -1225,7 +1241,7 @@ const PHONETIC = {
 };
 
 /* ============================================================
-   TAFSIR – riktiga databaser + Google Translate för övriga språk
+   TAFSIR
    ============================================================ */
 const TAFSIRS = [
   { lang:'ar-ibnkathir', flag:'🇸🇦', label:'العربية · ابن كثير', slug:'ar-tafsir-ibn-kathir', name:'تفسير ابن كثير', rtl:true },
@@ -1257,19 +1273,18 @@ function openTafsirDaily(){
   currentTafsirRef = { type:'ayah', surah: currentAyaData.surahNum, ayah: currentAyaData.ayahNum };
   openTafsirModalCommon(currentAyaData.surahName + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum);
 }
-
 function openTafsirModalCommon(title){
   document.getElementById('tafsirTitle').innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + title;
   renderTafsirLangBar();
   renderTafsirTranslateBar();
   applyTafsirFontSettings();
+  loadTafsirTTSVoices();
   document.getElementById('tafsirModal').classList.remove('h');
   document.querySelector('.tafsir-scroll').scrollTop = 0;
   loadTafsir(currentTafsirLang);
 }
 function closeTafsir(){
   document.getElementById('tafsirModal').classList.add('h');
-  // Stäng helskärm om det var aktivt
   const card = document.getElementById('tafsirCard');
   if(card && card.classList.contains('is-fullscreen')){
     card.classList.remove('is-fullscreen');
@@ -1277,11 +1292,9 @@ function closeTafsir(){
     document.getElementById('tafsirFsIcon').className = 'fas fa-expand';
     document.getElementById('tafsirFsBtn').classList.remove('active');
   }
+  stopTafsirTTS();
 }
 
-/* ============================================================
-   TAFSIR HELSKÄRM
-   ============================================================ */
 function toggleTafsirFullscreen(){
   const card = document.getElementById('tafsirCard');
   const modal = document.getElementById('tafsirModal');
@@ -1293,15 +1306,10 @@ function toggleTafsirFullscreen(){
   btn.classList.toggle('active', isFs);
 }
 
-/* ============================================================
-   TAFSIR FONTINSTÄLLNINGAR
-   ============================================================ */
 function applyTafsirFontSettings(){
   const body = document.getElementById('tafsirBody');
   if(!body) return;
-  // Sätt global font-size via CSS-variabel
   body.style.fontSize = currentTafsirFontSize + 'px';
-  // Sätt typsnitt på .tafsir-body – latinsk eller icke-latinsk beroende på rtl-klass
   if(body.classList.contains('rtl')){
     body.style.fontFamily = currentTafsirNonLatinFont;
   } else {
@@ -1314,7 +1322,6 @@ function applyTafsirFontSettings(){
   const nonLatinSel = document.getElementById('tafsirNonLatinFont');
   if(nonLatinSel) nonLatinSel.value = currentTafsirNonLatinFont;
 }
-
 function setTafsirFont(type, value){
   if(type === 'latin'){
     currentTafsirLatinFont = value;
@@ -1325,13 +1332,11 @@ function setTafsirFont(type, value){
   }
   applyTafsirFontSettings();
 }
-
 function changeTafsirFontSize(delta){
   currentTafsirFontSize = Math.max(12, Math.min(48, currentTafsirFontSize + delta));
   localStorage.setItem('quranTafsirFontSize', currentTafsirFontSize);
   applyTafsirFontSettings();
 }
-
 function resetTafsirFontSettings(){
   currentTafsirLatinFont = "'Inter','Roboto','Open Sans','Segoe UI',Arial,sans-serif";
   currentTafsirNonLatinFont = "'K24 Kurdish','Vazirmatn','Noto Naskh Arabic','Amiri','Tahoma',sans-serif";
@@ -1343,13 +1348,144 @@ function resetTafsirFontSettings(){
   toast('↺ Textinställningar återställda');
 }
 
+/* ============================================================
+   TAFSIR TTS
+   ============================================================ */
+let tafsirTTSPlaying = false;
+let tafsirTTSVoiceURI = localStorage.getItem('tafsirTTSVoiceURI') || '';
+let tafsirTTSAudio = null;
+
+function getAllVoicesFull(){
+  if(!('speechSynthesis' in window)) return [];
+  return window.speechSynthesis.getVoices() || [];
+}
+
+function loadTafsirTTSVoices(){
+  const sel = document.getElementById('tafsirTTSVoiceSelect');
+  if(!sel) return;
+  if(!('speechSynthesis' in window)){
+    sel.innerHTML = '<option value="">Röster ej tillgängliga</option>';
+    return;
+  }
+  const allVoices = getAllVoicesFull();
+  if(!allVoices.length){
+    sel.innerHTML = '<option value="">Laddar röster…</option>';
+    setTimeout(loadTafsirTTSVoices, 400);
+    return;
+  }
+  const priorityLangs = ['sv','en','ar','ku','ckb','fa','tr','de'];
+  const relevantVoices = allVoices.filter(v => {
+    const l = (v.lang || '').toLowerCase();
+    return priorityLangs.some(p => l.startsWith(p));
+  });
+  const voicesToShow = relevantVoices.length ? relevantVoices : allVoices;
+
+  sel.innerHTML = voicesToShow.map(v => {
+    const code = (v.lang || '').split('-')[0].toLowerCase();
+    const label = code.toUpperCase() + ' · ' + v.name;
+    return `<option value="${v.voiceURI}">${label}</option>`;
+  }).join('');
+
+  if(tafsirTTSVoiceURI && voicesToShow.some(v => v.voiceURI === tafsirTTSVoiceURI)){
+    sel.value = tafsirTTSVoiceURI;
+  } else if(voicesToShow.length){
+    const wanted = detectTafsirTTSLang();
+    const match = voicesToShow.find(v => (v.lang || '').toLowerCase().startsWith(wanted));
+    const chosen = match || voicesToShow[0];
+    sel.value = chosen.voiceURI;
+    tafsirTTSVoiceURI = chosen.voiceURI;
+    localStorage.setItem('tafsirTTSVoiceURI', tafsirTTSVoiceURI);
+  }
+}
+
+function detectTafsirTTSLang(){
+  if(currentTafsirTranslation === 'sv') return 'sv';
+  if(currentTafsirTranslation === 'fa') return 'fa';
+  if(currentTafsirTranslation === 'ku' || currentTafsirTranslation === 'ku-KM') return 'ku';
+  if(currentTafsirLang.startsWith('ar')) return 'ar';
+  if(currentTafsirLang.startsWith('en')) return 'en';
+  if(currentTafsirLang.startsWith('ku')) return 'ku';
+  return 'en';
+}
+
+function setTafsirTTSVoice(uri){
+  tafsirTTSVoiceURI = uri;
+  localStorage.setItem('tafsirTTSVoiceURI', uri);
+  const v = getAllVoicesFull().find(x => x.voiceURI === uri);
+  toast('🗣️ Tafsir-röst: ' + (v ? v.name : uri));
+}
+
+function extractTafsirPlainText(){
+  const body = document.getElementById('tafsirBody');
+  if(!body) return '';
+  const clone = body.cloneNode(true);
+  clone.querySelectorAll('.tafsir-verse-num').forEach(el => el.remove());
+  clone.querySelectorAll('.tafsir-source').forEach(el => el.remove());
+  let text = clone.textContent || clone.innerText || '';
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function toggleTafsirTTS(){
+  if(tafsirTTSPlaying){
+    stopTafsirTTS();
+    return;
+  }
+  const text = extractTafsirPlainText();
+  if(!text){ toast('❌ Ingen text att läsa upp'); return; }
+  playTafsirBrowser(text);
+}
+
+function playTafsirBrowser(text){
+  if(!('speechSynthesis' in window)){
+    toast('❌ Din enhet/webbläsare stöder inte uppläsning');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  const voice = getAllVoicesFull().find(v => v.voiceURI === tafsirTTSVoiceURI);
+  if(voice){
+    utter.voice = voice;
+    utter.lang = voice.lang;
+  } else {
+    utter.lang = detectTafsirTTSLang() === 'sv' ? 'sv-SE' : 'en-US';
+  }
+  utter.rate = 0.95;
+  utter.pitch = 1;
+  const btn = document.getElementById('tafsirTTSPlayBtn');
+  utter.onstart = () => {
+    tafsirTTSPlaying = true;
+    if(btn){ btn.classList.add('playing'); btn.innerHTML = '<i class="fas fa-pause"></i> Pausa'; }
+  };
+  utter.onend = () => {
+    tafsirTTSPlaying = false;
+    if(btn){ btn.classList.remove('playing'); btn.innerHTML = '<i class="fas fa-play"></i> Spela upp'; }
+  };
+  utter.onerror = () => {
+    tafsirTTSPlaying = false;
+    if(btn){ btn.classList.remove('playing'); btn.innerHTML = '<i class="fas fa-play"></i> Spela upp'; }
+    toast('❌ Kunde inte läsa upp');
+  };
+  window.speechSynthesis.speak(utter);
+}
+
+function stopTafsirTTS(){
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if(tafsirTTSAudio){
+    tafsirTTSAudio.pause();
+    tafsirTTSAudio.src = '';
+    tafsirTTSAudio = null;
+  }
+  tafsirTTSPlaying = false;
+  const btn = document.getElementById('tafsirTTSPlayBtn');
+  if(btn){ btn.classList.remove('playing'); btn.innerHTML = '<i class="fas fa-play"></i> Spela upp'; }
+}
+
 function renderTafsirLangBar(){
   const bar = document.getElementById('tafsirLangBar');
   bar.innerHTML = TAFSIRS.map(t =>
     `<button class="${t.lang === currentTafsirLang ? 'active' : ''}" onclick="selectTafsir('${t.lang}')">${t.flag} ${t.label}</button>`
   ).join('');
 }
-
 function renderTafsirTranslateBar(){
   const bar = document.getElementById('tafsirTranslateBar');
   if(!bar) return;
@@ -1357,14 +1493,12 @@ function renderTafsirTranslateBar(){
     b.classList.toggle('active', b.dataset.tl === currentTafsirTranslation);
   });
 }
-
 function selectTafsir(lang){
   currentTafsirLang = lang;
   localStorage.setItem('quranTafsirLang', lang);
   renderTafsirLangBar();
   loadTafsir(lang);
 }
-
 function translateTafsirTo(targetLang){
   currentTafsirTranslation = targetLang;
   localStorage.setItem('quranTafsirTranslation', targetLang);
@@ -1375,58 +1509,102 @@ function translateTafsirTo(targetLang){
   } else {
     applyGoogleTranslate(targetLang);
   }
+  loadTafsirTTSVoices();
 }
 
+/* ============================================================
+   GOOGLE TRANSLATE – med dubbla fallbacks för LG TV
+   ============================================================ */
 function applyGoogleTranslate(targetLang){
   const body = document.getElementById('tafsirBody');
   if(!currentTafsirHtml){ return; }
-  
-  const gtLang = targetLang === 'ku' ? 'ckb' : 
-                 targetLang === 'ku-KM' ? 'ku' : 
-                 targetLang === 'fa' ? 'fa' : 
-                 targetLang === 'sv' ? 'sv' : 'en';
-  
+  const gtLangMap = { 'ku': 'ckb', 'ku-KM': 'ku', 'fa': 'fa', 'sv': 'sv', 'en': 'en' };
+  const gtLang = gtLangMap[targetLang] || 'en';
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = currentTafsirHtml;
-  const plainText = tempDiv.textContent || tempDiv.innerText || '';
-  
+  const plainText = (tempDiv.textContent || tempDiv.innerText || '').trim();
+  const textToTranslate = plainText.slice(0, 4500);
   body.innerHTML = '<div class="daily-aya-loading">Översätter med Google Translate…</div>';
-  
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(gtLang)}&dt=t&q=${encodeURIComponent(plainText.slice(0, 4500))}`;
-  
-  fetch(url)
+
+  const url1 = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(gtLang)}&dt=t&q=${encodeURIComponent(textToTranslate)}`;
+
+  fetchWithTimeout(url1, 8000)
     .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
     .then(data => {
-      if(data && data[0]){
-        const translated = data[0].map(seg => seg[0]).join('');
-        const dir = ['fa','ku','ckb','ar'].includes(gtLang) ? 'rtl' : 'ltr';
-        body.innerHTML = `<div class="tafsir-verse-num" style="background:var(--emerald-soft);color:#0A7B4E">🌐 Översatt med Google Translate (${gtLang.toUpperCase()})</div>
-          <p dir="${dir}" style="direction:${dir};text-align:${dir === 'rtl' ? 'right' : 'left'}">${escapeHtml(translated)}</p>`;
-        // Applicera typsnitt för rtl/ltr
-        body.classList.toggle('rtl', dir === 'rtl');
-        applyTafsirFontSettings();
-      } else {
-        throw new Error('Ingen översättning returnerades');
-      }
+      if(data && data[0]){ displayTranslatedTafsir(data, gtLang); }
+      else { throw new Error('Ingen data'); }
     })
-    .catch(err => {
-      console.error('Google Translate-fel:', err);
-      body.innerHTML = `<div class="fav-empty">
-        <i class="fas fa-triangle-exclamation"></i>
-        Kunde inte översätta automatiskt.<br><br>
-        <span style="font-size:13px;font-weight:600">
-          Tips: Öppna sidan i Edge och använd <b>Högerklicka → Översätt till…</b>,<br>
-          eller markera texten och använd webbläsarens inbyggda översättning.
-        </span>
-      </div>`;
-      applyTafsirFontSettings();
+    .catch(err1 => {
+      console.warn('Google Translate #1 misslyckades:', err1);
+      const url2 = `https://translate.google.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(gtLang)}&dt=t&q=${encodeURIComponent(textToTranslate)}`;
+      fetchWithTimeout(url2, 8000)
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+        .then(data => {
+          if(data && data[0]){ displayTranslatedTafsir(data, gtLang); }
+          else { throw new Error('Ingen data'); }
+        })
+        .catch(err2 => {
+          console.error('Google Translate #2 misslyckades:', err2);
+          showTranslateFallback(textToTranslate, gtLang);
+        });
     });
+}
+
+function fetchWithTimeout(url, timeout){
+  return new Promise((resolve, reject) => {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timer = setTimeout(() => {
+      if(controller) controller.abort();
+      reject(new Error('Timeout'));
+    }, timeout);
+    const options = controller ? { signal: controller.signal } : {};
+    fetch(url, options)
+      .then(r => { clearTimeout(timer); resolve(r); })
+      .catch(e => { clearTimeout(timer); reject(e); });
+  });
+}
+
+function displayTranslatedTafsir(data, gtLang){
+  const body = document.getElementById('tafsirBody');
+  const translated = data[0].map(seg => seg[0]).join('');
+  const dir = ['fa','ku','ckb','ar'].includes(gtLang) ? 'rtl' : 'ltr';
+  body.innerHTML = `<div class="tafsir-verse-num" style="background:var(--emerald-soft);color:#0A7B4E">🌐 Översatt med Google Translate (${gtLang.toUpperCase()})</div>
+    <p dir="${dir}" style="direction:${dir};text-align:${dir === 'rtl' ? 'right' : 'left'}">${escapeHtml(translated)}</p>`;
+  body.classList.toggle('rtl', dir === 'rtl');
+  applyTafsirFontSettings();
+}
+
+function showTranslateFallback(originalText, gtLang){
+  const body = document.getElementById('tafsirBody');
+  const googleUrl = `https://translate.google.com/?sl=auto&tl=${gtLang}&text=${encodeURIComponent(originalText.slice(0, 1000))}&op=translate`;
+  body.innerHTML = `
+    <div class="fav-empty" style="text-align:left;max-width:100%">
+      <i class="fas fa-triangle-exclamation" style="color:var(--amber);font-size:32px;margin-bottom:12px"></i>
+      <div style="font-weight:800;color:var(--text);margin-bottom:12px;font-size:16px">
+        Automatisk översättning misslyckades på denna enhet
+      </div>
+      <div style="font-size:13px;font-weight:600;color:var(--text2);line-height:1.7;margin-bottom:14px">
+        Din webbläsare/enhet blockerar Google Translate-anropet. Du kan:
+      </div>
+      <ol style="font-size:13px;font-weight:600;color:var(--text2);line-height:1.9;padding-left:20px;margin-bottom:14px">
+        <li>Öppna tafsiren i <b>Google Translate</b> via knappen nedan</li>
+        <li>Använda webbläsarens inbyggda översättning</li>
+        <li>Läsa originaltexten här nedan</li>
+      </ol>
+      <a href="${googleUrl}" target="_blank" rel="noopener" style="display:inline-block;padding:10px 18px;background:var(--primary);color:#fff;border-radius:10px;text-decoration:none;font-weight:800;font-size:13px;margin-bottom:16px">
+        <i class="fas fa-external-link-alt"></i> Öppna i Google Translate
+      </a>
+      <div style="margin-top:14px;padding-top:14px;border-top:1.5px dashed var(--border)">
+        <div style="font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;margin-bottom:8px">Originaltext</div>
+        <p dir="auto" style="font-size:15px;line-height:1.8;color:var(--text)">${escapeHtml(originalText)}</p>
+      </div>
+    </div>`;
+  applyTafsirFontSettings();
 }
 
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
 function sanitizeTafsirHtml(html){
   if(!html) return '';
   return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on\w+="[^"]*"/gi, '');
@@ -1447,45 +1625,32 @@ async function loadTafsir(lang){
   const body = document.getElementById('tafsirBody');
   const sourceEl = document.getElementById('tafsirSource');
   const meta = TAFSIRS.find(t => t.lang === lang) || TAFSIRS[0];
-  
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
   body.classList.toggle('rtl', !!meta.rtl);
   sourceEl.textContent = '';
   applyTafsirFontSettings();
-  
   if(!currentTafsirRef) return;
-
   try{
     const surah = currentTafsirRef.type === 'ayah' ? currentTafsirRef.surah : currentTafsirRef.chapter;
     const ayah = currentTafsirRef.type === 'ayah' ? currentTafsirRef.ayah : 1;
-    
     const result = await fetchTafsirFromSpa5k(meta.slug, surah, ayah);
-    
     if(!result || !result.html || result.html.trim() === ''){
       body.innerHTML = '<div class="fav-empty"><i class="fas fa-circle-info"></i>Tafsir-text saknas för denna vers på detta språk.</div>';
       currentTafsirHtml = '';
       applyTafsirFontSettings();
       return;
     }
-    
     sourceEl.textContent = result.resourceName || meta.name || '';
     currentTafsirHtml = result.html;
-    
     if(currentTafsirTranslation !== 'original'){
       applyGoogleTranslate(currentTafsirTranslation);
     } else {
       body.innerHTML = currentTafsirHtml;
       applyTafsirFontSettings();
     }
-    
   }catch(err){
     console.error('Tafsir-fel:', err);
-    body.innerHTML = `
-      <div class="fav-empty">
-        <i class="fas fa-triangle-exclamation"></i>
-        Kunde inte hämta tafsir just nu.<br>
-        <span style="font-size:13px;font-weight:600">${err.message || 'Nätverksfel'}</span>
-      </div>`;
+    body.innerHTML = `<div class="fav-empty"><i class="fas fa-triangle-exclamation"></i>Kunde inte hämta tafsir just nu.<br><span style="font-size:13px;font-weight:600">${err.message || 'Nätverksfel'}</span></div>`;
     applyTafsirFontSettings();
   }
 }
@@ -1522,7 +1687,7 @@ let currentAyaData = null;
 let currentLang = localStorage.getItem('quranLang') || 'sv';
 
 /* ============================================================
-   QARI (RECITATÖR) – 3 som fungerar på 128 kbps
+   QARI + LJUDUPPBYGGNAD MED BITRATE-FALLBACK (128 → 192 → 64)
    ============================================================ */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy' },
@@ -1534,12 +1699,8 @@ let currentAudio = null;
 let currentPlayBtn = null;
 let currentAudioUrl = null;
 
-function getCurrentQari(){
-  return localStorage.getItem('quranQari') || 'ar.alafasy';
-}
-function getCurrentQariObj(){
-  return QARIS.find(q => q.id === getCurrentQari()) || QARIS[0];
-}
+function getCurrentQari(){ return localStorage.getItem('quranQari') || 'ar.alafasy'; }
+function getCurrentQariObj(){ return QARIS.find(q => q.id === getCurrentQari()) || QARIS[0]; }
 
 function populateQariSelect(){
   const sel = document.getElementById('qariSelect');
@@ -1551,7 +1712,6 @@ function populateQariSelect(){
     sel.dataset.bound = '1';
   }
 }
-
 function setQari(id){
   stopCurrentAudio();
   localStorage.setItem('quranQari', id);
@@ -1567,15 +1727,22 @@ function getGlobalAyahNumber(surah, ayah){
   return total + ayah;
 }
 
-function buildAyahAudioUrl(surah, ayah, overrideQariId){
+function buildAyahAudioUrls(surah, ayah, overrideQariId){
   const global = getGlobalAyahNumber(surah, ayah);
   const qari = overrideQariId || getCurrentQari();
-  return `https://cdn.islamic.network/quran/audio/128/${qari}/${global}.mp3`;
+  return [
+    `https://cdn.islamic.network/quran/audio/128/${qari}/${global}.mp3`,
+    `https://cdn.islamic.network/quran/audio/192/${qari}/${global}.mp3`,
+    `https://cdn.islamic.network/quran/audio/64/${qari}/${global}.mp3`
+  ];
 }
-
-function buildSurahAudioUrl(surah, overrideQariId){
+function buildSurahAudioUrls(surah, overrideQariId){
   const qari = overrideQariId || getCurrentQari();
-  return `https://cdn.islamic.network/quran/audio-surah/128/${qari}/${surah}.mp3`;
+  return [
+    `https://cdn.islamic.network/quran/audio-surah/128/${qari}/${surah}.mp3`,
+    `https://cdn.islamic.network/quran/audio-surah/192/${qari}/${surah}.mp3`,
+    `https://cdn.islamic.network/quran/audio-surah/64/${qari}/${surah}.mp3`
+  ];
 }
 
 function resetPlayBtn(btn){
@@ -1583,7 +1750,6 @@ function resetPlayBtn(btn){
   btn.innerHTML = '<i class="fas fa-play"></i>';
   btn.classList.remove('playing');
 }
-
 function stopCurrentAudio(){
   if(currentAudio){
     currentAudio.loop = false;
@@ -1594,31 +1760,21 @@ function stopCurrentAudio(){
     window.speechSynthesis.cancel();
   }
   resetPlayBtn(currentPlayBtn);
-  currentAudio = null;
-  currentPlayBtn = null;
-  currentAudioUrl = null;
+  currentAudio = null; currentPlayBtn = null; currentAudioUrl = null;
 }
 
-function toggleAudio(url, btn){
-  if(!btn) return;
-  if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
-    currentAudio.pause();
+function tryAudioUrls(urls, index, btn){
+  if(index >= urls.length){
+    toast('❌ Kunde inte spela upp ljud');
     resetPlayBtn(btn);
+    currentAudio = null; currentPlayBtn = null; currentAudioUrl = null;
     return;
   }
-  if(currentPlayBtn === btn && currentAudio && currentAudio.paused && currentAudioUrl === url){
-    currentAudio.play().catch(()=>toast('❌ Kunde inte spela upp ljud'));
-    btn.innerHTML = '<i class="fas fa-pause"></i>';
-    btn.classList.add('playing');
-    return;
-  }
-  stopCurrentAudio();
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  const url = urls[index];
   const audio = new Audio(url);
   audio.loop = btn.dataset.loop === '1';
-  currentAudio = audio;
-  currentPlayBtn = btn;
-  currentAudioUrl = url;
+  currentAudio = audio; currentPlayBtn = btn; currentAudioUrl = url;
+
   audio.addEventListener('playing', ()=>{
     if(currentAudio === audio){
       btn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -1630,28 +1786,137 @@ function toggleAudio(url, btn){
     if(currentAudio === audio){ currentAudio = null; currentPlayBtn = null; currentAudioUrl = null; }
   });
   audio.addEventListener('error', ()=>{
-    toast('❌ Kunde inte spela upp ljud');
-    if(currentPlayBtn === btn) resetPlayBtn(btn);
-    if(currentAudio === audio){ currentAudio = null; currentPlayBtn = null; currentAudioUrl = null; }
+    console.warn('Ljud misslyckades, provar nästa:', url);
+    if(currentAudio === audio){
+      audio.src = '';
+      tryAudioUrls(urls, index + 1, btn);
+    }
   });
-  audio.play().catch(()=>{
-    toast('❌ Kunde inte spela upp ljud');
-    resetPlayBtn(btn);
-    if(currentAudio === audio){ currentAudio = null; currentPlayBtn = null; currentAudioUrl = null; }
+  audio.play().catch((err)=>{
+    console.warn('play() misslyckades:', err);
+    if(index + 1 < urls.length){ tryAudioUrls(urls, index + 1, btn); }
+    else {
+      toast('❌ Kunde inte spela upp ljud');
+      resetPlayBtn(btn);
+      currentAudio = null; currentPlayBtn = null; currentAudioUrl = null;
+    }
   });
 }
 
-async function playAyah(surah, ayah, btn){
-  toggleAudio(buildAyahAudioUrl(surah, ayah), btn);
+function toggleAudio(urls, btn){
+  if(!btn) return;
+  if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
+    currentAudio.pause(); resetPlayBtn(btn); return;
+  }
+  if(currentPlayBtn === btn && currentAudio && currentAudio.paused){
+    currentAudio.play().catch(()=>toast('❌ Kunde inte spela upp ljud'));
+    btn.innerHTML = '<i class="fas fa-pause"></i>';
+    btn.classList.add('playing');
+    return;
+  }
+  stopCurrentAudio();
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  tryAudioUrls(urls, 0, btn);
 }
 
-async function playSurah(surah, btn){
-  toggleAudio(buildSurahAudioUrl(surah), btn);
+async function playAyah(surah, ayah, btn){ toggleAudio(buildAyahAudioUrls(surah, ayah), btn); }
+async function playSurah(surah, btn){ toggleAudio(buildSurahAudioUrls(surah), btn); }
+
+/* ============================================================
+   ELEVENLABS FÖR SURA (dagens aya)
+   ============================================================ */
+function updateSurahEngineUI(){
+  const engine = localStorage.getItem('surahTTSEngine') || 'qari';
+  const qariRow = document.getElementById('qariRow');
+  const elevenRow = document.getElementById('elevenQariRow');
+  if(qariRow) qariRow.style.display = (engine === 'qari') ? 'flex' : 'none';
+  if(elevenRow) elevenRow.style.display = (engine === 'eleven') ? 'flex' : 'none';
+}
+function switchToElevenMode(){
+  localStorage.setItem('surahTTSEngine', 'eleven');
+  updateSurahEngineUI();
+  loadElevenSurahVoices();
+  toast('✨ ElevenLabs-läge aktiverat');
+}
+function switchToQariMode(){
+  localStorage.setItem('surahTTSEngine', 'qari');
+  updateSurahEngineUI();
+  toast('🎙️ Qari-läge aktiverat');
+}
+
+function loadElevenSurahVoices(){
+  const sel = document.getElementById('elevenSurahVoiceSelect');
+  const key = localStorage.getItem('elevenLabsApiKey');
+  if(!sel) return;
+  if(!key){ sel.innerHTML = '<option value="">Ingen API-nyckel</option>'; return; }
+  sel.innerHTML = '<option value="">Hämtar röster…</option>';
+  fetch('https://api.elevenlabs.io/v1/voices', { headers: { 'xi-api-key': key } })
+    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+    .then(data => {
+      const voices = data.voices || [];
+      if(!voices.length){ sel.innerHTML = '<option value="">Inga röster</option>'; return; }
+      const savedVoiceId = localStorage.getItem('elevenSurahVoiceId');
+      sel.innerHTML = voices.map(v => {
+        const cat = v.category ? ' · ' + v.category : '';
+        return `<option value="${v.voice_id}">${v.name}${cat}</option>`;
+      }).join('');
+      if(savedVoiceId && voices.some(v => v.voice_id === savedVoiceId)){
+        sel.value = savedVoiceId;
+      } else {
+        sel.value = voices[0].voice_id;
+        localStorage.setItem('elevenSurahVoiceId', voices[0].voice_id);
+      }
+      sel.onchange = () => {
+        localStorage.setItem('elevenSurahVoiceId', sel.value);
+        localStorage.setItem('surahTTSEngine', 'eleven');
+        updateSurahEngineUI();
+      };
+      toast('✅ ' + voices.length + ' röster hämtade');
+    })
+    .catch(err => {
+      console.error('Eleven voices-fel:', err);
+      sel.innerHTML = '<option value="">Kunde inte hämta</option>';
+    });
 }
 
 async function playDailyAya(btn){
   if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
-  toggleAudio(buildAyahAudioUrl(currentAyaData.surahNum, currentAyaData.ayahNum), btn);
+  const engine = localStorage.getItem('surahTTSEngine') || 'qari';
+  if(engine === 'eleven'){ await playDailyAyaEleven(btn); }
+  else { toggleAudio(buildAyahAudioUrls(currentAyaData.surahNum, currentAyaData.ayahNum), btn); }
+}
+
+async function playDailyAyaEleven(btn){
+  const apiKey = localStorage.getItem('elevenLabsApiKey');
+  const voiceId = localStorage.getItem('elevenSurahVoiceId');
+  if(!apiKey){ toast('❌ Lägg till ElevenLabs-nyckel först'); return; }
+  if(!voiceId){ toast('❌ Ladda och välj en ElevenLabs-röst först'); return; }
+  if(!currentAyaData){ toast('❌ Ingen aya'); return; }
+  if(btn.dataset.elevenUrl){ toggleAudio([btn.dataset.elevenUrl], btn); return; }
+
+  stopCurrentAudio();
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  const text = currentAyaData.arabic + '. ' + (currentAyaData.sv || currentAyaData.en || '');
+  try{
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+      method: 'POST',
+      headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json', 'Accept': 'audio/mpeg' },
+      body: JSON.stringify({
+        text: text,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: { stability: 0.5, similarity_boost: 0.75 }
+      })
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    btn.dataset.elevenUrl = url;
+    toggleAudio([url], btn);
+  }catch(err){
+    console.error('Eleven surah-fel:', err);
+    toast('❌ ElevenLabs: ' + (err.message || 'fel'));
+    resetPlayBtn(btn);
+  }
 }
 
 function toggleDailyLoop(){
@@ -1659,295 +1924,18 @@ function toggleDailyLoop(){
   const playBtn = document.getElementById('playDailyBtn');
   const isOn = playBtn.dataset.loop === '1';
   playBtn.dataset.loop = isOn ? '0' : '1';
-  if(currentAudio && currentPlayBtn === playBtn){
-    currentAudio.loop = !isOn;
-  }
+  if(currentAudio && currentPlayBtn === playBtn){ currentAudio.loop = !isOn; }
   if(btn) btn.classList.toggle('active', !isOn);
-  toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar Dagens aya tills vidare');
+  toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar tills vidare');
 }
 
 /* ============================================================
-   TALSYNTES
+   ELEVENLABS-KONFIGURATION
    ============================================================ */
-const FEMALE_NAME_HINTS = ['hoda','laila','layla','salma','fatima','zeina','zainab','amira','yasmin','farah','nour','noor','salwa','maryam','iman','rana','reem','hend','sara','salamah'];
-const MALE_NAME_HINTS = ['naayf','majed','tarik','tariq','hamed','karim','khalid','omar','yousef','yusuf','ahmed','waleed','saad','fahd','abdullah','abdul'];
-
-function guessVoiceGenderLabel(name){
-  const n = (name || '').toLowerCase();
-  if(FEMALE_NAME_HINTS.some(h => n.includes(h))) return '♀';
-  if(MALE_NAME_HINTS.some(h => n.includes(h))) return '♂';
-  return '';
-}
-
-function getAllVoices(){
-  if(!('speechSynthesis' in window)) return [];
-  return window.speechSynthesis.getVoices() || [];
-}
-
-function populateTTSVoiceSelect(){
-  const sel = document.getElementById('ttsVoiceSelect');
-  const hint = document.getElementById('ttsVoiceHint');
-  if(!sel) return;
-  if(!sel.dataset.bound){
-    sel.addEventListener('change', ()=> setTTSVoice(sel.value));
-    sel.dataset.bound = '1';
-  }
-  if(!('speechSynthesis' in window)){
-    sel.innerHTML = '<option>Ej tillgängligt i denna webbläsare</option>';
-    sel.disabled = true;
-    if(hint) hint.textContent = 'Din webbläsare stöder inte talsyntes.';
-    return;
-  }
-  const voices = getAllVoices();
-  if(!voices.length){
-    sel.innerHTML = '<option value="">Laddar röster…</option>';
-    if(hint) hint.textContent = '';
-    return;
-  }
-  const arabicVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ar')).slice(0, 3);
-
-  if(!arabicVoices.length){
-    sel.innerHTML = '<option value="">Inga arabiska röster hittades</option>';
-    sel.disabled = true;
-    if(hint) hint.innerHTML = '⚠️ Inga arabiska röster hittades. Installera ett arabiskt röstpaket eller använd ElevenLabs.';
-    return;
-  }
-
-  const savedURI = localStorage.getItem('quranTTSVoiceURI');
-  sel.disabled = false;
-  sel.innerHTML = arabicVoices.map(v => {
-    const g = guessVoiceGenderLabel(v.name);
-    return `<option value="${v.voiceURI}">${g ? g + ' ' : ''}${v.name} (${v.lang})</option>`;
-  }).join('');
-
-  if(savedURI && arabicVoices.some(v => v.voiceURI === savedURI)){
-    sel.value = savedURI;
-  } else {
-    sel.value = arabicVoices[0].voiceURI;
-    localStorage.setItem('quranTTSVoiceURI', arabicVoices[0].voiceURI);
-  }
-
-  if(hint) hint.textContent = arabicVoices.length + ' arabisk(a) röst(er) hittades på den här enheten.';
-}
-
-function setTTSVoice(voiceURI){
-  localStorage.setItem('quranTTSVoiceURI', voiceURI);
-  const voices = getAllVoices();
-  const v = voices.find(x => x.voiceURI === voiceURI);
-  toast('🗣️ Röst: ' + (v ? v.name : voiceURI));
-}
-
-function getSelectedTTSVoice(){
-  const voices = getAllVoices();
-  if(!voices.length) return null;
-  const savedURI = localStorage.getItem('quranTTSVoiceURI');
-  let v = savedURI ? voices.find(x => x.voiceURI === savedURI) : null;
-  if(!v) v = voices.find(x => x.lang && x.lang.toLowerCase().startsWith('ar'));
-  return v || null;
-}
-
-if('speechSynthesis' in window){
-  window.speechSynthesis.onvoiceschanged = populateTTSVoiceSelect;
-  setTimeout(populateTTSVoiceSelect, 300);
-}
-
-function getArabicTextFromBtn(btn){
-  const block = btn.closest('.verse-block');
-  if(!block) return '';
-  const arabicEl = block.querySelector('.arabic');
-  if(!arabicEl) return '';
-  let text = '';
-  arabicEl.childNodes.forEach(n=>{
-    if(n.nodeType === 3) text += n.textContent;
-    else if(n.tagName === 'BR') text += '. ';
-    else text += n.textContent;
-  });
-  return text.replace(/\s+/g,' ').trim();
-}
-
-function toggleTTS(text, btn){
-  if(!('speechSynthesis' in window)){
-    toast('❌ Din enhet/webbläsare stöder inte uppläsning');
-    return;
-  }
-  if(currentPlayBtn === btn && window.speechSynthesis.speaking && !window.speechSynthesis.paused){
-    window.speechSynthesis.pause();
-    btn.innerHTML = '<i class="fas fa-play"></i>';
-    btn.classList.remove('playing');
-    return;
-  }
-  if(currentPlayBtn === btn && window.speechSynthesis.paused){
-    window.speechSynthesis.resume();
-    btn.innerHTML = '<i class="fas fa-pause"></i>';
-    btn.classList.add('playing');
-    return;
-  }
-  stopCurrentAudio();
-  if(!text){ toast('❌ Ingen text att läsa upp'); return; }
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  currentPlayBtn = btn;
-  const utter = new SpeechSynthesisUtterance(text);
-  const chosenVoice = getSelectedTTSVoice();
-  utter.lang = chosenVoice ? chosenVoice.lang : 'ar-SA';
-  utter.rate = 0.82;
-  utter.pitch = 1;
-  if(chosenVoice) utter.voice = chosenVoice;
-  utter.onstart = ()=>{
-    if(currentPlayBtn === btn){
-      btn.innerHTML = '<i class="fas fa-pause"></i>';
-      btn.classList.add('playing');
-    }
-  };
-  utter.onend = ()=>{
-    if(currentPlayBtn === btn){
-      resetPlayBtn(btn);
-      currentPlayBtn = null;
-    }
-  };
-  utter.onerror = ()=>{
-    toast('❌ Kunde inte läsa upp texten');
-    if(currentPlayBtn === btn){
-      resetPlayBtn(btn);
-      currentPlayBtn = null;
-    }
-  };
-  window.speechSynthesis.speak(utter);
-}
-
-function playDuaTTS(btn){
-  const text = getArabicTextFromBtn(btn);
-  if(!text){ toast('❌ Ingen text att läsa upp'); return; }
-  if(ttsEngine === 'eleven'){
-    playDuaEleven(btn, text);
-  } else {
-    toggleTTS(text, btn);
-  }
-}
-
-/* ============================================================
-   ELEVENLABS
-   ============================================================ */
-let ttsEngine = localStorage.getItem('quranTTSEngine') || 'browser';
-
-function setTTSEngine(engine){
-  ttsEngine = engine;
-  localStorage.setItem('quranTTSEngine', engine);
-  const browserBtn = document.getElementById('engineBrowserBtn');
-  const elevenBtn = document.getElementById('engineElevenBtn');
-  const browserPanel = document.getElementById('browserVoicePanel');
-  const elevenPanel = document.getElementById('elevenVoicePanel');
-  if(browserBtn) browserBtn.classList.toggle('active', engine === 'browser');
-  if(elevenBtn) elevenBtn.classList.toggle('active', engine === 'eleven');
-  if(browserPanel) browserPanel.style.display = engine === 'browser' ? '' : 'none';
-  if(elevenPanel) elevenPanel.style.display = engine === 'eleven' ? '' : 'none';
-}
-
 const DEFAULT_ELEVENLABS_API_KEY = 'sk_f4e325ded7425949933964b98467f0614434bd1d03298754';
-
 function loadSavedElevenState(){
   if(!localStorage.getItem('elevenLabsApiKey') && DEFAULT_ELEVENLABS_API_KEY){
     localStorage.setItem('elevenLabsApiKey', DEFAULT_ELEVENLABS_API_KEY);
-  }
-  const keyInput = document.getElementById('elevenApiKeyInput');
-  const savedKey = localStorage.getItem('elevenLabsApiKey');
-  if(keyInput && savedKey) keyInput.value = savedKey;
-  const sel = document.getElementById('elevenVoiceSelect');
-  if(sel && !sel.dataset.bound){
-    sel.addEventListener('change', ()=>{
-      localStorage.setItem('elevenLabsVoiceId', sel.value);
-    });
-    sel.dataset.bound = '1';
-  }
-}
-
-function saveElevenApiKey(){
-  const input = document.getElementById('elevenApiKeyInput');
-  const key = input ? input.value.trim() : '';
-  if(!key){ toast('❌ Ange en API-nyckel'); return; }
-  localStorage.setItem('elevenLabsApiKey', key);
-  toast('🔑 API-nyckel sparad lokalt i din webbläsare');
-}
-
-async function fetchElevenVoices(){
-  const key = localStorage.getItem('elevenLabsApiKey');
-  const sel = document.getElementById('elevenVoiceSelect');
-  if(!key){ toast('❌ Spara din API-nyckel först'); return; }
-  if(!sel) return;
-  sel.innerHTML = '<option value="">Hämtar röster…</option>';
-  try{
-    const res = await fetch('https://api.elevenlabs.io/v1/voices', {
-      headers: { 'xi-api-key': key }
-    });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    const voices = data.voices || [];
-    if(!voices.length){
-      sel.innerHTML = '<option value="">Inga röster hittades på kontot</option>';
-      return;
-    }
-    const savedVoiceId = localStorage.getItem('elevenLabsVoiceId');
-    sel.innerHTML = voices.map(v => {
-      const gender = v.labels && v.labels.gender ? (v.labels.gender === 'female' ? ' ♀' : v.labels.gender === 'male' ? ' ♂' : '') : '';
-      const cat = v.category ? ' · ' + v.category : '';
-      return `<option value="${v.voice_id}">${v.name}${gender}${cat}</option>`;
-    }).join('');
-    if(savedVoiceId && voices.some(v => v.voice_id === savedVoiceId)){
-      sel.value = savedVoiceId;
-    } else {
-      sel.value = voices[0].voice_id;
-      localStorage.setItem('elevenLabsVoiceId', voices[0].voice_id);
-    }
-    toast('✅ ' + voices.length + ' röster hämtade');
-  }catch(err){
-    console.error('ElevenLabs voices-fel:', err);
-    sel.innerHTML = '<option value="">Kunde inte hämta röster</option>';
-    toast('❌ Kunde inte hämta röster (kontrollera din API-nyckel)');
-  }
-}
-
-async function playDuaEleven(btn, text){
-  const apiKey = localStorage.getItem('elevenLabsApiKey');
-  const voiceId = localStorage.getItem('elevenLabsVoiceId');
-  if(!apiKey){ toast('❌ Lägg till och spara din ElevenLabs API-nyckel först'); return; }
-  if(!voiceId){ toast('❌ Hämta och välj en ElevenLabs-röst först'); return; }
-
-  if(btn.dataset.elevenUrl){
-    toggleAudio(btn.dataset.elevenUrl, btn);
-    return;
-  }
-
-  stopCurrentAudio();
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  try{
-    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-      method: 'POST',
-      headers: {
-        'xi-api-key': apiKey,
-        'Content-Type': 'application/json',
-        'Accept': 'audio/mpeg'
-      },
-      body: JSON.stringify({
-        text: text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: { stability: 0.5, similarity_boost: 0.75 }
-      })
-    });
-    if(!res.ok){
-      let msg = 'HTTP ' + res.status;
-      try{
-        const errJson = await res.json();
-        if(errJson && errJson.detail && errJson.detail.message) msg = errJson.detail.message;
-      }catch(e){}
-      throw new Error(msg);
-    }
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    btn.dataset.elevenUrl = url;
-    toggleAudio(url, btn);
-  }catch(err){
-    console.error('ElevenLabs TTS-fel:', err);
-    toast('❌ ElevenLabs: ' + (err.message || 'kunde inte generera ljud'));
-    resetPlayBtn(btn);
   }
 }
 
@@ -1964,17 +1952,13 @@ const ARABIC_TRANSLIT_MAP = {
   '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9',
   ' ':' ','\u200f':'','\u200e':''
 };
-
 function autoTransliterate(arabic){
   if(!arabic) return '';
   let result = '';
   for(let i = 0; i < arabic.length; i++){
     const ch = arabic[i];
-    if(ARABIC_TRANSLIT_MAP[ch] !== undefined){
-      result += ARABIC_TRANSLIT_MAP[ch];
-    } else {
-      result += ch;
-    }
+    if(ARABIC_TRANSLIT_MAP[ch] !== undefined){ result += ARABIC_TRANSLIT_MAP[ch]; }
+    else { result += ch; }
   }
   return result.replace(/\s+/g,' ').trim();
 }
@@ -2004,15 +1988,10 @@ async function fetchAya(surah, ayah){
   stopCurrentAudio();
   const content = document.getElementById('dailyAyaContent');
   content.innerHTML = '<div class="daily-aya-loading">Laddar…</div>';
-  
   try{
     const arRes = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.alafasy`)
       .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)));
-    
-    if(!arRes || !arRes.data || !arRes.data.text){
-      throw new Error('Ingen arabisk text returnerades');
-    }
-    
+    if(!arRes || !arRes.data || !arRes.data.text){ throw new Error('Ingen arabisk text'); }
     const [svRes, enRes, faRes, kuRes, kuKmText] = await Promise.all([
       safeFetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/sv.bernstrom`),
       safeFetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/en.sahih`),
@@ -2020,7 +1999,6 @@ async function fetchAya(surah, ayah){
       safeFetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ku.asan`),
       fetchKuKmTranslation(surah, ayah)
     ]);
-    
     const ayaData = {
       arabic: arRes.data.text,
       surahName: arRes.data.surah.englishName,
@@ -2034,7 +2012,6 @@ async function fetchAya(surah, ayah){
       'ku-KM': kuKmText,
       phonetic: autoTransliterate(arRes.data.text)
     };
-    
     renderDailyAya(ayaData);
   }catch(err){
     console.error('Kunde inte hämta aya:', err);
@@ -2047,13 +2024,10 @@ async function fetchRandomAya(){
   const { surah, ayah } = globalAyaToSurahAya(globalNum);
   await fetchAya(surah, ayah);
 }
-
 function globalAyaToSurahAya(globalNum){
   let remaining = globalNum;
   for(let i = 0; i < SURAH_AYAH_COUNTS.length; i++){
-    if(remaining <= SURAH_AYAH_COUNTS[i]){
-      return { surah: i + 1, ayah: remaining };
-    }
+    if(remaining <= SURAH_AYAH_COUNTS[i]){ return { surah: i + 1, ayah: remaining }; }
     remaining -= SURAH_AYAH_COUNTS[i];
   }
   return { surah: 114, ayah: 6 };
@@ -2062,10 +2036,7 @@ function globalAyaToSurahAya(globalNum){
 function renderDailyAya(data){
   currentAyaData = data;
   const content = document.getElementById('dailyAyaContent');
-
-  let displayText;
-  let extraClass = '';
-
+  let displayText, extraClass = '';
   if(currentLang === 'phonetic'){
     displayText = data.phonetic || autoTransliterate(data.arabic);
     extraClass = ' phonetic';
@@ -2086,7 +2057,6 @@ function renderDailyAya(data){
   } else {
     displayText = data.sv || data.en || '';
   }
-
   content.innerHTML = `
     <div class="daily-aya-ref">${data.surahName} ${data.surahNum}:${data.ayahNum}</div>
     <div class="daily-aya-arabic">${data.arabic}</div>
@@ -2108,7 +2078,6 @@ function renderFallbackAya(){
   data.phonetic = autoTransliterate(data.arabic);
   renderDailyAya(data);
 }
-
 function nextDailyAya(){ fetchRandomAya(); }
 
 function populateSuraSelect(){
@@ -2124,7 +2093,6 @@ function populateSuraSelect(){
     if(parseInt(ayahInput.value) > maxAyah) ayahInput.value = 1;
   });
 }
-
 function goToSuraAyah(){
   const surahNum = parseInt(document.getElementById('suraSelect').value);
   const ayahNum = parseInt(document.getElementById('ayahInput').value);
@@ -2223,10 +2191,7 @@ function renderFavorites(){
     if(currentLang === 'ku') extraClass = ' ku';
     else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
     else if(currentLang === 'fa') extraClass = ' fa';
-    else if(currentLang === 'phonetic'){
-      extraClass = ' phonetic';
-      text = f.phonetic || autoTransliterate(f.arabic);
-    }
+    else if(currentLang === 'phonetic'){ extraClass = ' phonetic'; text = f.phonetic || autoTransliterate(f.arabic); }
     if(!text) text = '—';
     return `
       <div class="fav-item">
@@ -2237,8 +2202,7 @@ function renderFavorites(){
           <button class="fav-view" onclick="viewFavorite(${f.id})" title="Visa"><i class="fas fa-eye"></i></button>
           <button class="fav-del" onclick="removeFavorite(${f.id})" title="Ta bort"><i class="fas fa-trash"></i></button>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 function viewFavorite(id){
@@ -2249,10 +2213,7 @@ function viewFavorite(id){
   if(currentLang === 'ku') extraClass = ' ku';
   else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
   else if(currentLang === 'fa') extraClass = ' fa';
-  else if(currentLang === 'phonetic'){
-    extraClass = ' phonetic';
-    text = f.phonetic || autoTransliterate(f.arabic);
-  }
+  else if(currentLang === 'phonetic'){ extraClass = ' phonetic'; text = f.phonetic || autoTransliterate(f.arabic); }
   if(!text) text = '—';
   document.getElementById('viewFavContent').innerHTML = `
     <div class="modal-ref">${f.surahName} ${f.surahNum}:${f.ayahNum}</div>
@@ -2262,23 +2223,18 @@ function viewFavorite(id){
   `;
   document.getElementById('viewFavModal').classList.remove('h');
 }
-function closeViewFav(){
-  document.getElementById('viewFavModal').classList.add('h');
-}
+function closeViewFav(){ document.getElementById('viewFavModal').classList.add('h'); }
 
 function setLang(lang){
   currentLang = lang;
   localStorage.setItem('quranLang', lang);
-
   document.querySelectorAll('.bottom-lang-inner button').forEach(b=>{
     b.classList.toggle('active', b.dataset.lang === lang);
   });
-
   document.querySelectorAll('.translation[data-tr]').forEach(el=>{
     const key = el.dataset.tr;
-    if(lang === 'phonetic'){
-      el.textContent = PHONETIC[key] || TRANSLATIONS.sv[key] || '';
-    } else {
+    if(lang === 'phonetic'){ el.textContent = PHONETIC[key] || TRANSLATIONS.sv[key] || ''; }
+    else {
       const langData = TRANSLATIONS[lang] || (lang === 'ku-KM' ? TRANSLATIONS.ku : null) || TRANSLATIONS.sv;
       el.textContent = langData[key] || TRANSLATIONS.sv[key] || '';
     }
@@ -2288,7 +2244,6 @@ function setLang(lang){
     else if(lang === 'fa') el.classList.add('fa');
     else if(lang === 'phonetic') el.classList.add('phonetic');
   });
-
   if(currentAyaData) renderDailyAya(currentAyaData);
   renderFavorites();
   toast('🌐 Språk: ' + ({sv:'Svenska',en:'English',fa:'فارسی',ku:'کوردی', 'ku-KM':'Kurmancî', phonetic:'Uttal'}[lang]));
@@ -2387,18 +2342,32 @@ function toast(msg){
   }, 2400);
 }
 
+/* ============================================================
+   INIT
+   ============================================================ */
 applyNight();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
 populateQariSelect();
-populateTTSVoiceSelect();
-setTTSEngine(ttsEngine);
 loadSavedElevenState();
 updateFavBadge();
 renderTafsirTranslateBar();
 applyTafsirFontSettings();
+updateSurahEngineUI();
 fetchRandomAya();
+
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = () => {
+    loadTafsirTTSVoices();
+  };
+  setTimeout(() => { loadTafsirTTSVoices(); }, 500);
+}
+
+setTimeout(() => {
+  const key = localStorage.getItem('elevenLabsApiKey');
+  if(key && localStorage.getItem('surahTTSEngine') === 'eleven') loadElevenSurahVoices();
+}, 800);
 </script>
 
 </body>
