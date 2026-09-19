@@ -129,6 +129,7 @@
     }
     .bdg.h{display:none}
 
+    /* ===== DAGENS AYA ===== */
     .daily-aya{
       background:linear-gradient(135deg,var(--primary),#9B59E8 60%,#7A3FE0);
       color:#fff;border-radius:var(--r);padding:28px 32px;
@@ -147,11 +148,43 @@
       background:radial-gradient(circle, rgba(255,255,255,.10), transparent 70%);
       border-radius:50%;pointer-events:none;
     }
+    .daily-aya-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+      position:relative;z-index:1;
+    }
     .daily-aya-label{
       font-size:12px;font-weight:800;text-transform:uppercase;
-      letter-spacing:.14em;opacity:.9;margin-bottom:16px;
+      letter-spacing:.14em;opacity:.9;
       display:flex;align-items:center;gap:8px;
-      position:relative;z-index:1;
+      padding-top:6px;
+    }
+    /* Små ikon-knappar uppe i hörnet */
+    .daily-aya-actions{
+      display:flex;
+      gap:8px;
+      flex-shrink:0;
+    }
+    .day-action-btn{
+      width:38px;height:38px;border-radius:50%;
+      border:1.5px solid rgba(255,255,255,.5);
+      background:rgba(255,255,255,.18);
+      color:#fff;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:15px;
+      transition:all .2s;
+      backdrop-filter:blur(4px);
+    }
+    .day-action-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
+    .day-action-btn:active{transform:scale(.9)}
+    .day-action-btn.saved{
+      background:#fff;
+      color:var(--amber);
+      border-color:#fff;
     }
     .daily-aya-ref{
       font-size:13px;font-weight:800;opacity:.95;
@@ -168,21 +201,7 @@
       font-feature-settings:"liga" 1, "calt" 1;
       -webkit-font-smoothing:antialiased;
     }
-    .daily-aya-phonetic{
-      font-family:'Times New Roman',Times,serif;
-      font-style:italic;font-size:30px;line-height:1.75;
-      direction:ltr;text-align:left;color:rgba(255,255,255,.97);
-      padding:14px 18px;background:rgba(255,255,255,.14);
-      border-radius:14px;border-left:4px solid rgba(255,255,255,.6);
-      margin-bottom:14px;position:relative;z-index:1;
-      text-shadow:0 1px 2px rgba(0,0,0,.15);word-break:break-word;
-    }
-    .daily-aya-phonetic-label{
-      display:block;font-family:var(--font);font-style:normal;
-      font-size:12px;font-weight:800;text-transform:uppercase;
-      letter-spacing:.1em;opacity:.85;margin-bottom:8px;
-      color:rgba(255,255,255,.9);
-    }
+    /* EN enda översättning under ayan */
     .daily-aya-text{
       font-size:36px;line-height:1.8;
       border-top:1.5px solid rgba(255,255,255,.3);
@@ -194,22 +213,16 @@
       font-family:var(--kurdish-font);font-style:normal;
       font-size:38px;line-height:1.9;
     }
-    .daily-aya-buttons{
-      display:flex;gap:12px;margin-top:20px;
-      position:relative;z-index:1;flex-wrap:wrap;
+    /* Fonetiskt uttal är nu samma stil som vanlig översättning */
+    .daily-aya-text.phonetic{
+      font-family:'Times New Roman',Times,serif;
+      font-style:italic;
+      font-size:34px;
+      line-height:1.75;
+      direction:ltr;
+      text-align:left;
+      color:rgba(255,255,255,.97);
     }
-    .daily-aya-btn{
-      flex:1;min-width:140px;height:46px;
-      border:1.5px solid rgba(255,255,255,.45);
-      background:rgba(255,255,255,.15);
-      color:#fff;border-radius:12px;
-      font-family:var(--font);font-size:15px;font-weight:800;
-      cursor:pointer;transition:all .2s;
-      display:flex;align-items:center;justify-content:center;gap:8px;
-      backdrop-filter:blur(4px);
-    }
-    .daily-aya-btn:active{transform:scale(.96);background:rgba(255,255,255,.3)}
-    .daily-aya-btn.saved{background:rgba(255,255,255,.97);color:var(--primary);border-color:#fff}
     .daily-aya-loading{
       font-size:16px;opacity:.85;font-style:italic;
       padding:24px 0;text-align:center;
@@ -405,21 +418,16 @@
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
-    /* ============================================================
-       FAST SPRÅKVÄLJARE – NEDRE DELEN AV SIDAN
-       ============================================================ */
+    /* ===== FAST SPRÅKVÄLJARE ===== */
     .bottom-lang-bar{
       position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
+      bottom:0;left:0;right:0;
       z-index:100;
       background:var(--surface);
       border-top:1.5px solid var(--border);
       box-shadow:0 -4px 20px rgba(108,71,232,.12);
       padding:10px 16px max(10px, env(safe-area-inset-bottom));
-      display:flex;
-      justify-content:center;
+      display:flex;justify-content:center;
       backdrop-filter:blur(10px);
     }
     body.night .bottom-lang-bar{
@@ -427,46 +435,31 @@
       box-shadow:0 -4px 20px rgba(0,0,0,.3);
     }
     .bottom-lang-inner{
-      max-width:1400px;
-      width:100%;
-      display:flex;
-      gap:6px;
+      max-width:1400px;width:100%;
+      display:flex;gap:6px;
       background:var(--surface2);
       border:1.5px solid var(--border);
-      border-radius:16px;
-      padding:6px;
+      border-radius:16px;padding:6px;
     }
     .bottom-lang-inner button{
-      flex:1;
-      min-width:60px;
-      height:48px;
-      border:none;
-      border-radius:11px;
+      flex:1;min-width:60px;height:48px;
+      border:none;border-radius:11px;
       background:transparent;
-      font-family:var(--font);
-      font-size:14px;
-      font-weight:800;
-      color:var(--text2);
-      cursor:pointer;
+      font-family:var(--font);font-size:14px;font-weight:800;
+      color:var(--text2);cursor:pointer;
       transition:all .2s;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
+      display:flex;align-items:center;justify-content:center;gap:6px;
     }
     .bottom-lang-inner button.active{
-      background:var(--primary);
-      color:#fff;
+      background:var(--primary);color:#fff;
       box-shadow:0 4px 14px var(--primary-glow);
     }
     .bottom-lang-inner button:not(.active):active{
-      background:var(--primary-soft);
-      color:var(--primary);
+      background:var(--primary-soft);color:var(--primary);
     }
     .bottom-lang-inner button[data-lang="ku"],
     .bottom-lang-inner button[data-lang="fa"]{
-      font-family:var(--kurdish-font);
-      font-size:15px;
+      font-family:var(--kurdish-font);font-size:15px;
     }
 
     @media (max-width:768px){
@@ -483,10 +476,10 @@
       .hdr-title{font-size:19px}
       .daily-aya{padding:22px}
       .daily-aya-arabic{font-size:28px;line-height:2.3}
-      .daily-aya-phonetic{font-size:26px;padding:12px 16px}
       .daily-aya-text{font-size:30px;line-height:1.75}
       .daily-aya-text.ku,
       .daily-aya-text.fa{font-size:32px;line-height:1.85}
+      .daily-aya-text.phonetic{font-size:28px}
       .translation{font-size:28px;line-height:1.75}
       .translation.ku,
       .translation.fa{font-size:30px;line-height:1.85}
@@ -504,13 +497,13 @@
       .hdr-bismillah{font-size:24px;padding:6px 0}
       .hdr-logo{width:44px;height:44px;font-size:20px}
       .hdr-title{font-size:17px}
-      .daily-aya{padding:20px}
+      .daily-aya{padding:18px 16px}
       .daily-aya-arabic{font-size:25px;line-height:2.3}
-      .daily-aya-phonetic{font-size:22px;line-height:1.7;padding:10px 14px}
-      .daily-aya-phonetic-label{font-size:11px}
-      .daily-aya-text{font-size:26px;line-height:1.75}
+      .daily-aya-text{font-size:24px;line-height:1.7}
       .daily-aya-text.ku,
-      .daily-aya-text.fa{font-size:28px;line-height:1.8}
+      .daily-aya-text.fa{font-size:26px;line-height:1.8}
+      .daily-aya-text.phonetic{font-size:22px;line-height:1.7}
+      .day-action-btn{width:34px;height:34px;font-size:13px}
       .icon-btn{width:44px;height:44px;font-size:17px}
       .verse-tools{top:6px;left:6px}
       .verse-tool{width:32px;height:32px;font-size:13px}
@@ -534,7 +527,6 @@
       .bottom-lang-inner button{height:42px;font-size:12px;min-width:50px;padding:0 4px}
       .bottom-lang-inner button[data-lang="ku"],
       .bottom-lang-inner button[data-lang="fa"]{font-size:13px}
-      .bottom-lang-inner button i{display:none}
     }
   </style>
 </head>
@@ -566,18 +558,20 @@
   </div>
 
   <div class="daily-aya">
-    <div class="daily-aya-label"><i class="fas fa-star-and-crescent"></i> Dagens aya</div>
+    <div class="daily-aya-top">
+      <div class="daily-aya-label"><i class="fas fa-star-and-crescent"></i> Dagens aya</div>
+      <div class="daily-aya-actions">
+        <button class="day-action-btn" onclick="nextDailyAya()" title="Ny aya">
+          <i class="fas fa-rotate-right"></i>
+        </button>
+        <button class="day-action-btn" id="saveFavBtn" onclick="saveCurrentAyaAsFavorite()" title="Spara favorit">
+          <i class="far fa-star"></i>
+        </button>
+      </div>
+    </div>
 
     <div id="dailyAyaContent">
       <div class="daily-aya-loading">Laddar…</div>
-    </div>
-    <div class="daily-aya-buttons">
-      <button class="daily-aya-btn" onclick="nextDailyAya()">
-        <i class="fas fa-rotate"></i> Ny aya
-      </button>
-      <button class="daily-aya-btn" id="saveFavBtn" onclick="saveCurrentAyaAsFavorite()">
-        <i class="fas fa-star"></i> Spara favorit
-      </button>
     </div>
   </div>
 
@@ -768,9 +762,6 @@
 
 </div>
 
-<!-- ============================================================
-     FAST SPRÅKVÄLJARE – NEDERST PÅ SIDAN
-     ============================================================ -->
 <div class="bottom-lang-bar">
   <div class="bottom-lang-inner">
     <button data-lang="sv" onclick="setLang('sv')">🇸🇪 Svenska</button>
@@ -961,10 +952,10 @@ async function fetchAya(surah, ayah){
       surahNameAr: arRes.data.surah.name,
       surahNum: arRes.data.surah.number,
       ayahNum: arRes.data.numberInSurah,
-      sv: svRes.data.text || enRes.data.text,
+      sv: (svRes.data && svRes.data.text) ? svRes.data.text : enRes.data.text,
       en: enRes.data.text,
-      fa: faRes.data.text || enRes.data.text,
-      ku: kuRes.data.text || enRes.data.text,
+      fa: (faRes.data && faRes.data.text) ? faRes.data.text : enRes.data.text,
+      ku: (kuRes.data && kuRes.data.text) ? kuRes.data.text : enRes.data.text,
       phonetic: autoTransliterate(arRes.data.text)
     };
     renderDailyAya(ayaData);
@@ -980,32 +971,36 @@ async function fetchRandomAya(){
   await fetchAya(surah, ayah);
 }
 
+/* ============================================================
+   RENDER – EN översättning under ayan, ingen dubbel fonetisk ruta
+   ============================================================ */
 function renderDailyAya(data){
   currentAyaData = data;
   const content = document.getElementById('dailyAyaContent');
-  let translation = data[currentLang] || data.sv || data.en;
 
+  // Bestäm text att visa beroende på språk
+  let displayText;
   let extraClass = '';
-  let phoneticHtml = '';
 
-  if(currentLang === 'ku') extraClass = ' ku';
-  else if(currentLang === 'fa') extraClass = ' fa';
-  else if(currentLang === 'phonetic'){
+  if(currentLang === 'phonetic'){
+    displayText = data.phonetic || autoTransliterate(data.arabic);
     extraClass = ' phonetic';
-    translation = data.phonetic || autoTransliterate(data.arabic);
-    phoneticHtml = `
-      <div class="daily-aya-phonetic">
-        <span class="daily-aya-phonetic-label">🔤 Fonetiskt uttal</span>
-        ${translation}
-      </div>
-    `;
+  } else if(currentLang === 'ku'){
+    displayText = data.ku || data.en;
+    extraClass = ' ku';
+  } else if(currentLang === 'fa'){
+    displayText = data.fa || data.en;
+    extraClass = ' fa';
+  } else if(currentLang === 'en'){
+    displayText = data.en;
+  } else {
+    displayText = data.sv || data.en;   // svenska (fallback till engelska)
   }
 
   content.innerHTML = `
     <div class="daily-aya-ref">${data.surahName} ${data.surahNum}:${data.ayahNum}</div>
     <div class="daily-aya-arabic">${data.arabic}</div>
-    ${phoneticHtml}
-    <div class="daily-aya-text${extraClass}">${translation}</div>
+    <div class="daily-aya-text${extraClass}">${displayText}</div>
   `;
   updateSaveFavBtn();
 }
@@ -1076,15 +1071,22 @@ function updateSaveFavBtn(){
   if(!btn) return;
   if(isCurrentAyaSaved()){
     btn.classList.add('saved');
-    btn.innerHTML = '<i class="fas fa-check"></i> Sparad';
+    btn.innerHTML = '<i class="fas fa-star"></i>';
   } else {
     btn.classList.remove('saved');
-    btn.innerHTML = '<i class="fas fa-star"></i> Spara favorit';
+    btn.innerHTML = '<i class="far fa-star"></i>';
   }
 }
 function saveCurrentAyaAsFavorite(){
   if(!currentAyaData){ toast('❌ Ingen aya att spara'); return; }
-  if(isCurrentAyaSaved()){ toast('⭐ Redan sparad'); return; }
+  if(isCurrentAyaSaved()){
+    // Om redan sparad – ta bort
+    favorites = favorites.filter(f => !(f.surahNum === currentAyaData.surahNum && f.ayahNum === currentAyaData.ayahNum));
+    saveFavorites();
+    updateSaveFavBtn();
+    toast('⭐ Borttagen från favoriter');
+    return;
+  }
   favorites.push({
     id: Date.now(),
     surahNum: currentAyaData.surahNum,
@@ -1119,7 +1121,7 @@ function closeFavorites(){
 function renderFavorites(){
   const c = document.getElementById('favList');
   if(!favorites.length){
-    c.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.<br><span style="font-size:13px;font-weight:600">Tryck på ”Spara favorit” vid en aya.</span></div>';
+    c.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.<br><span style="font-size:13px;font-weight:600">Tryck på stjärnan vid en aya.</span></div>';
     return;
   }
   c.innerHTML = favorites.slice().reverse().map(f => {
@@ -1180,7 +1182,7 @@ function setLang(lang){
     if(lang === 'phonetic'){
       el.textContent = PHONETIC[key] || TRANSLATIONS.sv[key] || '';
     } else {
-      el.textContent = TRANSLATIONS[lang][key] || '';
+      el.textContent = TRANSLATIONS[lang][key] || TRANSLATIONS.sv[key] || '';
     }
     el.classList.remove('ku','fa','phonetic');
     if(lang === 'ku') el.classList.add('ku');
