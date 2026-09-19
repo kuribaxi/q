@@ -679,6 +679,14 @@
   </div>
 
   <div class="section">
+    <div class="section-title"><i class="fas fa-comment-dots"></i> Röst för böner & duor</div>
+    <div class="sura-picker">
+      <select id="ttsVoiceSelect"></select>
+    </div>
+    <div id="ttsVoiceHint" style="font-size:13px;color:var(--text3);font-weight:600;margin-top:10px;line-height:1.5"></div>
+  </div>
+
+  <div class="section">
     <div class="section-title"><i class="fas fa-star"></i> آیة الکرسی · Ayat al-Kursi</div>
     <div class="verse-block">
       <div class="verse-tools">
@@ -1178,17 +1186,103 @@ function playDailyAya(btn){
 /* ============================================================
    TALSYNTES – FÖR BÖNER/DUOR SOM INTE FINNS I QURAN-API:T
    (Qunūt, rukya-böner, Ljusets bön m.fl.)
+   Låter användaren välja mellan olika tillgängliga röster
+   (manlig/kvinnlig, beroende på vad enheten erbjuder).
    ============================================================ */
-let ttsPreferredVoice = null;
-function pickArabicVoice(){
-  if(!('speechSynthesis' in window)) return null;
-  const voices = window.speechSynthesis.getVoices();
-  if(!voices || !voices.length) return null;
-  return voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar')) || null;
+const FEMALE_NAME_HINTS = ['hoda','laila','layla','salma','fatima','zeina','zainab','amira','yasmin','farah','nour','noor','salwa','maryam','iman','rana','reem','hend','sara','salamah','maged f','tarik f'];
+const MALE_NAME_HINTS = ['naayf','majed','tarik','tariq','hamed','karim','khalid','omar','yousef','yusuf','ahmed','waleed','saad','fahd','abdullah','abdul'];
+
+function guessVoiceGenderLabel(name){
+  const n = (name || '').toLowerCase();
+  if(FEMALE_NAME_HINTS.some(h => n.includes(h))) return '♀';
+  if(MALE_NAME_HINTS.some(h => n.includes(h))) return '♂';
+  return '';
 }
+
+function getAllVoices(){
+  if(!('speechSynthesis' in window)) return [];
+  return window.speechSynthesis.getVoices() || [];
+}
+
+function populateTTSVoiceSelect(){
+  const sel = document.getElementById('ttsVoiceSelect');
+  const hint = document.getElementById('ttsVoiceHint');
+  if(!sel) return;
+  if(!sel.dataset.bound){
+    sel.addEventListener('change', ()=> setTTSVoice(sel.value));
+    sel.dataset.bound = '1';
+  }
+  if(!('speechSynthesis' in window)){
+    sel.innerHTML = '<option>Ej tillgängligt i denna webbläsare</option>';
+    sel.disabled = true;
+    if(hint) hint.textContent = 'Din webbläsare stöder inte talsyntes.';
+    return;
+  }
+  const voices = getAllVoices();
+  const arabicVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
+  const otherVoices = voices.filter(v => !(v.lang && v.lang.toLowerCase().startsWith('ar')));
+
+  if(!voices.length){
+    sel.innerHTML = '<option value="">Laddar röster…</option>';
+    if(hint) hint.textContent = '';
+    return;
+  }
+
+  const savedURI = localStorage.getItem('quranTTSVoiceURI');
+  let options = '';
+  if(arabicVoices.length){
+    options += `<optgroup label="🕌 Arabiska röster">` +
+      arabicVoices.map(v => {
+        const g = guessVoiceGenderLabel(v.name);
+        return `<option value="${v.voiceURI}">${g ? g + ' ' : ''}${v.name} (${v.lang})</option>`;
+      }).join('') + `</optgroup>`;
+  }
+  if(otherVoices.length){
+    options += `<optgroup label="🌐 Övriga röster (ej arabiska)">` +
+      otherVoices.map(v => `<option value="${v.voiceURI}">${v.name} (${v.lang})</option>`).join('') + `</optgroup>`;
+  }
+  sel.innerHTML = options;
+  sel.disabled = false;
+
+  // Välj sparad röst om den finns, annars första arabiska röst
+  if(savedURI && voices.some(v => v.voiceURI === savedURI)){
+    sel.value = savedURI;
+  } else if(arabicVoices.length){
+    sel.value = arabicVoices[0].voiceURI;
+    localStorage.setItem('quranTTSVoiceURI', arabicVoices[0].voiceURI);
+  } else if(voices.length){
+    sel.value = voices[0].voiceURI;
+  }
+
+  if(hint){
+    if(!arabicVoices.length){
+      hint.innerHTML = '⚠️ Inga arabiska röster hittades på den här enheten. Installera ett arabiskt röstpaket i telefonens/datorns inställningar (Tal/Tillgänglighet) för bättre uttal, eller välj en av röstena ovan som tillfällig lösning.';
+    } else {
+      hint.textContent = arabicVoices.length + ' arabisk(a) röst(er) hittades. Prova gärna olika för att hitta den som uttalar tydligast.';
+    }
+  }
+}
+
+function setTTSVoice(voiceURI){
+  localStorage.setItem('quranTTSVoiceURI', voiceURI);
+  const voices = getAllVoices();
+  const v = voices.find(x => x.voiceURI === voiceURI);
+  toast('🗣️ Röst: ' + (v ? v.name : voiceURI));
+}
+
+function getSelectedTTSVoice(){
+  const voices = getAllVoices();
+  if(!voices.length) return null;
+  const savedURI = localStorage.getItem('quranTTSVoiceURI');
+  let v = savedURI ? voices.find(x => x.voiceURI === savedURI) : null;
+  if(!v) v = voices.find(x => x.lang && x.lang.toLowerCase().startsWith('ar'));
+  return v || null;
+}
+
 if('speechSynthesis' in window){
-  window.speechSynthesis.onvoiceschanged = ()=>{ ttsPreferredVoice = pickArabicVoice(); };
-  ttsPreferredVoice = pickArabicVoice();
+  window.speechSynthesis.onvoiceschanged = populateTTSVoiceSelect;
+  // Vissa webbläsare (t.ex. Chrome) laddar röstlistan asynkront
+  setTimeout(populateTTSVoiceSelect, 300);
 }
 
 function getArabicTextFromBtn(btn){
@@ -1229,10 +1323,11 @@ function toggleTTS(text, btn){
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
   currentPlayBtn = btn;
   const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'ar-SA';
+  const chosenVoice = getSelectedTTSVoice();
+  utter.lang = chosenVoice ? chosenVoice.lang : 'ar-SA';
   utter.rate = 0.82;
   utter.pitch = 1;
-  if(ttsPreferredVoice) utter.voice = ttsPreferredVoice;
+  if(chosenVoice) utter.voice = chosenVoice;
   utter.onstart = ()=>{
     if(currentPlayBtn === btn){
       btn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -1729,6 +1824,7 @@ updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
 populateQariSelect();
+populateTTSVoiceSelect();
 updateFavBadge();
 fetchRandomAya();
 </script>
