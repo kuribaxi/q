@@ -472,10 +472,11 @@
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
+    /* ===== TAFSIR ===== */
     .tafsir-card{
-      max-width:760px;width:100%;padding:0;
+      max-width:800px;width:100%;padding:0;
       display:flex;flex-direction:column;
-      max-height:85vh;overflow:hidden;
+      max-height:90vh;overflow:hidden;
     }
     .tafsir-topbar{
       display:flex;justify-content:space-between;align-items:center;
@@ -506,6 +507,34 @@
       box-shadow:0 4px 14px var(--primary-glow);
     }
     .tafsir-lang-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
+
+    /* Översättnings-bar i tafsir-modalen */
+    .tafsir-translate-bar{
+      display:flex;gap:6px;flex-wrap:wrap;align-items:center;
+      padding:12px 24px;
+      background:var(--surface2);
+      border-bottom:1.5px solid var(--border);
+      flex-shrink:0;
+    }
+    .tafsir-translate-bar .label{
+      font-size:12px;font-weight:800;color:var(--text3);
+      text-transform:uppercase;letter-spacing:.06em;
+      margin-right:4px;
+      display:flex;align-items:center;gap:6px;
+    }
+    .tafsir-translate-bar button{
+      padding:6px 12px;border-radius:50px;
+      border:1.5px solid var(--border);
+      background:var(--surface);color:var(--text2);
+      font-family:var(--font);font-size:12px;font-weight:800;
+      cursor:pointer;transition:all .2s;
+      display:flex;align-items:center;gap:5px;
+    }
+    .tafsir-translate-bar button.active{
+      background:var(--emerald);color:#fff;border-color:var(--emerald);
+    }
+    .tafsir-translate-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
+
     .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
     .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
     .tafsir-body{font-size:19px;line-height:1.9;color:var(--text)}
@@ -630,6 +659,8 @@
       .tafsir-title{font-size:16px}
       .tafsir-lang-bar{padding:0 16px 12px;gap:5px}
       .tafsir-lang-bar button{font-size:12px;padding:7px 11px}
+      .tafsir-translate-bar{padding:10px 16px;gap:5px}
+      .tafsir-translate-bar button{font-size:11px;padding:5px 10px}
       .tafsir-scroll{padding:14px 16px 20px}
       .tafsir-body{font-size:16px;line-height:1.8}
       .modal-card .modal-arabic{font-size:28px;line-height:2.3}
@@ -981,6 +1012,14 @@
       <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
     </div>
     <div class="tafsir-lang-bar" id="tafsirLangBar"></div>
+    <div class="tafsir-translate-bar" id="tafsirTranslateBar">
+      <span class="label"><i class="fas fa-language"></i> Översätt tafsir till:</span>
+      <button data-tl="ku" onclick="translateTafsirTo('ku')">🏳️ کوردی سۆرانی</button>
+      <button data-tl="ku-KM" onclick="translateTafsirTo('ku-KM')">🏴 Kurdî Kurmancî</button>
+      <button data-tl="fa" onclick="translateTafsirTo('fa')">🇮🇷 فارسی</button>
+      <button data-tl="sv" onclick="translateTafsirTo('sv')">🇸🇪 Svenska</button>
+      <button data-tl="original" onclick="translateTafsirTo('original')">📄 Original</button>
+    </div>
     <div class="tafsir-scroll">
       <div class="tafsir-source" id="tafsirSource"></div>
       <div class="tafsir-body" id="tafsirBody"><div class="daily-aya-loading">Laddar…</div></div>
@@ -1081,38 +1120,24 @@ const PHONETIC = {
 };
 
 /* ============================================================
-   TAFSIR – RIKTIGA TAFSIR-DATABASER (spa5k/tafsir_api)
+   TAFSIR – endast riktiga tafsir-databaser (arabiska + engelska
+   + kurdiska sorani + kurmanji). Översättning av tafsir till
+   andra språk görs via Google Translate-knappar i modalen.
    ============================================================ */
 const TAFSIRS = [
-  // Arabiska tafsirer
   { lang:'ar-ibnkathir', flag:'🇸🇦', label:'العربية · ابن كثير', slug:'ar-tafsir-ibn-kathir', name:'تفسير ابن كثير', rtl:true },
   { lang:'ar-tabari', flag:'🇸🇦', label:'العربية · الطبري', slug:'ar-tafsir-al-tabari', name:'تفسير الطبري', rtl:true },
   { lang:'ar-saddi', flag:'🇸🇦', label:'العربية · السعدي', slug:'ar-tafseer-al-saddi', name:'تفسير السعدي', rtl:true },
-  { lang:'ar-baghawi', flag:'🇸🇦', label:'العربية · البغوي', slug:'ar-tafsir-al-baghawi', name:'تفسير البغوي', rtl:true },
-  { lang:'ar-qurtubi', flag:'🇸🇦', label:'العربية · القرطبي', slug:'ar-tafseer-al-qurtubi', name:'تفسير القرطبي', rtl:true },
-  { lang:'ar-muyassar', flag:'🇸🇦', label:'العربية · الميسر', slug:'ar-tafsir-muyassar', name:'تفسير الميسر', rtl:true },
-  
-  // Engelska tafsirer
   { lang:'en-ibnkathir', flag:'🇬🇧', label:'English · Ibn Kathir', slug:'en-tafisr-ibn-kathir', name:'Tafsir Ibn Kathir (English)', rtl:false },
   { lang:'en-maarif', flag:'🇬🇧', label:'English · Maarif-ul-Quran', slug:'en-tafsir-maarif-ul-quran', name:'Maarif-ul-Quran', rtl:false },
-  { lang:'en-tazkirul', flag:'🇬🇧', label:'English · Tazkirul Quran', slug:'en-tazkirul-quran', name:'Tazkirul Quran', rtl:false },
-  { lang:'en-jalalayn', flag:'🇬🇧', label:'English · Al-Jalalayn', slug:'en-al-jalalayn', name:'Al-Jalalayn', rtl:false },
-  
-  // Kurdiska (Sorani) tafsirer
   { lang:'ku-rebar', flag:'🏳️', label:'کوردی سۆرانی · ڕەبار', slug:'kurd-tafsir-rebar', name:'تەفسیری ڕەبار', rtl:true },
-  
-  // Kurmanji (Badini)
-  { lang:'ku-KM-sanahi', flag:'🏴', label:'Kurdî Kurmancî · Sanahî', slug:'kurd-tafsir-sanahi', name:'Tefsîra Sanahî', rtl:true },
-  
-  // Svenska – ingen fullständig tafsir finns
-  { lang:'sv', flag:'🇸🇪', label:'Svenska', slug:null, name:'Ingen tafsir tillgänglig', rtl:false, unavailable:true },
-  
-  // Persiska – ingen fullständig tafsir finns
-  { lang:'fa', flag:'🇮🇷', label:'فارسی', slug:null, name:'تفسیر موجود نیست', rtl:true, unavailable:true }
+  { lang:'ku-KM-sanahi', flag:'🏴', label:'Kurdî Kurmancî · Sanahî', slug:'kurd-tafsir-sanahi', name:'Tefsîra Sanahî', rtl:true }
 ];
 
 let currentTafsirRef = null;
 let currentTafsirLang = localStorage.getItem('quranTafsirLang') || 'ar-ibnkathir';
+let currentTafsirHtml = '';
+let currentTafsirTranslation = localStorage.getItem('quranTafsirTranslation') || 'original';
 
 function openTafsirAyah(surah, ayah, title){
   currentTafsirRef = { type:'ayah', surah, ayah };
@@ -1131,6 +1156,7 @@ function openTafsirDaily(){
 function openTafsirModalCommon(title){
   document.getElementById('tafsirTitle').innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + title;
   renderTafsirLangBar();
+  renderTafsirTranslateBar();
   document.getElementById('tafsirModal').classList.remove('h');
   document.querySelector('.tafsir-scroll').scrollTop = 0;
   loadTafsir(currentTafsirLang);
@@ -1146,11 +1172,86 @@ function renderTafsirLangBar(){
   ).join('');
 }
 
+function renderTafsirTranslateBar(){
+  const bar = document.getElementById('tafsirTranslateBar');
+  if(!bar) return;
+  bar.querySelectorAll('button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tl === currentTafsirTranslation);
+  });
+}
+
 function selectTafsir(lang){
   currentTafsirLang = lang;
   localStorage.setItem('quranTafsirLang', lang);
   renderTafsirLangBar();
   loadTafsir(lang);
+}
+
+function translateTafsirTo(targetLang){
+  currentTafsirTranslation = targetLang;
+  localStorage.setItem('quranTafsirTranslation', targetLang);
+  renderTafsirTranslateBar();
+  if(targetLang === 'original'){
+    document.getElementById('tafsirBody').innerHTML = currentTafsirHtml;
+  } else {
+    applyGoogleTranslate(targetLang);
+  }
+}
+
+/* Använder Google Translate widget för att översätta tafsir-texten
+   till valt språk utan att lämna sidan. */
+function applyGoogleTranslate(targetLang){
+  const body = document.getElementById('tafsirBody');
+  if(!currentTafsirHtml){ return; }
+  
+  // Mappa våra koder till Google Translate-språkkoder
+  const map = {
+    'sv': 'sv',
+    'fa': 'fa',
+    'ku': 'ku',      // Sorani (Google har "ku" för kurmanji, sorani stöds ibland som "ckb")
+    'ku-KM': 'ku'    // Kurmanji
+  };
+  // Sorani har egen kod "ckb" i Google Translate
+  const gtLang = targetLang === 'ku' ? 'ckb' : (map[targetLang] || 'en');
+  
+  // Rensa texten från HTML för att skicka till Google Translate
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = currentTafsirHtml;
+  const plainText = tempDiv.textContent || tempDiv.innerText || '';
+  
+  body.innerHTML = '<div class="daily-aya-loading">Översätter med Google Translate…</div>';
+  
+  // Använd gratis-endpoint (mycket använd i JS). OBS: informell endpoint,
+  // kan sluta fungera. Fallback till widget-metod om den misslyckas.
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(gtLang)}&dt=t&q=${encodeURIComponent(plainText.slice(0, 4500))}`;
+  
+  fetch(url)
+    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+    .then(data => {
+      if(data && data[0]){
+        const translated = data[0].map(seg => seg[0]).join('');
+        const dir = ['fa','ku','ckb','ar'].includes(gtLang) ? 'rtl' : 'ltr';
+        body.innerHTML = `<div class="tafsir-verse-num" style="background:var(--emerald-soft);color:#0A7B4E">🌐 Översatt med Google Translate (${gtLang.toUpperCase()})</div>
+          <p dir="${dir}" style="direction:${dir};text-align:${dir === 'rtl' ? 'right' : 'left'}">${escapeHtml(translated)}</p>`;
+      } else {
+        throw new Error('Ingen översättning returnerades');
+      }
+    })
+    .catch(err => {
+      console.error('Google Translate-fel:', err);
+      body.innerHTML = `<div class="fav-empty">
+        <i class="fas fa-triangle-exclamation"></i>
+        Kunde inte översätta automatiskt.<br><br>
+        <span style="font-size:13px;font-weight:600">
+          Tips: Öppna sidan i Edge och använd <b>Högerklicka → Översätt till…</b>,<br>
+          eller markera texten och använd webbläsarens inbyggda översättning.
+        </span>
+      </div>`;
+    });
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function sanitizeTafsirHtml(html){
@@ -1180,23 +1281,6 @@ async function loadTafsir(lang){
   
   if(!currentTafsirRef) return;
 
-  if(meta.unavailable || !meta.slug){
-    body.innerHTML = `
-      <div class="fav-empty">
-        <i class="fas fa-circle-info"></i>
-        <strong>Ingen fullständig tafsir tillgänglig på detta språk ännu</strong><br><br>
-        <span style="font-size:14px;font-weight:600;color:var(--text3)">
-          Riktiga tafsir-databaser finns på:<br>
-          🇸🇦 Arabiska (Ibn Kathir, Tabari, Saddi m.fl.)<br>
-          🏳️ Kurdiska Sorani (Rebar)<br>
-          🏴 Kurmanji (Sanahi)<br>
-          🇬🇧 Engelska (Ibn Kathir, Maarif-ul-Quran m.fl.)<br><br>
-          Välj ett av dessa språk ovan för att läsa riktig tafsir.
-        </span>
-      </div>`;
-    return;
-  }
-
   try{
     const surah = currentTafsirRef.type === 'ayah' ? currentTafsirRef.surah : currentTafsirRef.chapter;
     const ayah = currentTafsirRef.type === 'ayah' ? currentTafsirRef.ayah : 1;
@@ -1205,11 +1289,19 @@ async function loadTafsir(lang){
     
     if(!result || !result.html || result.html.trim() === ''){
       body.innerHTML = '<div class="fav-empty"><i class="fas fa-circle-info"></i>Tafsir-text saknas för denna vers på detta språk.</div>';
+      currentTafsirHtml = '';
       return;
     }
     
     sourceEl.textContent = result.resourceName || meta.name || '';
-    body.innerHTML = result.html;
+    currentTafsirHtml = result.html;
+    
+    // Om användaren har valt en översättning, applicera den
+    if(currentTafsirTranslation !== 'original'){
+      applyGoogleTranslate(currentTafsirTranslation);
+    } else {
+      body.innerHTML = currentTafsirHtml;
+    }
     
   }catch(err){
     console.error('Tafsir-fel:', err);
@@ -1776,11 +1868,26 @@ function autoTransliterate(arabic){
 }
 
 /* ============================================================
-   DAGENS AYA – ROBUST FETCH (fixat)
-   Varje fetch har egen .catch så ett fel inte stoppar allt.
+   DAGENS AYA
+   Kurmanji: använder quran.com API v4 translation ID 135 (Kurmanji)
+   Faller tillbaka till sv/en om det inte finns.
    ============================================================ */
 function safeFetchJson(url){
-  return fetch(url).then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))).catch(() => ({ data: { text: '' } }));
+  return fetch(url)
+    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+    .catch(() => ({ data: { text: '' } }));
+}
+
+async function fetchKuKmTranslation(surah, ayah){
+  try{
+    const res = await fetch(`https://api.quran.com/api/v4/verses/by_key/${surah}:${ayah}?translations=135&fields=text_uthmani`);
+    if(!res.ok) return '';
+    const data = await res.json();
+    if(data && data.verse && data.verse.translations && data.verse.translations[0]){
+      return data.verse.translations[0].text.replace(/<[^>]*>/g, '').trim();
+    }
+  }catch(e){ /* tyst fel */ }
+  return '';
 }
 
 async function fetchAya(surah, ayah){
@@ -1789,7 +1896,6 @@ async function fetchAya(surah, ayah){
   content.innerHTML = '<div class="daily-aya-loading">Laddar…</div>';
   
   try{
-    // Hämta arabiska separat – detta är kritiskt
     const arRes = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.alafasy`)
       .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)));
     
@@ -1797,29 +1903,13 @@ async function fetchAya(surah, ayah){
       throw new Error('Ingen arabisk text returnerades');
     }
     
-    // Hämta översättningar parallellt men var och en med egen fallback
-    const [svRes, enRes, faRes, kuRes, kuKmRes] = await Promise.all([
+    const [svRes, enRes, faRes, kuRes, kuKmText] = await Promise.all([
       safeFetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/sv.bernstrom`),
       safeFetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/en.sahih`),
       safeFetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/fa.fooladvand`),
       safeFetchJson(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ku.asan`),
-      // Kurmanji: använd ku.asan som bas (officiell kurmanji-utgåva finns ej på alquran.cloud)
-      // Vi hämtar en separat kurmanji-källa från quran.com API v4
-      safeFetchJson(`https://api.quran.com/api/v4/quran/translations/135?chapter_number=${surah}`)
+      fetchKuKmTranslation(surah, ayah)
     ]);
-    
-    // Extrahera kurmanji-text från quran.com (translation ID 135 = Kurmanji)
-    let kuKmText = '';
-    try{
-      if(kuKmRes && kuKmRes.translations && kuKmRes.translations[0] && kuKmRes.translations[0].text){
-        // quran.com returnerar hela suran – vi måste hitta rätt vers
-        // Verserna är separerade; vi använder en enkel metod: matcha mot ayah-nummer
-        const allText = kuKmRes.translations[0].text;
-        // quran.com API v4 med chapter_number returnerar hela kapitlet som en sträng
-        // Vi kan inte enkelt plocka ut en vers – använd istället en annan approach
-        kuKmText = '';
-      }
-    }catch(e){ kuKmText = ''; }
     
     const ayaData = {
       arabic: arRes.data.text,
@@ -1831,20 +1921,9 @@ async function fetchAya(surah, ayah){
       en: (enRes.data && enRes.data.text) ? enRes.data.text : '',
       fa: (faRes.data && faRes.data.text) ? faRes.data.text : '',
       ku: (kuRes.data && kuRes.data.text) ? kuRes.data.text : '',
-      // Kurmanji: försök hämta via quran.com enskild vers
-      'ku-KM': kuKmText,
+      'ku-KM': kuKmText || '',
       phonetic: autoTransliterate(arRes.data.text)
     };
-    
-    // Om kurmanji saknas – hämta separat via quran.com
-    if(!ayaData['ku-KM']){
-      try{
-        const kmRes = await fetch(`https://api.quran.com/api/v4/verses/by_key/${surah}:${ayah}?translations=135`).then(r => r.ok ? r.json() : null);
-        if(kmRes && kmRes.verse && kmRes.verse.translations && kmRes.verse.translations[0]){
-          ayaData['ku-KM'] = kmRes.verse.translations[0].text.replace(/<[^>]*>/g, '').trim();
-        }
-      }catch(e){ /* ignorera */ }
-    }
     
     renderDailyAya(ayaData);
   }catch(err){
@@ -1881,18 +1960,17 @@ function renderDailyAya(data){
     displayText = data.phonetic || autoTransliterate(data.arabic);
     extraClass = ' phonetic';
   } else if(currentLang === 'ku'){
-    displayText = data.ku || data.en || '';
+    displayText = data.ku || '';
     extraClass = ' ku';
+    if(!displayText) displayText = '⚠️ Sorani-översättning ej tillgänglig för denna vers.';
   } else if(currentLang === 'ku-KM'){
-    // Kurmanji: använd kurmanji-specifik text om tillgänglig, annars visa tydlig notis
     displayText = data['ku-KM'] || '';
     extraClass = ' ku-KM';
-    if(!displayText){
-      displayText = '⚠️ Kurmanji-översättning ej tillgänglig för denna vers. Prova ett annat språk.';
-    }
+    if(!displayText) displayText = '⚠️ Kurmanji-översättning ej tillgänglig för denna vers. Prova persiska eller ett annat språk.';
   } else if(currentLang === 'fa'){
-    displayText = data.fa || data.en || '';
+    displayText = data.fa || '';
     extraClass = ' fa';
+    if(!displayText) displayText = '⚠️ Persisk översättning ej tillgänglig för denna vers.';
   } else if(currentLang === 'en'){
     displayText = data.en || '';
   } else {
@@ -2208,6 +2286,7 @@ populateTTSVoiceSelect();
 setTTSEngine(ttsEngine);
 loadSavedElevenState();
 updateFavBadge();
+renderTafsirTranslateBar();
 fetchRandomAya();
 </script>
 
