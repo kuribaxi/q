@@ -135,7 +135,6 @@
     }
     .bdg.h{display:none}
 
-    /* ===== DAGENS AYA ===== */
     .daily-aya{
       background:linear-gradient(135deg,var(--primary),#9B59E8 60%,#7A3FE0);
       color:#fff;border-radius:var(--r);padding:28px 32px;
@@ -168,7 +167,6 @@
       display:flex;align-items:center;gap:8px;
       padding-top:6px;
     }
-    /* Små ikon-knappar uppe i hörnet */
     .daily-aya-actions{
       display:flex;
       gap:8px;
@@ -232,7 +230,6 @@
       font-feature-settings:"liga" 1, "calt" 1;
       -webkit-font-smoothing:antialiased;
     }
-    /* EN enda översättning under ayan */
     .daily-aya-text{
       font-size:36px;line-height:1.8;
       border-top:1.5px solid rgba(255,255,255,.3);
@@ -240,11 +237,11 @@
       font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,.1);
     }
     .daily-aya-text.ku,
+    .daily-aya-text.ku-KM,
     .daily-aya-text.fa{
       font-family:var(--kurdish-font);font-style:normal;
       font-size:38px;line-height:1.9;
     }
-    /* Fonetiskt uttal är nu samma stil som vanlig översättning */
     .daily-aya-text.phonetic{
       font-family:'Times New Roman',Times,serif;
       font-style:italic;
@@ -320,6 +317,7 @@
       box-shadow:0 2px 8px rgba(34,192,138,.08);
     }
     .translation.ku,
+    .translation.ku-KM,
     .translation.fa{
       font-family:var(--kurdish-font);font-size:36px;
       line-height:1.9;direction:rtl;text-align:right;
@@ -403,6 +401,7 @@
       padding:10px 14px;border-radius:0 8px 8px 0;
     }
     .fav-text.ku,
+    .fav-text.ku-KM,
     .fav-text.fa{
       font-family:var(--kurdish-font);font-size:32px;
       line-height:1.85;direction:rtl;text-align:right;
@@ -455,6 +454,7 @@
       margin-bottom:20px;
     }
     .modal-card .modal-text.ku,
+    .modal-card .modal-text.ku-KM,
     .modal-card .modal-text.fa{
       font-family:var(--kurdish-font);font-size:36px;
       line-height:1.9;direction:rtl;text-align:right;
@@ -472,7 +472,6 @@
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
-    /* ===== TAFSIR ===== */
     .tafsir-card{
       max-width:760px;width:100%;padding:0;
       display:flex;flex-direction:column;
@@ -489,7 +488,6 @@
       font-size:16px;flex-shrink:0;transition:all .2s;
     }
     .tafsir-close:active{transform:scale(.92)}
-    /* Denna rad ligger fast kvar högst upp i fönstret, oavsett scroll */
     .tafsir-lang-bar{
       display:flex;gap:6px;flex-wrap:wrap;
       padding:0 24px 16px;flex-shrink:0;
@@ -526,7 +524,6 @@
       padding:4px 12px;border-radius:50px;margin-bottom:10px;
     }
 
-    /* ===== FAST SPRÅKVÄLJARE ===== */
     .bottom-lang-bar{
       position:fixed;
       bottom:0;left:0;right:0;
@@ -566,6 +563,7 @@
       background:var(--primary-soft);color:var(--primary);
     }
     .bottom-lang-inner button[data-lang="ku"],
+    .bottom-lang-inner button[data-lang="ku-KM"],
     .bottom-lang-inner button[data-lang="fa"]{
       font-family:var(--kurdish-font);font-size:15px;
     }
@@ -586,14 +584,17 @@
       .daily-aya-arabic{font-size:34px;line-height:2.3}
       .daily-aya-text{font-size:30px;line-height:1.75}
       .daily-aya-text.ku,
+      .daily-aya-text.ku-KM,
       .daily-aya-text.fa{font-size:32px;line-height:1.85}
       .daily-aya-text.phonetic{font-size:28px}
       .translation{font-size:28px;line-height:1.75}
       .translation.ku,
+      .translation.ku-KM,
       .translation.fa{font-size:30px;line-height:1.85}
       .translation.phonetic{font-size:26px}
       .bottom-lang-inner button{font-size:13px;height:46px}
       .bottom-lang-inner button[data-lang="ku"],
+      .bottom-lang-inner button[data-lang="ku-KM"],
       .bottom-lang-inner button[data-lang="fa"]{font-size:14px}
     }
     @media (max-width:480px){
@@ -609,6 +610,7 @@
       .daily-aya-arabic{font-size:29px;line-height:2.3}
       .daily-aya-text{font-size:24px;line-height:1.7}
       .daily-aya-text.ku,
+      .daily-aya-text.ku-KM,
       .daily-aya-text.fa{font-size:26px;line-height:1.8}
       .daily-aya-text.phonetic{font-size:22px;line-height:1.7}
       .day-action-btn{width:34px;height:34px;font-size:13px}
@@ -620,6 +622,7 @@
       .fav-arabic{font-size:22px;line-height:2.1}
       .fav-text{font-size:24px}
       .fav-text.ku,
+      .fav-text.ku-KM,
       .fav-text.fa{font-size:26px}
       .modal-card{padding:20px}
       .tafsir-card{padding:0}
@@ -632,15 +635,18 @@
       .modal-card .modal-arabic{font-size:28px;line-height:2.3}
       .translation{font-size:24px;padding:12px 16px;line-height:1.75}
       .translation.ku,
+      .translation.ku-KM,
       .translation.fa{font-size:26px;line-height:1.85}
       .translation.phonetic{font-size:22px}
       .modal-card .modal-text{font-size:26px}
       .modal-card .modal-text.ku,
+      .modal-card .modal-text.ku-KM,
       .modal-card .modal-text.fa{font-size:28px}
       .bottom-lang-bar{padding:8px 10px max(8px, env(safe-area-inset-bottom))}
       .bottom-lang-inner{padding:5px;border-radius:14px}
       .bottom-lang-inner button{height:42px;font-size:12px;min-width:50px;padding:0 4px}
       .bottom-lang-inner button[data-lang="ku"],
+      .bottom-lang-inner button[data-lang="ku-KM"],
       .bottom-lang-inner button[data-lang="fa"]{font-size:13px}
     }
   </style>
@@ -945,6 +951,7 @@
     <button data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
     <button data-lang="fa" onclick="setLang('fa')">🇮🇷 فارسی</button>
     <button data-lang="ku" onclick="setLang('ku')">🏳️ کوردی</button>
+    <button data-lang="ku-KM" onclick="setLang('ku-KM')">🏴 Kurdî</button>
     <button data-lang="phonetic" onclick="setLang('phonetic')">🔤 Uttal</button>
   </div>
 </div>
@@ -1041,6 +1048,20 @@ const TRANSLATIONS = {
     ruqya3: '«بە ناوی ئەو خوایەی کە بە ناوی ئەو هیچ شتێک لە زەوی و ئاسمان زیانی پێ ناگات، و ئەو بیسەر و زانایە.»',
     ruqya4: '«خوایە! هیچ شتێک ئاسان نییە جگە لەوەی تۆ ئاسانی دەکەیت، و تۆ خەفەت ئاسان دەکەیت کاتێک بیەوێت.»',
     nur: '«بە ناوی خوای میهرەبان و بەخشندە. بە ناوی خوای نوور. بە ناوی خوای نووری نوور. بە ناوی خوا نوورێک لەسەر نوور. بە ناوی ئەو خوایەی کە بەڕێوەبەری هەموو کارەکانە. بە ناوی ئەو خوایەی کە نووری لە نوور دروستکرد. سوپاس بۆ ئەو خوایەی کە نووری لە نوور دروستکرد و نووری دابەزاند بەسەر چیا، لە کتێبێکی نووسراو، لەسەر پەڕەیەکی کراوە، بە ئەندازەیەکی دیاریکراو، بۆ پێغەمبەرێکی خۆشەویست. سوپاس بۆ ئەو خوایەی کە بە عیززەتەوە یادی دەکرێت و بە شانازی ناسراوە، و لە خۆشی و ناخۆشیدا سوپاسی دەکرێت. و سەلاتی خوا لەسەر گەورەمان محەمەد و خێزانی پاکی بێت.»'
+  },
+  'ku-KM': {
+    kursi: '«Allah – ji bilî wî xwedayek tune, ew yê jîndar û domdar e. Ne xew û ne jî xewnê wî nagire. Her tiştê li ezmanan û li ser zemînê ji wî re ye. Kî ye ku bê destûra wî li bal wî şefaetê bike? Ew dizane çi li ber wan û çi li pişt wan e, û ew bi tiştek ji zanîna wî ne agahdar in, ji bilî tiştê ku ew bixwaze. Kursiya wî ezmanan û zemînê digire, û parastina wan li ser wî ne giran e. Û ew bilind û mezin e.»',
+    qunut: '«Ya Allah! Di nav yên ku te rêberî kirine de rêberiya me bike, û di nav yên ku te parastine de me biparêze, û di nav yên ku te wek dost girtine de me wek dost bigire, û di tiştê ku te daye me de bereketê bike, û me ji xirabiya tiştê ku te biryar daye biparêze. Ji ber ku tu biryarê didî û kes li ser te biryarê nade. Û bi rastî ew kesê ku tu wî wek dost digirî, rûreş nabe, û ew kesê ku tu wî wek dijmin digirî, bilind nabe. Pîroz û bilind î, ya Xwedayê me. Ji ber vê yekê sipas ji te re ye ji bo tiştê ku te biryar daye. Û em ji te lêborînê dixwazin û em bi te ve dizivirin. Û selata Xwedê li ser axayê me Muhammed, pêxemberê nexwende, û li ser malbat û hevalên wî be.»',
+    fatiha: '«Bi navê Xwedayê dilovan û bexşende. Sipas ji bo Xwedayê perwerdekarê hemû cîhanan. Dilovan û bexşende, xwedanê roja dadmendiyê. Tenê te diperistin û tenê ji te alîkarîyê dixwazin. Me ber bi rêya rast ve rêberî bike – rêya yên ku te nîmeta xwe daye wan, ne rêya yên ku te li wan xeyidî û ne jî rêya yên gom bûne.»',
+    kafirun: '«Bêje: Ya gawir! Ez tiştê ku hûn diperistin naperêsim. Û hûn perestvanê tiştê ku ez diperêsim nînin. Ez perestvanê tiştê ku we perestî ne me, û hûn perestvanê tiştê ku ez diperêsim nînin. Dîna we ji we re ye û dîna min ji min re ye.»',
+    ikhlas: '«Bêje: Ew Xwedayê yekta ye. Xwedayê bêhtac. Ne zaye û ne jî hatiye zayînê. Û tu kes wek wî tune ye.»',
+    falaq: '«Bêje: Ez penaberî xwedanê sibehê dikim, ji xirabiya tiştê ku wî afirandiye, û ji xirabiya tarîtiyê dema ku tê, û ji xirabiya yên ku li girêkan pif dikin, û ji xirabiya hesûd dema ku hesûdiyê dike.»',
+    nas: '«Bêje: Ez penaberî xwedanê mirovan dikim, padîşahê mirovan, xwedayê mirovan, ji xirabiya waswaskerê ku xwe vedişêre, ew ê ku di sînga mirovan de waswase dike, ji cin û mirovan.»',
+    ruqya1: '«Bi navê Xwedê ez te rûqye dikim, ji her tiştê ku te aciz dike, ji xirabiya her nefsekî an çavekî hesûd. Xwedê şifaya te bide, bi navê Xwedê ez te rûqye dikim.»',
+    ruqya2: '«Ya Allah, xwedanê mirovan! Nexweşiyê rake. Şifayê bide, ji ber ku tu şîfakar î. Tu şifayek tune ji bilî şifaya te – şifayek ku tu nexweşiyê li pey xwe nehêle.»',
+    ruqya3: '«Bi navê wî Xwedayê ku bi navê wî tiştek li ser zemîn û ezmanan zerarê nagihîne, û ew guhdar û zana ye.»',
+    ruqya4: '«Ya Allah! Tiştek hêsan nîne ji bilî tiştê ku te hêsan kir, û tu xemgînî hêsan dikî dema ku bixwazî.»',
+    nur: '«Bi navê Xwedayê dilovan û bexşende. Bi navê Xwedayê nûrê. Bi navê Xwedayê nûra nûrê. Bi navê Xwedayê nûrek li ser nûrê. Bi navê wî Xwedayê ku birêvebirê hemû kar e. Bi navê wî Xwedayê ku nûr ji nûr afirand. Sipas ji bo wî Xwedayê ku nûr ji nûr afirand û nûr li ser çiyayê da xwarê, di kitêbek nivîsandî de, li ser pelên vekirî, bi pîvanek diyarkirî, li ser pêxemberek delal. Sipas ji bo wî Xwedayê ku bi rûmet tê bibîranîn û bi şanazî tê naskirin, û di xweşî û nexweşiyê de tê sipaskirin. Û selata Xwedê li ser axayê me Muhammed û malbata wî ya paqij be.»'
   }
 };
 
@@ -1059,9 +1080,22 @@ const PHONETIC = {
   nur: 'Bismillāhir-raḥmānir-raḥīm. Bismillāhin-nūr. Bismillāhi nūrin-nūr. Bismillāhi nūrun ʿalā nūr. Bismillāhil-ladhī huwa mudabbirul-umūr. Bismillāhil-ladhī khalaqan-nūra minan-nūr. Al-ḥamdu lillāhil-ladhī khalaqan-nūra minan-nūr. Wa anzalan-nūra ʿalaṭ-ṭūr. Fī kitābin masṭūr. Fī raqqin manshūr. Bi-qadarin maqdūr. ʿAlā nabiyyin maḥbūr. Al-ḥamdu lillāhil-ladhī huwa bil-ʿizzi madhkūr. Wa bil-fakhri mashhūr. Wa ʿalas-sarrāʾi waḍ-ḍarrāʾi mashkūr. Wa ṣallallāhu ʿalā sayyidinā Muḥammadin wa ālihiṭ-ṭāhirīn.'
 };
 
-/* ============================================================
-   AUTOMATISK TRANSLITTERING
-   ============================================================ */
+/* Arabiska originaltexter för tafsir-läge */
+const ARABIC_TRANSLATIONS = {
+  kursi: 'اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ',
+  qunut: 'اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ، وَعَافِنَا فِيمَنْ عَافَيْتَ، وَتَوَلَّنَا فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لَنَا فِيمَا أَعْطَيْتَ، وَقِنَا شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، وَنَسْتَغْفِرُكَ وَنَتُوبُ إِلَيْكَ، وَصَلَّى اللَّهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ',
+  fatiha: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾',
+  kafirun: 'قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ ﴿٤﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾',
+  ikhlas: 'قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾',
+  falaq: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾',
+  nas: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾',
+  ruqya1: 'بِسْمِ اللَّهِ أَرْقِيكَ، مِنْ كُلِّ شَيْءٍ يُؤْذِيكَ، مِنْ شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ، اللَّهُ يَشْفِيكَ، بِسْمِ اللَّهِ أَرْقِيكَ',
+  ruqya2: 'اللَّهُمَّ رَبَّ النَّاسِ، أَذْهِبْ الْبَاسَ، اشْفِهِ وَأَنْتَ الشَّافِي، لَا شِفَاءَ إِلَّا شِفَاؤُكَ، شِفَاءً لَا يُغَادِرُ سَقَمًا',
+  ruqya3: 'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ',
+  ruqya4: 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا',
+  nur: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ. بِسْمِ اللَّهِ النُّورِ. بِسْمِ اللَّهِ نُورِ النُّورِ. بِسْمِ اللَّهِ نُورٌ عَلَى نُورٍ. بِسْمِ اللَّهِ الَّذِي هُوَ مُدَبِّرُ الْأُمُورِ. بِسْمِ اللَّهِ الَّذِي خَلَقَ النُّورَ مِنَ النُّورِ. الْحَمْدُ لِلَّهِ الَّذِي خَلَقَ النُّورَ مِنَ النُّورِ. وَأَنْزَلَ النُّورَ عَلَى الطُّورِ. فِي كِتَابٍ مَسْطُورٍ. فِي رَقٍّ مَنْشُورٍ. بِقَدَرٍ مَقْدُورٍ. عَلَى نَبِيٍّ مَحْبُورٍ. الْحَمْدُ لِلَّهِ الَّذِي هُوَ بِالْعِزِّ مَذْكُورٌ. وَبِالْفَخْرِ مَشْهُورٌ. وَعَلَى السَّرَّاءِ وَالضَّرَّاءِ مَشْكُورٌ. وَصَلَّى اللَّهُ عَلَى سَيِّدِنَا مُحَمَّدٍ وَآلِهِ الطَّاهِرِينَ'
+};
+
 const ARABIC_TRANSLIT_MAP = {
   'ا':'ā','أ':'a','إ':'i','آ':'ā','ٱ':'a','ب':'b','ت':'t','ث':'th','ج':'j','ح':'ḥ',
   'خ':'kh','د':'d','ذ':'dh','ر':'r','ز':'z','س':'s','ش':'sh','ص':'ṣ','ض':'ḍ',
@@ -1115,12 +1149,6 @@ const TOTAL_AYAS = 6236;
 let currentAyaData = null;
 let currentLang = localStorage.getItem('quranLang') || 'sv';
 
-/* ============================================================
-   QARI (RECITATÖR) & LJUDUPPSPELNING
-   Identifierarna nedan är verifierade mot cdn.islamic.network,
-   som INTE alltid använder samma namn som alquran.cloud:s text-API
-   (t.ex. Sudais och Abdul Basit har kortare CDN-alias).
-   ============================================================ */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy', kind:'cdn' },
   { id:'ar.husary', name:'Mahmoud Khalil Al-Husary', kind:'cdn' },
@@ -1183,8 +1211,6 @@ function buildSurahAudioUrl(surah, overrideQariId){
   return `https://cdn.islamic.network/quran/audio-surah/128/${qari}/${surah}.mp3`;
 }
 
-/* mp3quran.net – används för qaris som saknas på cdn.islamic.network
-   (endast hel-sura-ljud, ingen per-vers-uppdelning) */
 async function resolveMp3QuranServer(searchTerm){
   const cacheKey = 'mp3quranServer_' + searchTerm;
   const cached = localStorage.getItem(cacheKey);
@@ -1222,13 +1248,11 @@ function stopCurrentAudio(){
 
 function toggleAudio(url, btn){
   if(!btn) return;
-  // Samma knapp, spelas – pausa
   if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
     currentAudio.pause();
     resetPlayBtn(btn);
     return;
   }
-  // Samma knapp, pausad på samma källa – fortsätt
   if(currentPlayBtn === btn && currentAudio && currentAudio.paused && currentAudioUrl === url){
     currentAudio.play().catch(()=>toast('❌ Kunde inte spela upp ljud'));
     btn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -1249,12 +1273,10 @@ function toggleAudio(url, btn){
     }
   });
   audio.addEventListener('ended', ()=>{
-    // audio.loop hanterar egen repetition; detta triggas bara om loop är av
     if(currentPlayBtn === btn) resetPlayBtn(btn);
     if(currentAudio === audio){ currentAudio = null; currentPlayBtn = null; currentAudioUrl = null; }
   });
   audio.addEventListener('error', ()=>{
-    // Vissa qaris saknar ljud för enstaka verser – försök då automatiskt med Alafasy
     const fallbackMatch = url.match(/^(https:\/\/cdn\.islamic\.network\/quran\/audio(?:-surah)?\/128\/)(ar\.[a-zA-Z]+)(\/.+\.mp3)$/);
     if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy' && !btn.dataset.triedFallback){
       btn.dataset.triedFallback = '1';
@@ -1321,7 +1343,6 @@ async function playDailyAya(btn){
   toggleAudio(buildAyahAudioUrl(currentAyaData.surahNum, currentAyaData.ayahNum), btn);
 }
 
-/* Upprepa Dagens aya tills vidare */
 function toggleDailyLoop(){
   const btn = document.getElementById('loopDailyBtn');
   const playBtn = document.getElementById('playDailyBtn');
@@ -1334,12 +1355,6 @@ function toggleDailyLoop(){
   toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar Dagens aya tills vidare');
 }
 
-/* ============================================================
-   TALSYNTES – FÖR BÖNER/DUOR SOM INTE FINNS I QURAN-API:T
-   (Qunūt, rukya-böner, Ljusets bön m.fl.)
-   Låter användaren välja mellan olika tillgängliga röster
-   (manlig/kvinnlig, beroende på vad enheten erbjuder).
-   ============================================================ */
 const FEMALE_NAME_HINTS = ['hoda','laila','layla','salma','fatima','zeina','zainab','amira','yasmin','farah','nour','noor','salwa','maryam','iman','rana','reem','hend','sara','salamah','maged f','tarik f'];
 const MALE_NAME_HINTS = ['naayf','majed','tarik','tariq','hamed','karim','khalid','omar','yousef','yusuf','ahmed','waleed','saad','fahd','abdullah','abdul'];
 
@@ -1375,7 +1390,6 @@ function populateTTSVoiceSelect(){
     if(hint) hint.textContent = '';
     return;
   }
-  // Endast arabiska röster är relevanta här – max 3 st
   const arabicVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ar')).slice(0, 3);
 
   if(!arabicVoices.length){
@@ -1420,7 +1434,6 @@ function getSelectedTTSVoice(){
 
 if('speechSynthesis' in window){
   window.speechSynthesis.onvoiceschanged = populateTTSVoiceSelect;
-  // Vissa webbläsare (t.ex. Chrome) laddar röstlistan asynkront
   setTimeout(populateTTSVoiceSelect, 300);
 }
 
@@ -1443,14 +1456,12 @@ function toggleTTS(text, btn){
     toast('❌ Din enhet/webbläsare stöder inte uppläsning');
     return;
   }
-  // Samma knapp, pratar – pausa
   if(currentPlayBtn === btn && window.speechSynthesis.speaking && !window.speechSynthesis.paused){
     window.speechSynthesis.pause();
     btn.innerHTML = '<i class="fas fa-play"></i>';
     btn.classList.remove('playing');
     return;
   }
-  // Samma knapp, pausad – fortsätt
   if(currentPlayBtn === btn && window.speechSynthesis.paused){
     window.speechSynthesis.resume();
     btn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -1499,11 +1510,6 @@ function playDuaTTS(btn){
   }
 }
 
-/* ============================================================
-   ELEVENLABS – ULTRA-NATURLIG RÖST + RÖSTKLONING
-   Nyckel och röstval sparas endast lokalt i webbläsaren och
-   används för att anropa ElevenLabs API direkt från klienten.
-   ============================================================ */
 let ttsEngine = localStorage.getItem('quranTTSEngine') || 'browser';
 
 function setTTSEngine(engine){
@@ -1519,11 +1525,7 @@ function setTTSEngine(engine){
   if(elevenPanel) elevenPanel.style.display = engine === 'eleven' ? '' : 'none';
 }
 
-// Förifylld API-nyckel (tillagd på användarens begäran).
-// OBS: eftersom den ligger i själva HTML-filen är den synlig för
-// alla som öppnar filens källkod eller delar filen vidare — undvik att
-// dela filen till andra utan att först byta ut eller radera nyckeln nedan.
-const DEFAULT_ELEVENLABS_API_KEY = '23980f62f1571d5de8f33673fce1493b3b520a37c3cdb51fda704aeb4373d722';
+const DEFAULT_ELEVENLABS_API_KEY = 'sk_f4e325ded7425949933964b98467f0614434bd1d03298754';
 
 function loadSavedElevenState(){
   if(!localStorage.getItem('elevenLabsApiKey') && DEFAULT_ELEVENLABS_API_KEY){
@@ -1592,7 +1594,6 @@ async function playDuaEleven(btn, text){
   if(!apiKey){ toast('❌ Lägg till och spara din ElevenLabs API-nyckel först'); return; }
   if(!voiceId){ toast('❌ Hämta och välj en ElevenLabs-röst först'); return; }
 
-  // Redan genererat ljud för denna knapp – återanvänd (kostar inga nya krediter)
   if(btn.dataset.elevenUrl){
     toggleAudio(btn.dataset.elevenUrl, btn);
     return;
@@ -1633,19 +1634,15 @@ async function playDuaEleven(btn, text){
   }
 }
 
-/* ============================================================
-   TAFSIR (KOMMENTAR) – FLERSPRÅKIGT, SPRÅKFÄLTET LIGGER FAST
-   Endast engelska har en riktig tafsir-databas tillgänglig.
-   Svenska/persiska saknar öppna tafsir-källor än så länge, så där
-   visas versens översättning istället, tydligt märkt som sådan.
-   ============================================================ */
 const TAFSIRS = [
   { lang:'en', flag:'🇬🇧', label:'English', slug:'en-tafisr-ibn-kathir', fallbackSlug:'en-tafsir-maarif-ul-quran', name:'Ibn Kathir (abridged)', rtl:false, mode:'api' },
   { lang:'sv', flag:'🇸🇪', label:'Svenska', name:'Bernström (översättning)', rtl:false, mode:'translation' },
-  { lang:'fa', flag:'🇮🇷', label:'فارسی', name:'Fooladvand (ترجمه)', rtl:true, mode:'translation' }
+  { lang:'fa', flag:'🇮🇷', label:'فارسی', name:'Fooladvand (ترجمه)', rtl:true, mode:'translation' },
+  { lang:'ku', flag:'🏳️', label:'کوردی سۆرانی', name:'Sorani (وەرگێڕان)', rtl:true, mode:'translation' },
+  { lang:'ku-KM', flag:'🏴', label:'Kurdî Kurmancî', name:'Kurmancî (werger)', rtl:true, mode:'translation' },
+  { lang:'ar', flag:'🇸🇦', label:'العربية', name:'النص العربي', rtl:true, mode:'arabic' }
 ];
 
-// Koppling mellan statiska verser i appen och deras nyckel i TRANSLATIONS-objektet
 const STATIC_TRANSLATION_KEYS = {
   'ayah:2:255': 'kursi',
   'chapter:1': 'fatiha',
@@ -1752,19 +1749,39 @@ function loadTafsirTranslationFallback(meta){
   const key = getStaticTranslationKeyForRef();
   let text = '';
 
-  // Dagens aya har redan hämtat sv/fa-översättning direkt från API:et
   if(currentTafsirRef.type === 'ayah' && currentAyaData &&
      currentAyaData.surahNum === currentTafsirRef.surah && currentAyaData.ayahNum === currentTafsirRef.ayah){
-    text = currentAyaData[meta.lang] || '';
+    if(meta.lang === 'ku') text = currentAyaData.ku || '';
+    else if(meta.lang === 'ku-KM') text = currentAyaData['ku-KM'] || currentAyaData.ku || '';
+    else text = currentAyaData[meta.lang] || '';
   }
-  // Annars, om det är en av de fasta verserna i appen (Kursi, Fatiha, Qul-suran)
   if(!text && key && TRANSLATIONS[meta.lang] && TRANSLATIONS[meta.lang][key]){
     text = TRANSLATIONS[meta.lang][key];
+  }
+  if(!text && meta.lang === 'ku-KM' && key && TRANSLATIONS.ku && TRANSLATIONS.ku[key]){
+    text = TRANSLATIONS.ku[key];
   }
   if(!text) return null;
 
   const noteHtml = `<div class="tafsir-verse-num" style="background:var(--amber-soft);color:#8A5A00">ℹ️ Översättning – ingen fullständig tafsir-databas finns ännu på det här språket</div>`;
   return { html: noteHtml + `<p>${text}</p>`, resourceName: meta.name };
+}
+
+function loadTafsirArabic(meta){
+  const key = getStaticTranslationKeyForRef();
+  let text = '';
+
+  if(currentTafsirRef.type === 'ayah' && currentAyaData &&
+     currentAyaData.surahNum === currentTafsirRef.surah && currentAyaData.ayahNum === currentTafsirRef.ayah){
+    text = currentAyaData.arabic || '';
+  }
+  if(!text && key && ARABIC_TRANSLATIONS[key]){
+    text = ARABIC_TRANSLATIONS[key];
+  }
+  if(!text) return null;
+
+  const noteHtml = `<div class="tafsir-verse-num" style="background:var(--primary-soft);color:var(--primary)">النص العربي الأصلي</div>`;
+  return { html: noteHtml + `<p style="font-family:var(--quran-font);font-size:24px;line-height:2.2;direction:rtl;text-align:right">${text}</p>`, resourceName: meta.name };
 }
 
 async function loadTafsir(lang){
@@ -1780,6 +1797,8 @@ async function loadTafsir(lang){
     let result = null;
     if(meta.mode === 'api'){
       result = await loadTafsirFromApi(meta);
+    } else if(meta.mode === 'arabic'){
+      result = loadTafsirArabic(meta);
     } else {
       result = loadTafsirTranslationFallback(meta);
     }
@@ -1828,6 +1847,7 @@ async function fetchAya(surah, ayah){
       en: enRes.data.text,
       fa: (faRes.data && faRes.data.text) ? faRes.data.text : enRes.data.text,
       ku: (kuRes.data && kuRes.data.text) ? kuRes.data.text : enRes.data.text,
+      'ku-KM': (kuRes.data && kuRes.data.text) ? kuRes.data.text : enRes.data.text,
       phonetic: autoTransliterate(arRes.data.text)
     };
     renderDailyAya(ayaData);
@@ -1843,14 +1863,10 @@ async function fetchRandomAya(){
   await fetchAya(surah, ayah);
 }
 
-/* ============================================================
-   RENDER – EN översättning under ayan, ingen dubbel fonetisk ruta
-   ============================================================ */
 function renderDailyAya(data){
   currentAyaData = data;
   const content = document.getElementById('dailyAyaContent');
 
-  // Bestäm text att visa beroende på språk
   let displayText;
   let extraClass = '';
 
@@ -1860,13 +1876,16 @@ function renderDailyAya(data){
   } else if(currentLang === 'ku'){
     displayText = data.ku || data.en;
     extraClass = ' ku';
+  } else if(currentLang === 'ku-KM'){
+    displayText = data['ku-KM'] || data.ku || data.en;
+    extraClass = ' ku-KM';
   } else if(currentLang === 'fa'){
     displayText = data.fa || data.en;
     extraClass = ' fa';
   } else if(currentLang === 'en'){
     displayText = data.en;
   } else {
-    displayText = data.sv || data.en;   // svenska (fallback till engelska)
+    displayText = data.sv || data.en;
   }
 
   content.innerHTML = `
@@ -1878,11 +1897,11 @@ function renderDailyAya(data){
 }
 
 const FALLBACK_AYAS = [
-  { arabic: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا', sv: 'Sannerligen, med svårigheten kommer lättnad.', en: 'Indeed, with hardship comes ease.', fa: 'همانا با سختی آسانی است.', ku: 'بەڕاستی لەگەڵ ناڕەحەتیدا ئاسانی هەیە.', surahName: 'Ash-Sharh', surahNum: 94, ayahNum: 6 },
-  { arabic: 'وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ', sv: 'Den som förlitar sig på Allah, Han är honom nog.', en: 'And whoever relies upon Allah – then He is sufficient for him.', fa: 'و هر کس بر خدا توکل کند، پس او برایش کافی است.', ku: 'و هەرکەسێک پشت بە خوا ببەستێت، ئەوا ئەو بەسیەتی.', surahName: 'At-Talaq', surahNum: 65, ayahNum: 3 },
-  { arabic: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ', sv: 'Sannerligen, genom Allahs åminnelse finner hjärtanen ro.', en: 'Verily, in the remembrance of Allah do hearts find rest.', fa: 'آگاه باشید که با یاد خدا دل‌ها آرام می‌گیرد.', ku: 'ئاگاداربن کە بە یادی خوا دڵەکان ئارام دەگرن.', surahName: 'Ar-Ra\'d', surahNum: 13, ayahNum: 28 },
-  { arabic: 'وَقُل رَّبِّ زِدْنِي عِلْمًا', sv: 'Och säg: Min Herre, öka mig i kunskap.', en: 'And say: My Lord, increase me in knowledge.', fa: 'و بگو: پروردگارا، بر دانش من بیفزای.', ku: 'و بڵێ: پەروەردگارا، زانستم بۆ زیاد بکە.', surahName: 'Ta-Ha', surahNum: 20, ayahNum: 114 },
-  { arabic: 'فَاذْكُرُونِي أَذْكُرْكُمْ', sv: 'Så åminns Mig, så ska Jag åminnas er.', en: 'So remember Me; I will remember you.', fa: 'پس مرا یاد کنید تا شما را یاد کنم.', ku: 'کەواتە یادی من بکەن، منیش یادی ئێوە دەکەم.', surahName: 'Al-Baqarah', surahNum: 2, ayahNum: 152 }
+  { arabic: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا', sv: 'Sannerligen, med svårigheten kommer lättnad.', en: 'Indeed, with hardship comes ease.', fa: 'همانا با سختی آسانی است.', ku: 'بەڕاستی لەگەڵ ناڕەحەتیدا ئاسانی هەیە.', 'ku-KM': 'Bi rastî, bi zehmetiyê re hêsanî heye.', surahName: 'Ash-Sharh', surahNum: 94, ayahNum: 6 },
+  { arabic: 'وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ', sv: 'Den som förlitar sig på Allah, Han är honom nog.', en: 'And whoever relies upon Allah – then He is sufficient for him.', fa: 'و هر کس بر خدا توکل کند، پس او برایش کافی است.', ku: 'و هەرکەسێک پشت بە خوا ببەستێت، ئەوا ئەو بەسیەتی.', 'ku-KM': 'Û her kesê ku xwe bispêre Xwedê, ew jê re bes e.', surahName: 'At-Talaq', surahNum: 65, ayahNum: 3 },
+  { arabic: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ', sv: 'Sannerligen, genom Allahs åminnelse finner hjärtanen ro.', en: 'Verily, in the remembrance of Allah do hearts find rest.', fa: 'آگاه باشید که با یاد خدا دل‌ها آرام می‌گیرد.', ku: 'ئاگاداربن کە بە یادی خوا دڵەکان ئارام دەگرن.', 'ku-KM': 'Agahdar bin, bi bîranîna Xwedê dil aram dibin.', surahName: 'Ar-Ra\'d', surahNum: 13, ayahNum: 28 },
+  { arabic: 'وَقُل رَّبِّ زِدْنِي عِلْمًا', sv: 'Och säg: Min Herre, öka mig i kunskap.', en: 'And say: My Lord, increase me in knowledge.', fa: 'و بگو: پروردگارا، بر دانش من بیفزای.', ku: 'و بڵێ: پەروەردگارا، زانستم بۆ زیاد بکە.', 'ku-KM': 'Û bêje: Xwedayê min, zanîna min zêde bike.', surahName: 'Ta-Ha', surahNum: 20, ayahNum: 114 },
+  { arabic: 'فَاذْكُرُونِي أَذْكُرْكُمْ', sv: 'Så åminns Mig, så ska Jag åminnas er.', en: 'So remember Me; I will remember you.', fa: 'پس مرا یاد کنید تا شما را یاد کنم.', ku: 'کەواتە یادی من بکەن، منیش یادی ئێوە دەکەم.', 'ku-KM': 'Ji ber vê yekê min bibîr bînin, ez jî we bibîr bînim.', surahName: 'Al-Baqarah', surahNum: 2, ayahNum: 152 }
 ];
 
 function renderFallbackAya(){
@@ -1952,7 +1971,6 @@ function updateSaveFavBtn(){
 function saveCurrentAyaAsFavorite(){
   if(!currentAyaData){ toast('❌ Ingen aya att spara'); return; }
   if(isCurrentAyaSaved()){
-    // Om redan sparad – ta bort
     favorites = favorites.filter(f => !(f.surahNum === currentAyaData.surahNum && f.ayahNum === currentAyaData.ayahNum));
     saveFavorites();
     updateSaveFavBtn();
@@ -1969,6 +1987,7 @@ function saveCurrentAyaAsFavorite(){
     en: currentAyaData.en,
     fa: currentAyaData.fa,
     ku: currentAyaData.ku,
+    'ku-KM': currentAyaData['ku-KM'],
     phonetic: currentAyaData.phonetic || autoTransliterate(currentAyaData.arabic),
     savedAt: new Date().toISOString()
   });
@@ -2000,6 +2019,7 @@ function renderFavorites(){
     let text = f[currentLang] || f.sv || f.en;
     let extraClass = '';
     if(currentLang === 'ku') extraClass = ' ku';
+    else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
     else if(currentLang === 'fa') extraClass = ' fa';
     else if(currentLang === 'phonetic'){
       extraClass = ' phonetic';
@@ -2024,6 +2044,7 @@ function viewFavorite(id){
   let text = f[currentLang] || f.sv || f.en;
   let extraClass = '';
   if(currentLang === 'ku') extraClass = ' ku';
+  else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
   else if(currentLang === 'fa') extraClass = ' fa';
   else if(currentLang === 'phonetic'){
     extraClass = ' phonetic';
@@ -2054,17 +2075,19 @@ function setLang(lang){
     if(lang === 'phonetic'){
       el.textContent = PHONETIC[key] || TRANSLATIONS.sv[key] || '';
     } else {
-      el.textContent = TRANSLATIONS[lang][key] || TRANSLATIONS.sv[key] || '';
+      const langData = TRANSLATIONS[lang] || (lang === 'ku-KM' ? TRANSLATIONS.ku : null) || TRANSLATIONS.sv;
+      el.textContent = langData[key] || TRANSLATIONS.sv[key] || '';
     }
-    el.classList.remove('ku','fa','phonetic');
+    el.classList.remove('ku','fa','phonetic', 'ku-KM');
     if(lang === 'ku') el.classList.add('ku');
+    else if(lang === 'ku-KM') el.classList.add('ku-KM');
     else if(lang === 'fa') el.classList.add('fa');
     else if(lang === 'phonetic') el.classList.add('phonetic');
   });
 
   if(currentAyaData) renderDailyAya(currentAyaData);
   renderFavorites();
-  toast('🌐 Språk: ' + ({sv:'Svenska',en:'English',fa:'فارسی',ku:'کوردی',phonetic:'Uttal'}[lang]));
+  toast('🌐 Språk: ' + ({sv:'Svenska',en:'English',fa:'فارسی',ku:'کوردی', 'ku-KM':'Kurmancî', phonetic:'Uttal'}[lang]));
 }
 
 function copyVerse(btn){
