@@ -953,7 +953,7 @@ async function fetchAya(surah, ayah){
   try{
     const [arRes, svRes, enRes, faRes, kuRes] = await Promise.all([
       fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.alafasy`).then(r=>r.json()),
-      fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/sv`).then(r=>r.json()).catch(()=>({data:{text:''}})),
+      fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/sv.bernstrom`).then(r=>r.json()).catch(()=>({data:{text:''}})),
       fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/en.sahih`).then(r=>r.json()),
       fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/fa.fooladvand`).then(r=>r.json()).catch(()=>({data:{text:''}})),
       fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ku.asan`).then(r=>r.json()).catch(()=>({data:{text:''}}))
