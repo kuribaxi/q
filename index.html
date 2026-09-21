@@ -171,6 +171,8 @@
       display:flex;
       gap:8px;
       flex-shrink:0;
+      flex-wrap:wrap;
+      justify-content:flex-end;
     }
     .day-action-btn{
       width:38px;height:38px;border-radius:50%;
@@ -719,8 +721,14 @@
         <button class="day-action-btn" onclick="openTafsirDaily()" title="Tafsir">
           <i class="fas fa-book-open"></i>
         </button>
-        <button class="day-action-btn" onclick="nextDailyAya()" title="Ny aya">
-          <i class="fas fa-rotate-right"></i>
+        <button class="day-action-btn" onclick="goToPrevAya()" title="Föregående aya">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="day-action-btn" onclick="goToNextAya()" title="Nästa aya">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="day-action-btn" onclick="nextDailyAya()" title="Slumpmässig aya">
+          <i class="fas fa-shuffle"></i>
         </button>
         <button class="day-action-btn" id="saveFavBtn" onclick="saveCurrentAyaAsFavorite()" title="Spara favorit">
           <i class="far fa-star"></i>
@@ -731,6 +739,17 @@
     <div class="daily-aya-qari-row">
       <i class="fas fa-microphone-lines"></i>
       <select id="qariSelect"></select>
+    </div>
+
+    <div class="daily-aya-qari-row">
+      <i class="fas fa-book"></i>
+      <select id="playSuraSelect"></select>
+      <button class="day-action-btn" id="playSuraBtn" onclick="playSelectedSura(this)" title="Spela sura">
+        <i class="fas fa-play"></i>
+      </button>
+      <button class="day-action-btn" id="loopSuraBtn" onclick="toggleSuraLoop()" title="Upprepa suran tills vidare">
+        <i class="fas fa-repeat"></i>
+      </button>
     </div>
 
     <div id="dailyAyaContent">
@@ -859,6 +878,22 @@
   </div>
 
   <div class="section">
+    <div class="section-title"><i class="fas fa-flag"></i> سورة النصر · An-Naṣr</div>
+    <div class="verse-block">
+      <div class="verse-tools">
+        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playSurah(110,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
+        <button class="verse-tool" onclick="openTafsirChapter(110,'An-Naṣr')" title="Tafsir"><i class="fas fa-book-open"></i></button>
+      </div>
+      <div class="arabic arabic-small">
+        إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ ﴿١﴾ وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا ﴿٢﴾ فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا ﴿٣﴾
+      </div>
+    </div>
+    <div class="translation" data-tr="nasr"></div>
+  </div>
+
+  <div class="section">
     <div class="section-title"><i class="fas fa-heart"></i> Skyddsböner & Rukya</div>
 
     <div class="verse-block">
@@ -906,6 +941,38 @@
       </div>
     </div>
     <div class="translation" data-tr="ruqya4"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><i class="fas fa-hands"></i> أذكار وأدعية · Dhikr & duor</div>
+
+    <div class="verse-block">
+      <div class="verse-tools">
+        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+      </div>
+      <div class="arabic arabic-small">
+        سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ<br>
+        وَلَا إِلَٰهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ<br>
+        وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ<br>
+        أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ<br>
+        سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ سُبْحَانَ اللَّهِ الْعَظِيمِ<br>
+        حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ وَنِعْمَ النَّصِيرُ
+      </div>
+    </div>
+    <div class="translation" data-tr="tasbihcombo"></div>
+
+    <hr class="divider">
+
+    <div class="verse-block">
+      <div class="verse-tools">
+        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+      </div>
+      <div class="arabic arabic-small">
+        اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ<br>
+        وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ
+      </div>
+    </div>
+    <div class="translation" data-tr="kifayah"></div>
   </div>
 
   <div class="section">
@@ -1034,6 +1101,9 @@ const TRANSLATIONS = {
     ruqya2: '”O Allah, människornas Herre, ta bort lidandet. Bota honom, för Du är den som botar. Det finns ingen bot utom Din bot – en bot som inte lämnar någon sjukdom kvar.”',
     ruqya3: '”I Guds namn, vid vars namn inget på jorden eller i himlen kan skada, och Han är den Hörande, den Vetande.”',
     ruqya4: '”O Allah, inget är lätt utom det Du gör lätt, och Du gör sorgen lätt när Du vill.”',
+    nasr: '”När Allahs hjälp och seger kommer, och du ser människorna gå in i Allahs religion i skaror, prisa då din Herre och be Honom om förlåtelse. Han tar alltid emot ånger.”',
+    tasbihcombo: '”Prisad vare Allah och allt lov tillhör Allah. Det finns ingen gud utom Allah, och Allah är större. Det finns ingen makt och ingen kraft utom genom Allah. Jag ber den Väldige Allah om förlåtelse och vänder mig till Honom i ånger. Prisad vare Allah och allt lov tillhör Allah, prisad vare den Väldige Allah. Allah är oss nog, och Han är den bäste beskyddaren och den bäste hjälparen.”',
+    kifayah: '”O Allah, låt det Du gjort tillåtet vara nog för mig så att jag slipper det förbjudna, och gör mig genom Din nåd oberoende av alla andra än Dig.”',
     nur: '”I Guds, den Nåderikes, den Barmhärtiges namn. I Guds namn, Ljuset. I Guds namn, ljusets Ljus. I Guds namn, ett ljus över ett ljus. I Guds namn, Han som styr allt. I Guds namn, Han som skapade ljuset av ljuset. Lov och pris till Allah, som skapade ljuset av ljuset och sände ner ljuset på berget, i en skriven bok, på ett utbrett blad, efter ett bestämt mått, till en älskad profet. Lov och pris till Allah, som nämns med ära och är känd för sin stolthet, och som tackas i medgång och motgång. Må Allah välsigna vår herre Muhammad och hans rena familj.”'
   },
   en: {
@@ -1048,6 +1118,9 @@ const TRANSLATIONS = {
     ruqya2: '"O Allah, Lord of mankind, remove the affliction. Heal, for You are the Healer. There is no healing except Your healing – a healing that leaves no illness behind."',
     ruqya3: '"In the name of Allah, with whose name nothing on earth or in heaven can cause harm, and He is the All-Hearing, the All-Knowing."',
     ruqya4: '"O Allah, nothing is easy except what You make easy, and You make sorrow easy when You will."',
+    nasr: '"When the help of Allah has come and the conquest, and you see the people entering into the religion of Allah in multitudes, then exalt Him with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance."',
+    tasbihcombo: '"Glory be to Allah and praise be to Allah. There is no deity but Allah, and Allah is the Greatest. There is no power and no strength except through Allah. I seek forgiveness from Allah the Mighty and turn to Him in repentance. Glory be to Allah and praise be to Allah, glory be to Allah the Mighty. Allah is sufficient for us, and He is the best Disposer of affairs and the best Helper."',
+    kifayah: '"O Allah, suffice me with what You have made lawful instead of what You have made unlawful, and make me independent of all others besides You by Your grace."',
     nur: '"In the name of Allah, the Most Gracious, the Most Merciful. In the name of Allah, the Light. In the name of Allah, the Light of Light. In the name of Allah, a Light upon Light. In the name of Allah, who directs all affairs. In the name of Allah, who created Light from Light. Praise be to Allah, who created Light from Light and sent down Light upon the Mount, in a written Book, on an unrolled parchment, by a decreed measure, upon a beloved Prophet. Praise be to Allah, who is mentioned with honor and known for pride, and thanked in ease and hardship. May Allah bless our master Muhammad and his purified family."'
   },
   fa: {
@@ -1062,6 +1135,9 @@ const TRANSLATIONS = {
     ruqya2: '«خدایا، پروردگار مردمان! رنج را ببر. شفا ده، که تو شفا دهنده‌ای. هیچ شفایی جز شفای تو نیست – شفایی که هیچ بیماری را باقی نگذارد.»',
     ruqya3: '«به نام خدایی که با نام او هیچ چیز در زمین و آسمان آسیب نمی‌رساند، و او شنوا و داناست.»',
     ruqya4: '«خدایا! هیچ چیز آسان نیست مگر آنچه تو آسان کنی، و تو غم را هنگامی که بخواهی آسان می‌کنی.»',
+    nasr: '«چون یاری خدا و پیروزی فرارسد، و ببینی که مردم دسته‌دسته به دین خدا درمی‌آیند، پس به ستایش پروردگارت تسبیح گوی و از او آمرزش بخواه، که او همواره توبه‌پذیر است.»',
+    tasbihcombo: '«پاک و منزه است خدا و ستایش او راست. هیچ معبودی جز خدا نیست و خدا بزرگ‌تر است. هیچ نیرو و توانی جز به خدا نیست. از خدای بزرگ آمرزش می‌خواهم و به سوی او بازمی‌گردم. پاک و منزه است خدا و ستایش او راست، پاک و منزه است خدای بزرگ. خدا ما را کافی است و او بهترین کارساز و بهترین یاور است.»',
+    kifayah: '«خدایا، مرا با حلالت از حرامت بی‌نیاز کن، و با فضل خودت از غیر خودت بی‌نیازم گردان.»',
     nur: '«به نام خداوند بخشنده مهربان. به نام خداوند نور. به نام خداوند نورِ نور. به نام خداوند نوری بر نور. به نام خداوندی که تدبیرگر همه امور است. به نام خداوندی که نور را از نور آفرید. ستایش ویژه خدایی است که نور را از نور آفرید و آن نور را بر کوه طور فرو فرستاد، در کتابی مکتوب، بر ورق‌هایی گشوده، به اندازه‌ای مقدر، بر پیامبری نیکوکار. ستایش ویژه خدایی است که به عزتش یاد می‌شود و به افتخار شناخته شده است، و در سختی‌ها و آسانی‌ها سپاسگزار است. و درود بر پیامبر ما محمد و خاندان پاک و مطهرش باد.»'
   },
   ku: {
@@ -1076,6 +1152,9 @@ const TRANSLATIONS = {
     ruqya2: '«خوایە، پەروەردگاری خەڵکی! ناخۆشی بەرەوە. شیفای بدە، چونکە تۆ شیفادەری. هیچ شیفایەک نییە جگە لە شیفای تۆ – شیفایەک کە هیچ نەخۆشییەک بەجێ نەهێڵێت.»',
     ruqya3: '«بە ناوی ئەو خوایەی کە بە ناوی ئەو هیچ شتێک لە زەوی و ئاسمان زیانی پێ ناگات، و ئەو بیسەر و زانایە.»',
     ruqya4: '«خوایە! هیچ شتێک ئاسان نییە جگە لەوەی تۆ ئاسانی دەکەیت، و تۆ خەفەت ئاسان دەکەیت کاتێک بیەوێت.»',
+    nasr: '«کاتێک یارمەتی خودا و سەرکەوتن دێت، و دەبینیت خەڵکی بە کۆمەڵ دەچنە ناو ئایینی خودا، ئەوا ستایشی پەروەردگارت بکە و داوای لێخۆشبوونی لێ بکە، بێگومان ئەو زۆر تۆبەوەرگرە.»',
+    tasbihcombo: '«پاکی بۆ خوایە و سوپاس بۆ خوایە. هیچ خوایەک نییە جگە لە خوا، و خوا گەورەترە. هیچ هێز و تواناییەک نییە جگە بە خوا. داوای لێخۆشبوون لە خوای مەزن دەکەم و بۆ لای دەگەڕێمەوە. پاکی بۆ خوایە و سوپاس بۆ خوایە، پاکی بۆ خوای مەزن. خوا بەسمانە، باشترین یارمەتیدەر و باشترین سەرکەوتووکەر.»',
+    kifayah: '«خوایە، بە حەڵاڵی خۆت بێنیازم بکە لە حەرامی خۆت، و بە فەزڵی خۆت بێنیازم بکە لە کەسانی تر جگە لە خۆت.»',
     nur: '«بە ناوی خوای میهرەبان و بەخشندە. بە ناوی خوای نوور. بە ناوی خوای نووری نوور. بە ناوی خوا نوورێک لەسەر نوور. بە ناوی ئەو خوایەی کە بەڕێوەبەری هەموو کارەکانە. بە ناوی ئەو خوایەی کە نووری لە نوور دروستکرد. سوپاس بۆ ئەو خوایەی کە نووری لە نوور دروستکرد و نووری دابەزاند بەسەر چیا، لە کتێبێکی نووسراو، لەسەر پەڕەیەکی کراوە، بە ئەندازەیەکی دیاریکراو، بۆ پێغەمبەرێکی خۆشەویست. سوپاس بۆ ئەو خوایەی کە بە عیززەتەوە یادی دەکرێت و بە شانازی ناسراوە، و لە خۆشی و ناخۆشیدا سوپاسی دەکرێت. و سەلاتی خوا لەسەر گەورەمان محەمەد و خێزانی پاکی بێت.»'
   },
   'ku-KM': {
@@ -1090,6 +1169,9 @@ const TRANSLATIONS = {
     ruqya2: '«Ya Allah, xwedanê mirovan! Nexweşiyê rake. Şifayê bide, ji ber ku tu şîfakar î. Tu şifayek tune ji bilî şifaya te – şifayek ku tu nexweşiyê li pey xwe nehêle.»',
     ruqya3: '«Bi navê wî Xwedayê ku bi navê wî tiştek li ser zemîn û ezmanan zerarê nagihîne, û ew guhdar û zana ye.»',
     ruqya4: '«Ya Allah! Tiştek hêsan nîne ji bilî tiştê ku te hêsan kir, û tu xemgînî hêsan dikî dema ku bixwazî.»',
+    nasr: '«Dema alîkariya Xwedê û serkeftin bê, û tu bibînî ku mirov bi kom-kom dikevin dîna Xwedê, êdî bi pesnê Perwerdekarê xwe tesbîh bike û jê lêborînê bixwaze. Bêguman ew her tobevegerîner e.»',
+    tasbihcombo: '«Paqijî ji Xwedê re ye û pesn ji Xwedê re ye. Ji bilî Xwedê tu xuda tune ye, û Xwedê mezintir e. Ne hêz û ne jî tîner heye ji bilî bi Xwedê. Ez ji Xwedayê Mezin lêborînê dixwazim û ber bi wî ve vedigerim. Paqijî ji Xwedê re ye û pesn ji Xwedê re ye, paqijî ji Xwedayê Mezin re ye. Xwedê ji me re bes e, û ew çêtirîn wekîl û çêtirîn alîkar e.»',
+    kifayah: '«Ya Xwedê, min bi helala xwe ji herama xwe serbixwe bike, û bi qenciya xwe min ji kesên din ji xeynî te serbixwe bike.»',
     nur: '«Bi navê Xwedayê dilovan û bexşende. Bi navê Xwedayê nûrê. Bi navê Xwedayê nûra nûrê. Bi navê Xwedayê nûrek li ser nûrê. Bi navê wî Xwedayê ku birêvebirê hemû kar e. Bi navê wî Xwedayê ku nûr ji nûr afirand. Sipas ji bo wî Xwedayê ku nûr ji nûr afirand û nûr li ser çiyayê da xwarê, di kitêbek nivîsandî de, li ser pelên vekirî, bi pîvanek diyarkirî, li ser pêxemberek delal. Sipas ji bo wî Xwedayê ku bi rûmet tê bibîranîn û bi şanazî tê naskirin, û di xweşî û nexweşiyê de tê sipaskirin. Û selata Xwedê li ser axayê me Muhammed û malbata wî ya paqij be.»'
   }
 };
@@ -1106,6 +1188,9 @@ const PHONETIC = {
   ruqya2: 'Allāhumma rabban-nās, adhhibil-bāsa, ishfihi wa antash-shāfī, lā shifāʾa illā shifāʾuk, shifāʾan lā yughādiru saqamā.',
   ruqya3: 'Bismillāhil-ladhī lā yaḍurru maʿasmihī shayʾun fil-arḍi wa lā fis-samāʾ, wa huwas-samīʿul-ʿalīm.',
   ruqya4: 'Allāhumma lā sahla illā mā jaʿaltahū sahlā, wa anta tajʿalul-ḥazna idhā shiʾta sahlā.',
+  nasr: 'Idhā jāʾa naṣrullāhi wal-fatḥ. Wa raʾaytan-nāsa yadkhulūna fī dīnillāhi afwājā. Fa-sabbiḥ bi-ḥamdi rabbika wastaghfirh, innahū kāna tawwābā.',
+  tasbihcombo: 'Subḥānallāhi wal-ḥamdu lillāh, wa lā ilāha illallāhu wallāhu akbar, wa lā ḥawla wa lā quwwata illā billāh. Astaghfirullāhal-ʿaẓīma wa atūbu ilayh. Subḥānallāhi wal-ḥamdu lillāhi subḥānallāhil-ʿaẓīm. Ḥasbunallāhu wa niʿmal-wakīlu wa niʿman-naṣīr.',
+  kifayah: 'Allāhumma-kfinī bi-ḥalālika ʿan ḥarāmik, wa aghninī bi-faḍlika ʿamman siwāk.',
   nur: 'Bismillāhir-raḥmānir-raḥīm. Bismillāhin-nūr. Bismillāhi nūrin-nūr. Bismillāhi nūrun ʿalā nūr. Bismillāhil-ladhī huwa mudabbirul-umūr. Bismillāhil-ladhī khalaqan-nūra minan-nūr. Al-ḥamdu lillāhil-ladhī khalaqan-nūra minan-nūr. Wa anzalan-nūra ʿalaṭ-ṭūr. Fī kitābin masṭūr. Fī raqqin manshūr. Bi-qadarin maqdūr. ʿAlā nabiyyin maḥbūr. Al-ḥamdu lillāhil-ladhī huwa bil-ʿizzi madhkūr. Wa bil-fakhri mashhūr. Wa ʿalas-sarrāʾi waḍ-ḍarrāʾi mashkūr. Wa ṣallallāhu ʿalā sayyidinā Muḥammadin wa ālihiṭ-ṭāhirīn.'
 };
 
@@ -1623,7 +1708,7 @@ function toggleDailyLoop(){
   const playBtn = document.getElementById('playDailyBtn');
   const isOn = playBtn.dataset.loop === '1';
   playBtn.dataset.loop = isOn ? '0' : '1';
-  if(currentAudio && currentPlayBtn === playBtn){
+  if(currentAudio && currentPlayBtn === playBtn && !currentQueue){
     currentAudio.loop = !isOn;
   }
   if(btn) btn.classList.toggle('active', !isOn);
@@ -1638,7 +1723,10 @@ function toggleVerseLoop(loopBtn){
   if(!playBtn) return;
   const isOn = playBtn.dataset.loop === '1';
   playBtn.dataset.loop = isOn ? '0' : '1';
-  if(currentAudio && currentPlayBtn === playBtn){
+  // OBS: sätt bara audio.loop för enskilda verser (t.ex. Ayat al-Kursi).
+  // För suror med flera verser sköts upprepningen av playQueueStep istället –
+  // annars skulle bara den just spelande versen loopa och kedjan brytas.
+  if(currentAudio && currentPlayBtn === playBtn && !currentQueue){
     currentAudio.loop = !isOn;
   }
   loopBtn.classList.toggle('active', !isOn);
@@ -1807,6 +1895,25 @@ function renderFallbackAya(){
 
 function nextDailyAya(){ fetchRandomAya(); }
 
+/* Sekventiell navigering – gå till nästa/föregående vers i Mushaf-ordning */
+function goToNextAya(){
+  if(!currentAyaData){ fetchRandomAya(); return; }
+  const currentGlobal = getGlobalAyahNumber(currentAyaData.surahNum, currentAyaData.ayahNum);
+  let nextGlobal = currentGlobal + 1;
+  if(nextGlobal > TOTAL_AYAS) nextGlobal = 1; // börja om från Al-Fātiha 1:1
+  const { surah, ayah } = globalAyaToSurahAya(nextGlobal);
+  fetchAya(surah, ayah);
+}
+
+function goToPrevAya(){
+  if(!currentAyaData){ fetchRandomAya(); return; }
+  const currentGlobal = getGlobalAyahNumber(currentAyaData.surahNum, currentAyaData.ayahNum);
+  let prevGlobal = currentGlobal - 1;
+  if(prevGlobal < 1) prevGlobal = TOTAL_AYAS; // hoppa till sista versen (An-Nās)
+  const { surah, ayah } = globalAyaToSurahAya(prevGlobal);
+  fetchAya(surah, ayah);
+}
+
 function populateSuraSelect(){
   const sel = document.getElementById('suraSelect');
   sel.innerHTML = SURAH_NAMES.map((name, i) =>
@@ -1819,6 +1926,46 @@ function populateSuraSelect(){
     ayahInput.max = maxAyah;
     if(parseInt(ayahInput.value) > maxAyah) ayahInput.value = 1;
   });
+}
+
+/* Spela valfri sura direkt från Dagens aya-fönstret, med upprepning */
+function populatePlaySuraSelect(){
+  const sel = document.getElementById('playSuraSelect');
+  if(!sel) return;
+  sel.innerHTML = SURAH_NAMES.map((name, i) =>
+    `<option value="${i+1}">${i+1}. ${name} (${SURAH_AYAH_COUNTS[i]} verser)</option>`
+  ).join('');
+  const saved = localStorage.getItem('quranPlaySura');
+  if(saved && SURAH_NAMES[parseInt(saved) - 1]) sel.value = saved;
+  if(!sel.dataset.bound){
+    sel.addEventListener('change', ()=>{
+      localStorage.setItem('quranPlaySura', sel.value);
+      // Byter man sura mitt i uppspelning, starta om med den nya suran
+      const btn = document.getElementById('playSuraBtn');
+      if(btn && currentPlayBtn === btn){
+        playSelectedSura(btn);
+      }
+    });
+    sel.dataset.bound = '1';
+  }
+}
+
+function playSelectedSura(btn){
+  const sel = document.getElementById('playSuraSelect');
+  if(!sel) return;
+  const surahNum = parseInt(sel.value, 10);
+  if(!surahNum){ toast('❌ Välj en sura först'); return; }
+  playSurah(surahNum, btn);
+}
+
+function toggleSuraLoop(){
+  const loopBtn = document.getElementById('loopSuraBtn');
+  const playBtn = document.getElementById('playSuraBtn');
+  if(!playBtn) return;
+  const isOn = playBtn.dataset.loop === '1';
+  playBtn.dataset.loop = isOn ? '0' : '1';
+  if(loopBtn) loopBtn.classList.toggle('active', !isOn);
+  toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar suran tills vidare');
 }
 
 function goToSuraAyah(){
@@ -2087,6 +2234,7 @@ applyNight();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
+populatePlaySuraSelect();
 populateQariSelect();
 updateFavBadge();
 renderTafsirTranslateBar();
