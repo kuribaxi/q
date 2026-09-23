@@ -1055,6 +1055,20 @@
         </button>
       </div>
     </div>
+    <div id="favToolbar" style="display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--text2);cursor:pointer">
+        <input type="checkbox" id="favSelectAll" onchange="toggleSelectAllFavorites(this)"> Markera alla
+      </label>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:13px;font-weight:800;color:var(--text2)">Spela markerade / alla</span>
+        <button onclick="playFavoritesSequence()" id="favPlaySelectedBtn" style="width:38px;height:38px;border-radius:50%;border:none;background:var(--primary);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center" title="Spela markerade (eller alla om inget är markerat)">
+          <i class="fas fa-play"></i>
+        </button>
+        <button onclick="stopFavoritesSequence()" style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer" title="Stoppa">
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
+    </div>
     <div id="favList"></div>
   </div>
 </div>
@@ -1690,7 +1704,10 @@ function playQueueStep(){
     if(currentAudio === audio){
       q.btn.innerHTML = '<i class="fas fa-pause"></i>';
       q.btn.classList.add('playing');
-      if(q.btn.id === 'playSuraBtn') updateSuraProgress(q);
+      if(q.btn.id === 'playSuraBtn' && q.surahNum){
+        updateSuraProgress(q);
+        loadAndRenderAya(q.surahNum, q.index + 1);
+      }
     }
   });
   audio.addEventListener('ended', ()=>{
@@ -1844,11 +1861,10 @@ async function fetchKuKmTranslation(surah, ayah){
   return '';
 }
 
-async function fetchAya(surah, ayah){
-  stopCurrentAudio();
-  const content = document.getElementById('dailyAyaContent');
-  content.innerHTML = '<div class="daily-aya-loading">Laddar…</div>';
-
+/* Hämtar och visar en vers i Dagens aya-rutan utan att röra ljuduppspelningen.
+   Används dels av fetchAya (som även stoppar ljud), dels när sura-spelaren
+   i Dagens aya-fönstret visar vilken vers som just nu spelas. */
+async function loadAndRenderAya(surah, ayah){
   try{
     const arRes = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.alafasy`)
       .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)));
@@ -1880,10 +1896,19 @@ async function fetchAya(surah, ayah){
     };
 
     renderDailyAya(ayaData);
+    return true;
   }catch(err){
-    console.error('Kunde inte hämta aya:', err);
-    renderFallbackAya();
+    console.error('Kunde inte hämta/visa vers:', err);
+    return false;
   }
+}
+
+async function fetchAya(surah, ayah){
+  stopCurrentAudio();
+  const content = document.getElementById('dailyAyaContent');
+  content.innerHTML = '<div class="daily-aya-loading">Laddar…</div>';
+  const ok = await loadAndRenderAya(surah, ayah);
+  if(!ok) renderFallbackAya();
 }
 
 async function fetchRandomAya(){
@@ -2188,17 +2213,71 @@ function playFavorite(id, btn){
   }
 }
 
+/* Spela en eller flera favoriter i följd från favoritfönstret */
+function toggleSelectAllFavorites(checkbox){
+  document.querySelectorAll('.fav-checkbox').forEach(cb => { cb.checked = checkbox.checked; });
+}
+
+function getCheckedFavoriteIds(){
+  return Array.from(document.querySelectorAll('.fav-checkbox:checked')).map(cb => parseInt(cb.dataset.favId, 10));
+}
+
+function buildFavoriteQueueUrls(ids){
+  let urls = [];
+  ids.forEach(id => {
+    const f = favorites.find(x => x.id === id);
+    if(!f) return;
+    if((f.type || 'ayah') === 'surah'){
+      urls = urls.concat(buildSurahAyahUrls(f.surahNum));
+    } else {
+      urls.push(buildAyahAudioUrl(f.surahNum, f.ayahNum));
+    }
+  });
+  return urls;
+}
+
+function playFavoritesSequence(){
+  let ids = getCheckedFavoriteIds();
+  let label = 'markerade';
+  if(!ids.length){
+    // Inget markerat – spela alla, i den ordning de visas (nyast först)
+    ids = favorites.slice().reverse().map(f => f.id);
+    label = 'alla';
+  }
+  const urls = buildFavoriteQueueUrls(ids);
+  if(!urls.length){ toast('❌ Inga favoriter att spela'); return; }
+  const btn = document.getElementById('favPlaySelectedBtn');
+  toggleAudioQueue(urls, btn);
+  toast('▶️ Spelar ' + ids.length + ' ' + (ids.length === 1 ? 'favorit' : label + ' favoriter'));
+}
+
+function stopFavoritesSequence(){
+  const btn = document.getElementById('favPlaySelectedBtn');
+  if(currentPlayBtn === btn){
+    stopCurrentAudio();
+    toast('⏹️ Uppspelning stoppad');
+  }
+}
+
 function renderFavorites(){
   const c = document.getElementById('favList');
+  const toolbar = document.getElementById('favToolbar');
   if(!favorites.length){
     c.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter ännu.<br><span style="font-size:13px;font-weight:600">Tryck på stjärnan vid en aya eller en sura.</span></div>';
+    if(toolbar) toolbar.style.display = 'none';
     return;
   }
+  if(toolbar) toolbar.style.display = 'flex';
+  const selectAll = document.getElementById('favSelectAll');
+  if(selectAll) selectAll.checked = false;
   c.innerHTML = favorites.slice().reverse().map(f => {
     if((f.type || 'ayah') === 'surah'){
       return `
         <div class="fav-item">
-          <div class="fav-ref"><i class="fas fa-book"></i> ${f.surahName} · sura ${f.surahNum} · ${f.ayahCount} verser</div>
+          <div class="fav-ref" style="display:flex;align-items:center;gap:10px">
+            <input type="checkbox" class="fav-checkbox" data-fav-id="${f.id}">
+            <span><i class="fas fa-book"></i> ${f.surahName} · sura ${f.surahNum} · ${f.ayahCount} verser</span>
+          </div>
           <div class="fav-actions" style="justify-content:space-between">
             <button class="fav-view" onclick="playFavorite(${f.id}, this)" title="Spela upp" style="flex:1"><i class="fas fa-play"></i></button>
             <div style="display:flex;gap:8px">
@@ -2221,7 +2300,10 @@ function renderFavorites(){
     if(!text) text = '—';
     return `
       <div class="fav-item">
-        <div class="fav-ref">${f.surahName} ${f.surahNum}:${f.ayahNum}</div>
+        <div class="fav-ref" style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" class="fav-checkbox" data-fav-id="${f.id}">
+          <span>${f.surahName} ${f.surahNum}:${f.ayahNum}</span>
+        </div>
         <div class="fav-arabic">${f.arabic}</div>
         <div class="fav-text${extraClass}">${text}</div>
         <div class="fav-actions">
