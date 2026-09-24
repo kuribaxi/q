@@ -160,6 +160,7 @@
       gap:12px;
       margin-bottom:14px;
       position:relative;z-index:1;
+      flex-wrap:wrap;
     }
     .daily-aya-label{
       font-size:12px;font-weight:800;text-transform:uppercase;
@@ -173,6 +174,7 @@
       flex-shrink:0;
       flex-wrap:wrap;
       justify-content:flex-end;
+      min-width:0;
     }
     .day-action-btn{
       width:38px;height:38px;border-radius:50%;
@@ -256,6 +258,249 @@
     .daily-aya-loading{
       font-size:16px;opacity:.85;font-style:italic;
       padding:24px 0;text-align:center;
+    }
+
+    /* ===== SÖKFUNKTION ===== */
+    .search-toggle-btn{
+      width:38px;height:38px;border-radius:50%;
+      border:1.5px solid rgba(255,255,255,.5);
+      background:rgba(255,255,255,.18);
+      color:#fff;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      font-size:15px;transition:all .2s;
+      backdrop-filter:blur(4px);
+    }
+    .search-toggle-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
+    .search-toggle-btn:active{transform:scale(.9)}
+    .search-toggle-btn.active{background:#fff;color:var(--primary);border-color:#fff}
+
+    .search-panel{
+      display:none;
+      margin-top:16px;position:relative;z-index:1;
+      background:rgba(255,255,255,.14);
+      border:1.5px solid rgba(255,255,255,.35);
+      border-radius:16px;padding:16px;
+      backdrop-filter:blur(6px);
+    }
+    .search-panel.open{display:block}
+
+    .search-input-row{
+      display:flex;gap:8px;align-items:center;margin-bottom:12px;
+    }
+    .search-input-row input{
+      flex:1;height:46px;border-radius:12px;
+      border:1.5px solid rgba(255,255,255,.5);
+      background:rgba(255,255,255,.95);
+      color:#1E1535;
+      font-family:var(--font);font-size:17px;font-weight:700;
+      padding:0 16px;outline:none;
+      direction:rtl;text-align:right;
+    }
+    .search-input-row input[dir="ltr"]{
+      direction:ltr;text-align:left;
+    }
+    .search-input-row input::placeholder{color:#A89FCE;font-weight:600;font-size:15px}
+    .search-input-row button{
+      height:46px;padding:0 18px;border-radius:12px;
+      border:none;cursor:pointer;
+      font-family:var(--font);font-size:15px;font-weight:800;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:all .2s;
+    }
+    .search-input-row .search-go{
+      background:#fff;color:var(--primary);
+      box-shadow:0 4px 14px rgba(0,0,0,.15);
+    }
+    .search-input-row .search-go:active{transform:scale(.96)}
+    .search-input-row .search-clear{
+      background:rgba(255,255,255,.25);color:#fff;
+      border:1.5px solid rgba(255,255,255,.4);
+    }
+    .search-input-row .search-clear:active{transform:scale(.96)}
+
+    .vk-container{
+      margin-top:10px;
+      border-radius:14px;
+      background:rgba(0,0,0,.18);
+      padding:10px;
+      border:1.5px solid rgba(255,255,255,.25);
+    }
+    .vk-keys{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .vk-row{
+      display:flex;gap:5px;justify-content:center;
+    }
+    .vk-key{
+      flex:1;min-width:0;height:44px;border-radius:9px;
+      border:none;cursor:pointer;
+      background:rgba(255,255,255,.92);
+      color:#1E1535;
+      font-family:var(--quran-font);
+      font-size:20px;font-weight:700;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .1s;
+      user-select:none;
+      padding:0 2px;
+    }
+    .vk-key:active{background:#fff;transform:scale(.93)}
+    .vk-key.wide{flex:1.5;font-size:14px;font-family:var(--font);font-weight:800}
+    .vk-key.space{flex:4;font-size:13px;font-family:var(--font);font-weight:800}
+    .vk-key.backspace{flex:1.5;background:rgba(240,94,122,.9);color:#fff;font-size:16px;font-family:var(--font)}
+    .vk-key.backspace:active{background:var(--rose)}
+    .vk-key.enter{flex:1.5;background:var(--emerald);color:#fff;font-size:14px;font-family:var(--font);font-weight:800}
+    .vk-key.enter:active{background:#1AA876}
+
+    .search-results{
+      max-height:520px;overflow-y:auto;
+      margin-top:12px;
+      border-radius:12px;
+      background:rgba(255,255,255,.95);
+      padding:10px;
+    }
+    .search-results:empty{display:none}
+    .search-result-item{
+      padding:12px 14px;border-radius:10px;
+      background:var(--surface);
+      border:1.5px solid var(--border);
+      margin-bottom:8px;cursor:pointer;
+      transition:all .2s;
+      text-align:left;
+    }
+    .search-result-item:hover{
+      border-color:var(--primary);
+      background:var(--primary-soft);
+      transform:translateX(4px);
+    }
+    .search-result-item:last-child{margin-bottom:0}
+    .sr-ref{
+      font-size:12px;font-weight:800;color:var(--primary);
+      margin-bottom:6px;display:flex;align-items:center;gap:6px;
+    }
+    .sr-arabic{
+      font-family:var(--quran-font);
+      font-size:20px;line-height:1.9;direction:rtl;text-align:right;
+      color:var(--text);margin-bottom:6px;
+    }
+    .sr-text{
+      font-size:15px;color:var(--text2);line-height:1.5;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .search-loading{
+      text-align:center;padding:20px;color:var(--text2);
+      font-size:15px;font-weight:700;
+    }
+    .search-empty{
+      text-align:center;padding:20px;color:var(--text3);
+      font-size:15px;font-weight:700;
+    }
+    .search-empty i{font-size:32px;display:block;margin-bottom:10px;opacity:.5}
+    .search-hint{
+      font-size:12px;color:rgba(255,255,255,.8);
+      text-align:center;margin-top:8px;font-weight:600;
+    }
+
+    /* Paginering */
+    .search-pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 8px 4px;
+      flex-wrap: wrap;
+    }
+    .search-pagination button {
+      min-width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text2);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+    }
+    .search-pagination button:hover:not(:disabled) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .search-pagination button.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .search-pagination button:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+    .search-pagination .page-info {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text3);
+      padding: 0 6px;
+    }
+    .search-load-more-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 8px 4px 4px;
+    }
+    .search-load-more-btn {
+      padding: 12px 26px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, var(--primary), #9B59E8);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px var(--primary-glow);
+      transition: all .2s;
+    }
+    .search-load-more-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--primary-glow);
+    }
+    .search-load-more-btn:active {
+      transform: scale(.96);
+    }
+    .search-loading-bar {
+      height: 6px;
+      background: var(--primary-soft);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 0;
+      position: relative;
+    }
+    .search-loading-bar::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 40%;
+      background: linear-gradient(90deg, var(--primary), var(--emerald));
+      border-radius: 4px;
+      animation: loadingBar 1.2s infinite ease-in-out;
+    }
+    @keyframes loadingBar {
+      0% { left: -40%; }
+      100% { left: 100%; }
+    }
+    .search-index-progress {
+      text-align: center;
+      padding: 8px;
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 800;
     }
 
     .section{
@@ -371,12 +616,34 @@
       transition:all .2s;
     }
     .sura-picker button:active{transform:scale(.97);opacity:.9}
+
+    /* FAVORITER */
     .fav-item{
       background:var(--surface);border:1.5px solid var(--border);
       border-radius:var(--rsm);padding:16px 18px;margin-bottom:12px;
       position:relative;
+      transition:all .2s;
     }
-    .fav-ref{font-size:13px;font-weight:800;color:var(--primary);margin-bottom:8px}
+    .fav-item.selected{
+      border-color:var(--primary);
+      background:var(--primary-soft);
+      box-shadow:0 4px 14px var(--primary-glow);
+    }
+    .fav-item.playing-now{
+      border-color:var(--emerald);
+      box-shadow:0 0 0 2px var(--emerald-soft), 0 6px 18px rgba(34,192,138,.25);
+    }
+    .fav-ref{
+      font-size:13px;font-weight:800;color:var(--primary);
+      margin-bottom:8px;
+      display:flex;align-items:center;gap:10px;
+    }
+    .fav-checkbox{
+      width:20px;height:20px;
+      accent-color:var(--primary);
+      cursor:pointer;
+      flex-shrink:0;
+    }
     .fav-arabic{
       font-family:var(--quran-font);
       font-size:26px;line-height:2.2;direction:rtl;text-align:right;
@@ -411,6 +678,64 @@
     .fav-actions button:active{transform:scale(.92)}
     .fav-empty{text-align:center;padding:28px;color:var(--text3);font-weight:700}
     .fav-empty i{font-size:36px;margin-bottom:12px;display:block;opacity:.5}
+
+    /* Favorit-verktygsfält */
+    .fav-toolbar{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:10px;flex-wrap:wrap;
+      padding:12px 14px;
+      background:var(--surface2);
+      border:1.5px solid var(--border);
+      border-radius:12px;
+      margin-bottom:16px;
+    }
+    .fav-toolbar-left{
+      display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    }
+    .fav-toolbar-right{
+      display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    }
+    .fav-select-all{
+      display:flex;align-items:center;gap:8px;
+      font-size:13px;font-weight:800;color:var(--text2);
+      cursor:pointer;user-select:none;
+    }
+    .fav-select-all input{
+      width:18px;height:18px;accent-color:var(--primary);cursor:pointer;
+    }
+    .fav-count{
+      font-size:12px;font-weight:800;
+      padding:4px 10px;border-radius:50px;
+      background:var(--primary-soft);color:var(--primary);
+    }
+    .fav-control-btn{
+      height:38px;min-width:38px;
+      padding:0 14px;border-radius:50px;
+      border:1.5px solid var(--border);
+      background:var(--surface);
+      color:var(--text2);
+      font-family:var(--font);
+      font-size:13px;font-weight:800;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+      transition:all .2s;
+    }
+    .fav-control-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .fav-control-btn:active{transform:scale(.95)}
+    .fav-control-btn.primary{
+      background:var(--primary);color:#fff;border-color:var(--primary);
+      box-shadow:0 4px 12px var(--primary-glow);
+    }
+    .fav-control-btn.primary:hover{background:#5B39D6;border-color:#5B39D6}
+    .fav-control-btn.danger{
+      background:var(--rose-soft);color:var(--rose);border-color:var(--rose-soft);
+    }
+    .fav-control-btn.danger:hover{background:var(--rose);color:#fff;border-color:var(--rose)}
+    .fav-control-btn.active{
+      background:var(--emerald);color:#fff;border-color:var(--emerald);
+    }
+    .fav-control-btn:disabled{opacity:.4;cursor:not-allowed}
+
     .modal-ov{
       position:fixed;inset:0;background:rgba(0,0,0,.5);
       backdrop-filter:blur(6px);z-index:200;
@@ -419,9 +744,17 @@
     .modal-ov.h{display:none}
     .modal-card{
       background:var(--surface);border-radius:var(--r);
-      padding:28px;max-width:700px;width:100%;
-      max-height:85vh;overflow-y:auto;
+      padding:28px;max-width:800px;width:100%;
+      max-height:90vh;overflow-y:auto;
       border:1.5px solid var(--border);box-shadow:var(--shadow);
+      display:flex;flex-direction:column;
+    }
+    .modal-card:fullscreen,
+    .modal-card:-webkit-full-screen{
+      max-width:100vw;max-height:100vh;
+      width:100vw;height:100vh;
+      border-radius:0;
+      padding:24px;
     }
     .modal-card .modal-ref{font-size:14px;font-weight:800;color:var(--primary);margin-bottom:12px}
     .modal-card .modal-arabic{
@@ -461,103 +794,27 @@
     }
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
-    /* ===== TAFSIR ===== */
-    .tafsir-card{
-      max-width:800px;width:100%;padding:0;
-      display:flex;flex-direction:column;
-      max-height:90vh;overflow:hidden;
-    }
-    .tafsir-card:fullscreen,
-    .tafsir-card:-webkit-full-screen{
-      max-width:100vw;max-height:100vh;
-      width:100vw;height:100vh;
-      border-radius:0;
-      background:var(--surface);
-    }
-    .tafsir-card:fullscreen .tafsir-scroll,
-    .tafsir-card:-webkit-full-screen .tafsir-scroll{
-      flex:1;
-    }
-    #favModal .modal-card:fullscreen,
-    #favModal .modal-card:-webkit-full-screen{
-      max-width:100vw;max-height:100vh;
-      width:100vw;height:100vh;
-      border-radius:0;
-      overflow-y:auto;
-    }
-    .tafsir-topbar{
+    .fav-modal-header{
       display:flex;justify-content:space-between;align-items:center;
-      padding:22px 24px 14px;flex-shrink:0;
-    }
-    .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3}
-    .tafsir-close{
-      width:40px;height:40px;border-radius:11px;border:none;
-      background:var(--surface2);color:var(--text2);cursor:pointer;
-      font-size:16px;flex-shrink:0;transition:all .2s;
-    }
-    .tafsir-close:active{transform:scale(.92)}
-    .tafsir-lang-bar{
-      display:flex;gap:6px;flex-wrap:wrap;
-      padding:0 24px 16px;flex-shrink:0;
-      border-bottom:1.5px solid var(--border);
-    }
-    .tafsir-lang-bar button{
-      padding:8px 14px;border-radius:50px;
-      border:1.5px solid var(--border);
-      background:var(--surface2);color:var(--text2);
-      font-family:var(--font);font-size:13px;font-weight:800;
-      cursor:pointer;transition:all .2s;
-      display:flex;align-items:center;gap:6px;
-    }
-    .tafsir-lang-bar button.active{
-      background:var(--primary);color:#fff;border-color:var(--primary);
-      box-shadow:0 4px 14px var(--primary-glow);
-    }
-    .tafsir-lang-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
-
-    .tafsir-translate-bar{
-      display:flex;gap:6px;flex-wrap:wrap;align-items:center;
-      padding:12px 24px;
-      background:var(--surface2);
-      border-bottom:1.5px solid var(--border);
+      margin-bottom:18px;gap:10px;
       flex-shrink:0;
     }
-    .tafsir-translate-bar .label{
-      font-size:12px;font-weight:800;color:var(--text3);
-      text-transform:uppercase;letter-spacing:.06em;
-      margin-right:4px;
-      display:flex;align-items:center;gap:6px;
+    .fav-modal-title{
+      font-size:20px;font-weight:900;color:var(--text);
+      display:flex;align-items:center;gap:10px;
     }
-    .tafsir-translate-bar button{
-      padding:6px 12px;border-radius:50px;
-      border:1.5px solid var(--border);
-      background:var(--surface);color:var(--text2);
-      font-family:var(--font);font-size:12px;font-weight:800;
-      cursor:pointer;transition:all .2s;
-      display:flex;align-items:center;gap:5px;
+    .fav-modal-actions{
+      display:flex;gap:8px;flex-shrink:0;
     }
-    .tafsir-translate-bar button.active{
-      background:var(--emerald);color:#fff;border-color:var(--emerald);
+    .fav-modal-icon-btn{
+      width:42px;height:42px;border-radius:12px;border:none;
+      background:var(--surface2);color:var(--text2);
+      cursor:pointer;font-size:16px;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .2s;
     }
-    .tafsir-translate-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
-
-    .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
-    .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
-    .tafsir-body{font-size:19px;line-height:1.9;color:var(--text)}
-    .tafsir-body.rtl{direction:rtl;text-align:right;font-family:var(--kurdish-font)}
-    .tafsir-body p{margin-bottom:14px}
-    .tafsir-body h2{
-      font-size:16px;font-weight:900;color:var(--primary);
-      margin:18px 0 8px;padding-bottom:6px;border-bottom:1.5px solid var(--border);
-    }
-    .tafsir-body h2:first-child{margin-top:0}
-    .tafsir-verse-block{margin-bottom:24px;padding-bottom:18px;border-bottom:1px dashed var(--border)}
-    .tafsir-verse-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-    .tafsir-verse-num{
-      font-size:12px;font-weight:800;color:var(--primary);
-      background:var(--primary-soft);display:inline-block;
-      padding:4px 12px;border-radius:50px;margin-bottom:10px;
-    }
+    .fav-modal-icon-btn:hover{background:var(--primary-soft);color:var(--primary)}
+    .fav-modal-icon-btn:active{transform:scale(.92)}
 
     .bottom-lang-bar{
       position:fixed;
@@ -580,15 +837,20 @@
       background:var(--surface2);
       border:1.5px solid var(--border);
       border-radius:16px;padding:6px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
     }
+    .bottom-lang-inner::-webkit-scrollbar{display:none}
     .bottom-lang-inner button{
-      flex:1;min-width:60px;height:48px;
+      flex:1 1 auto;min-width:60px;height:48px;
       border:none;border-radius:11px;
       background:transparent;
       font-family:var(--font);font-size:14px;font-weight:800;
       color:var(--text2);cursor:pointer;
       transition:all .2s;
       display:flex;align-items:center;justify-content:center;gap:6px;
+      white-space:nowrap;
     }
     .bottom-lang-inner button.active{
       background:var(--primary);color:#fff;
@@ -616,6 +878,17 @@
       .hdr-logo{width:48px;height:48px;font-size:22px}
       .hdr-title{font-size:19px}
       .daily-aya{padding:22px}
+      .daily-aya-top{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .daily-aya-actions{
+        justify-content:flex-start;
+        width:100%;
+      }
+      .daily-aya-label{
+        padding-top:0;
+      }
       .daily-aya-arabic{font-size:34px;line-height:2.3}
       .daily-aya-text{font-size:30px;line-height:1.75}
       .daily-aya-text.ku,
@@ -631,6 +904,10 @@
       .bottom-lang-inner button[data-lang="ku"],
       .bottom-lang-inner button[data-lang="ku-KM"],
       .bottom-lang-inner button[data-lang="fa"]{font-size:14px}
+      .vk-key{height:40px;font-size:18px}
+      .vk-key.wide,.vk-key.space,.vk-key.backspace,.vk-key.enter{font-size:12px}
+      .fav-modal-header{flex-wrap:wrap}
+      .fav-toolbar{padding:10px}
     }
     @media (max-width:480px){
       body{padding:12px 10px calc(var(--bottom-bar-height) + 15px)}
@@ -649,6 +926,7 @@
       .daily-aya-text.fa{font-size:26px;line-height:1.8}
       .daily-aya-text.phonetic{font-size:22px;line-height:1.7}
       .day-action-btn{width:34px;height:34px;font-size:13px}
+      .search-toggle-btn{width:34px;height:34px;font-size:13px}
       .icon-btn{width:44px;height:44px;font-size:17px}
       .verse-tools{top:6px;left:6px}
       .verse-tool{width:32px;height:32px;font-size:13px}
@@ -660,15 +938,6 @@
       .fav-text.ku-KM,
       .fav-text.fa{font-size:26px}
       .modal-card{padding:20px}
-      .tafsir-card{padding:0}
-      .tafsir-topbar{padding:16px 16px 10px}
-      .tafsir-title{font-size:16px}
-      .tafsir-lang-bar{padding:0 16px 12px;gap:5px}
-      .tafsir-lang-bar button{font-size:12px;padding:7px 11px}
-      .tafsir-translate-bar{padding:10px 16px;gap:5px}
-      .tafsir-translate-bar button{font-size:11px;padding:5px 10px}
-      .tafsir-scroll{padding:14px 16px 20px}
-      .tafsir-body{font-size:16px;line-height:1.8}
       .modal-card .modal-arabic{font-size:28px;line-height:2.3}
       .translation{font-size:24px;padding:12px 16px;line-height:1.75}
       .translation.ku,
@@ -680,11 +949,29 @@
       .modal-card .modal-text.ku-KM,
       .modal-card .modal-text.fa{font-size:28px}
       .bottom-lang-bar{padding:8px 10px max(8px, env(safe-area-inset-bottom))}
-      .bottom-lang-inner{padding:5px;border-radius:14px}
-      .bottom-lang-inner button{height:42px;font-size:12px;min-width:50px;padding:0 4px}
+      .bottom-lang-inner{
+        padding:5px;border-radius:14px;
+        flex-wrap:wrap;
+        overflow-x:visible;
+      }
+      .bottom-lang-inner button{
+        height:42px;font-size:11px;padding:0 2px;
+        flex:1 1 30%;min-width:0;
+      }
       .bottom-lang-inner button[data-lang="ku"],
       .bottom-lang-inner button[data-lang="ku-KM"],
-      .bottom-lang-inner button[data-lang="fa"]{font-size:13px}
+      .bottom-lang-inner button[data-lang="fa"]{font-size:12px}
+      :root{ --bottom-bar-height: 152px; }
+      .vk-key{height:36px;font-size:16px}
+      .vk-key.wide,.vk-key.space,.vk-key.backspace,.vk-key.enter{font-size:11px}
+      .search-input-row input{font-size:15px;height:42px}
+      .search-input-row button{height:42px;padding:0 12px;font-size:13px}
+      .search-results{max-height:380px}
+      .search-pagination button{min-width:32px;height:32px;font-size:12px;padding:0 6px}
+      .fav-modal-title{font-size:16px}
+      .fav-modal-icon-btn{width:38px;height:38px;font-size:14px}
+      .fav-control-btn{height:34px;padding:0 10px;font-size:12px}
+      .fav-checkbox{width:18px;height:18px}
     }
   </style>
 </head>
@@ -712,6 +999,9 @@
       <button class="icon-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
         <i class="fas fa-moon" id="nightIcon"></i>
       </button>
+      <button class="icon-btn" onclick="toggleAllSections()" title="Visa/Göm allt under Dagens aya" id="toggleSectionsBtn">
+        <i class="fas fa-eye" id="toggleSectionsIcon"></i>
+      </button>
     </div>
   </div>
 
@@ -725,9 +1015,6 @@
         <button class="day-action-btn" id="loopDailyBtn" onclick="toggleDailyLoop()" title="Upprepa tills vidare">
           <i class="fas fa-repeat"></i>
         </button>
-        <button class="day-action-btn" onclick="openTafsirDaily()" title="Tafsir">
-          <i class="fas fa-book-open"></i>
-        </button>
         <button class="day-action-btn" onclick="goToPrevAya()" title="Föregående aya">
           <i class="fas fa-chevron-left"></i>
         </button>
@@ -739,6 +1026,38 @@
         </button>
         <button class="day-action-btn" id="saveFavBtn" onclick="saveCurrentAyaAsFavorite()" title="Spara favorit">
           <i class="far fa-star"></i>
+        </button>
+        <button class="search-toggle-btn" id="searchToggleBtn" onclick="toggleSearchPanel()" title="Sök i Quran">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="search-panel" id="searchPanel">
+      <div class="search-input-row">
+        <input type="text" id="quranSearchInput" placeholder="Sök ord i Quran…" dir="rtl" autocomplete="off">
+        <button class="search-go" onclick="performQuranSearch()" title="Sök">
+          <i class="fas fa-search"></i>
+        </button>
+        <button class="search-clear" onclick="clearQuranSearch()" title="Rensa">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="vk-container">
+        <div class="vk-keys" id="vkKeys"></div>
+      </div>
+
+      <div class="search-hint">
+        <i class="fas fa-lightbulb"></i> Skriv ett ord och tryck <i class="fas fa-search"></i> för att söka i hela Quran (erab ignoreras automatiskt)
+      </div>
+
+      <div class="search-results" id="searchResults"></div>
+      <div class="search-pagination" id="searchPagination" style="display:none"></div>
+      <div class="search-load-more-wrap" id="searchLoadMoreWrap" style="display:none">
+        <button class="search-load-more-btn" id="searchLoadMoreBtn" onclick="loadMoreSearchResults()">
+          <i class="fas fa-plus-circle"></i>
+          <span id="searchLoadMoreText">Ladda fler resultat</span>
         </button>
       </div>
     </div>
@@ -776,6 +1095,8 @@
     </div>
   </div>
 
+  <div id="collapsibleSections">
+
   <div class="section">
     <div class="section-title"><i class="fas fa-search"></i> Hoppa till sura</div>
     <div class="sura-picker">
@@ -792,7 +1113,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playAyah(2,255,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
-        <button class="verse-tool" onclick="openTafsirAyah(2,255,'Ayat al-Kursi · 2:255')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic">
         اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ
@@ -821,7 +1141,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(1,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(1,'Al-Fātiha')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic">
         بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾
@@ -839,7 +1158,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(109,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(109,'Al-Kāfirūn')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
         قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ ﴿٤﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾
@@ -855,7 +1173,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(112,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(112,'Al-Ikhlāṣ')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
         قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾
@@ -871,7 +1188,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(113,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(113,'Al-Falaq')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
         قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾
@@ -887,7 +1203,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(114,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(114,'An-Nās')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
         قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾
@@ -903,7 +1218,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(110,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
-        <button class="verse-tool" onclick="openTafsirChapter(110,'An-Naṣr')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
       <div class="arabic arabic-small">
         إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ ﴿١﴾ وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا ﴿٢﴾ فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا ﴿٣﴾
@@ -960,6 +1274,21 @@
       </div>
     </div>
     <div class="translation" data-tr="ruqya4"></div>
+
+    <hr class="divider">
+
+    <span class="pill">سورة القلم ٦٨:٥١ · Al-Qalam 68:51</span>
+    <div class="verse-block">
+      <div class="verse-tools">
+        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" data-role="play" onclick="playAyah(68,51,this)" title="Spela upp"><i class="fas fa-play"></i></button>
+        <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa tills vidare"><i class="fas fa-repeat"></i></button>
+      </div>
+      <div class="arabic arabic-small">
+        وَإِنْ يَكَادُ الَّذِينَ كَفَرُوا لَيُزْلِقُونَكَ بِأَبْصَارِهِمْ لَمَّا سَمِعُوا الذِّكْرَ وَيَقُولُونَ إِنَّهُ لَمَجْنُونٌ
+      </div>
+    </div>
+    <div class="translation" data-tr="qalam51"></div>
   </div>
 
   <div class="section">
@@ -1022,6 +1351,8 @@
     <div class="translation" data-tr="nur"></div>
   </div>
 
+  </div>
+
   <div class="footer">
     <i class="fas fa-mosque"></i> Familjens Planerare · Quran‑del<br>
     <span style="font-size:12px">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</span>
@@ -1040,35 +1371,48 @@
   </div>
 </div>
 
+<!-- FAVORIT-MODAL med alla funktioner -->
 <div class="modal-ov h" id="favModal" onclick="if(event.target===this)closeFavorites()">
-  <div class="modal-card" style="max-width:700px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-      <div style="font-size:20px;font-weight:900;color:var(--text)">
-        <i class="fas fa-star" style="color:var(--amber)"></i> Mina favoriter
+  <div class="modal-card" id="favModalCard">
+    <div class="fav-modal-header">
+      <div class="fav-modal-title">
+        <i class="fas fa-star" style="color:var(--amber)"></i>
+        <span>Mina favoriter</span>
+        <span class="fav-count" id="favCount">0</span>
       </div>
-      <div style="display:flex;gap:8px">
-        <button onclick="toggleFavFullscreen()" style="width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px" title="Helskärm">
+      <div class="fav-modal-actions">
+        <button class="fav-modal-icon-btn" onclick="toggleFavFullscreen()" title="Helskärm" id="favFsBtn">
           <i class="fas fa-expand" id="favFsIcon"></i>
         </button>
-        <button onclick="closeFavorites()" style="width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:17px">
+        <button class="fav-modal-icon-btn" onclick="closeFavorites()" title="Stäng">
           <i class="fas fa-times"></i>
         </button>
       </div>
     </div>
-    <div id="favToolbar" style="display:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px">
-      <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--text2);cursor:pointer">
-        <input type="checkbox" id="favSelectAll" onchange="toggleSelectAllFavorites(this)"> Markera alla
-      </label>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:13px;font-weight:800;color:var(--text2)">Spela markerade / alla</span>
-        <button onclick="playFavoritesSequence()" id="favPlaySelectedBtn" style="width:38px;height:38px;border-radius:50%;border:none;background:var(--primary);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center" title="Spela markerade (eller alla om inget är markerat)">
+
+    <div class="fav-toolbar" id="favToolbar" style="display:none">
+      <div class="fav-toolbar-left">
+        <label class="fav-select-all">
+          <input type="checkbox" id="favSelectAll" onchange="toggleSelectAllFavorites(this)">
+          <span>Markera alla</span>
+        </label>
+        <span class="fav-count" id="favSelectedCount">0 valda</span>
+      </div>
+      <div class="fav-toolbar-right">
+        <button class="fav-control-btn primary" id="favPlayBtn" onclick="playFavoritesSequence()" title="Spela markerade (eller alla om inget är markerat)">
           <i class="fas fa-play"></i>
+          <span id="favPlayText">Spela</span>
         </button>
-        <button onclick="stopFavoritesSequence()" style="width:38px;height:38px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer" title="Stoppa">
+        <button class="fav-control-btn" id="favLoopBtn" onclick="cycleFavLoopMode()" title="Upprepning: av">
+          <i class="fas fa-repeat" id="favLoopIcon"></i>
+          <span id="favLoopText">Av</span>
+        </button>
+        <button class="fav-control-btn danger" id="favStopBtn" onclick="stopFavoritesSequence()" title="Stoppa">
           <i class="fas fa-stop"></i>
         </button>
       </div>
     </div>
+
     <div id="favList"></div>
   </div>
 </div>
@@ -1077,54 +1421,9 @@
   <div class="modal-card" id="viewFavContent"></div>
 </div>
 
-<div class="modal-ov h" id="tafsirModal" onclick="if(event.target===this)closeTafsir()">
-  <div class="modal-card tafsir-card">
-    <div class="tafsir-topbar">
-      <div class="tafsir-title" id="tafsirTitle"><i class="fas fa-book-open"></i> Tafsir</div>
-      <div style="display:flex;gap:8px;flex-shrink:0">
-        <button class="tafsir-close" id="tafsirFsBtn" onclick="toggleTafsirFullscreen()" title="Helskärm"><i class="fas fa-expand" id="tafsirFsIcon"></i></button>
-        <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
-      </div>
-    </div>
-    <div class="tafsir-lang-bar" id="tafsirLangBar"></div>
-    <div class="tafsir-translate-bar" id="tafsirTranslateBar">
-      <span class="label"><i class="fas fa-language"></i> Översätt tafsir till:</span>
-      <button data-tl="ku" onclick="translateTafsirTo('ku')">🏳️ کوردی سۆرانی</button>
-      <button data-tl="ku-KM" onclick="translateTafsirTo('ku-KM')">🏴 Kurdî Kurmancî</button>
-      <button data-tl="fa" onclick="translateTafsirTo('fa')">🇮🇷 فارسی</button>
-      <button data-tl="sv" onclick="translateTafsirTo('sv')">🇸🇪 Svenska</button>
-      <button data-tl="original" onclick="translateTafsirTo('original')">📄 Original</button>
-    </div>
-    <div class="tafsir-translate-bar" id="tafsirDisplayBar">
-      <span class="label"><i class="fas fa-text-height"></i> Textstorlek:</span>
-      <button onclick="changeTafsirFontSize(-2)" title="Mindre text"><i class="fas fa-minus"></i></button>
-      <span id="tafsirSizeLabel" style="font-weight:800;color:var(--text2);min-width:38px;text-align:center">19px</span>
-      <button onclick="changeTafsirFontSize(2)" title="Större text"><i class="fas fa-plus"></i></button>
-      <span class="label" style="margin-left:10px"><i class="fas fa-font"></i> Typsnitt:</span>
-      <select id="tafsirFontSelect" onchange="setTafsirFontFamily(this.value)" style="border:1.5px solid var(--border);border-radius:50px;padding:6px 12px;font-family:var(--font);font-size:12px;font-weight:800;background:var(--surface);color:var(--text2);cursor:pointer">
-        <option value="default">Standard (serif)</option>
-        <option value="inter">Inter / System</option>
-        <option value="georgia">Georgia</option>
-        <option value="timesnewroman">Times New Roman</option>
-        <option value="arial">Arial</option>
-        <option value="roboto">Roboto</option>
-        <option value="opensans">Open Sans</option>
-        <option value="verdana">Verdana</option>
-        <option value="couriernew">Courier New</option>
-        <option value="amiri">Amiri (arabisk stil)</option>
-        <option value="kurdish">K24 Kurdish</option>
-      </select>
-    </div>
-    <div class="tafsir-scroll">
-      <div class="tafsir-source" id="tafsirSource"></div>
-      <div class="tafsir-body" id="tafsirBody"><div class="daily-aya-loading">Laddar…</div></div>
-    </div>
-  </div>
-</div>
-
 <script>
 /* ============================================================
-   ÖVERSÄTTNINGAR (statiska verser i appen)
+   ÖVERSÄTTNINGAR
    ============================================================ */
 const TRANSLATIONS = {
   sv: {
@@ -1139,6 +1438,7 @@ const TRANSLATIONS = {
     ruqya2: '”O Allah, människornas Herre, ta bort lidandet. Bota honom, för Du är den som botar. Det finns ingen bot utom Din bot – en bot som inte lämnar någon sjukdom kvar.”',
     ruqya3: '”I Guds namn, vid vars namn inget på jorden eller i himlen kan skada, och Han är den Hörande, den Vetande.”',
     ruqya4: '”O Allah, inget är lätt utom det Du gör lätt, och Du gör sorgen lätt när Du vill.”',
+    qalam51: '”De som förnekar sanningen är nära att fälla dig med sina onda blickar när de hör Påminnelsen (Koranen), och de säger: ’Han är sannerligen besatt.’”',
     nasr: '”När Allahs hjälp och seger kommer, och du ser människorna gå in i Allahs religion i skaror, prisa då din Herre och be Honom om förlåtelse. Han tar alltid emot ånger.”',
     tasbihcombo: '”Prisad vare Allah och allt lov tillhör Allah. Det finns ingen gud utom Allah, och Allah är större. Det finns ingen makt och ingen kraft utom genom Allah. Jag ber den Väldige Allah om förlåtelse och vänder mig till Honom i ånger. Prisad vare Allah och allt lov tillhör Allah, prisad vare den Väldige Allah. Allah är oss nog, och Han är den bäste beskyddaren och den bäste hjälparen.”',
     kifayah: '”O Allah, låt det Du gjort tillåtet vara nog för mig så att jag slipper det förbjudna, och gör mig genom Din nåd oberoende av alla andra än Dig.”',
@@ -1156,6 +1456,7 @@ const TRANSLATIONS = {
     ruqya2: '"O Allah, Lord of mankind, remove the affliction. Heal, for You are the Healer. There is no healing except Your healing – a healing that leaves no illness behind."',
     ruqya3: '"In the name of Allah, with whose name nothing on earth or in heaven can cause harm, and He is the All-Hearing, the All-Knowing."',
     ruqya4: '"O Allah, nothing is easy except what You make easy, and You make sorrow easy when You will."',
+    qalam51: '"And indeed, those who disbelieve would almost make you slip with their eyes when they hear the message (the Quran), and they say, \'Indeed, he is mad.\'"',
     nasr: '"When the help of Allah has come and the conquest, and you see the people entering into the religion of Allah in multitudes, then exalt Him with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance."',
     tasbihcombo: '"Glory be to Allah and praise be to Allah. There is no deity but Allah, and Allah is the Greatest. There is no power and no strength except through Allah. I seek forgiveness from Allah the Mighty and turn to Him in repentance. Glory be to Allah and praise be to Allah, glory be to Allah the Mighty. Allah is sufficient for us, and He is the best Disposer of affairs and the best Helper."',
     kifayah: '"O Allah, suffice me with what You have made lawful instead of what You have made unlawful, and make me independent of all others besides You by Your grace."',
@@ -1173,6 +1474,7 @@ const TRANSLATIONS = {
     ruqya2: '«خدایا، پروردگار مردمان! رنج را ببر. شفا ده، که تو شفا دهنده‌ای. هیچ شفایی جز شفای تو نیست – شفایی که هیچ بیماری را باقی نگذارد.»',
     ruqya3: '«به نام خدایی که با نام او هیچ چیز در زمین و آسمان آسیب نمی‌رساند، و او شنوا و داناست.»',
     ruqya4: '«خدایا! هیچ چیز آسان نیست مگر آنچه تو آسان کنی، و تو غم را هنگامی که بخواهی آسان می‌کنی.»',
+    qalam51: '«و کافران چون قرآن را شنیدند، نزدیک بود تو را با چشمان خود بلغزانند، و می‌گویند: راستی که او دیوانه است.»',
     nasr: '«چون یاری خدا و پیروزی فرارسد، و ببینی که مردم دسته‌دسته به دین خدا درمی‌آیند، پس به ستایش پروردگارت تسبیح گوی و از او آمرزش بخواه، که او همواره توبه‌پذیر است.»',
     tasbihcombo: '«پاک و منزه است خدا و ستایش او راست. هیچ معبودی جز خدا نیست و خدا بزرگ‌تر است. هیچ نیرو و توانی جز به خدا نیست. از خدای بزرگ آمرزش می‌خواهم و به سوی او بازمی‌گردم. پاک و منزه است خدا و ستایش او راست، پاک و منزه است خدای بزرگ. خدا ما را کافی است و او بهترین کارساز و بهترین یاور است.»',
     kifayah: '«خدایا، مرا با حلالت از حرامت بی‌نیاز کن، و با فضل خودت از غیر خودت بی‌نیازم گردان.»',
@@ -1190,6 +1492,7 @@ const TRANSLATIONS = {
     ruqya2: '«خوایە، پەروەردگاری خەڵکی! ناخۆشی بەرەوە. شیفای بدە، چونکە تۆ شیفادەری. هیچ شیفایەک نییە جگە لە شیفای تۆ – شیفایەک کە هیچ نەخۆشییەک بەجێ نەهێڵێت.»',
     ruqya3: '«بە ناوی ئەو خوایەی کە بە ناوی ئەو هیچ شتێک لە زەوی و ئاسمان زیانی پێ ناگات، و ئەو بیسەر و زانایە.»',
     ruqya4: '«خوایە! هیچ شتێک ئاسان نییە جگە لەوەی تۆ ئاسانی دەکەیت، و تۆ خەفەت ئاسان دەکەیت کاتێک بیەوێت.»',
+    qalam51: '«بێباوەڕان کاتێک قورئانیان بیست، خەریک بوو بە سووکایەتی چاوەکانیان تۆ بخەنە خوارەوە، و دەڵێن: بەڕاستی ئەو شێتە.»',
     nasr: '«کاتێک یارمەتی خودا و سەرکەوتن دێت، و دەبینیت خەڵکی بە کۆمەڵ دەچنە ناو ئایینی خودا، ئەوا ستایشی پەروەردگارت بکە و داوای لێخۆشبوونی لێ بکە، بێگومان ئەو زۆر تۆبەوەرگرە.»',
     tasbihcombo: '«پاکی بۆ خوایە و سوپاس بۆ خوایە. هیچ خوایەک نییە جگە لە خوا، و خوا گەورەترە. هیچ هێز و تواناییەک نییە جگە بە خوا. داوای لێخۆشبوون لە خوای مەزن دەکەم و بۆ لای دەگەڕێمەوە. پاکی بۆ خوایە و سوپاس بۆ خوایە، پاکی بۆ خوای مەزن. خوا بەسمانە، باشترین یارمەتیدەر و باشترین سەرکەوتووکەر.»',
     kifayah: '«خوایە، بە حەڵاڵی خۆت بێنیازم بکە لە حەرامی خۆت، و بە فەزڵی خۆت بێنیازم بکە لە کەسانی تر جگە لە خۆت.»',
@@ -1207,6 +1510,7 @@ const TRANSLATIONS = {
     ruqya2: '«Ya Allah, xwedanê mirovan! Nexweşiyê rake. Şifayê bide, ji ber ku tu şîfakar î. Tu şifayek tune ji bilî şifaya te – şifayek ku tu nexweşiyê li pey xwe nehêle.»',
     ruqya3: '«Bi navê wî Xwedayê ku bi navê wî tiştek li ser zemîn û ezmanan zerarê nagihîne, û ew guhdar û zana ye.»',
     ruqya4: '«Ya Allah! Tiştek hêsan nîne ji bilî tiştê ku te hêsan kir, û tu xemgînî hêsan dikî dema ku bixwazî.»',
+    qalam51: '«Kafiran gava ku Zîkr (Quran) bihîstin, hindik ma ku bi çavên xwe te bixin (bilerizînin), û dibêjin: Bi rastî ew dîn e.»',
     nasr: '«Dema alîkariya Xwedê û serkeftin bê, û tu bibînî ku mirov bi kom-kom dikevin dîna Xwedê, êdî bi pesnê Perwerdekarê xwe tesbîh bike û jê lêborînê bixwaze. Bêguman ew her tobevegerîner e.»',
     tasbihcombo: '«Paqijî ji Xwedê re ye û pesn ji Xwedê re ye. Ji bilî Xwedê tu xuda tune ye, û Xwedê mezintir e. Ne hêz û ne jî tîner heye ji bilî bi Xwedê. Ez ji Xwedayê Mezin lêborînê dixwazim û ber bi wî ve vedigerim. Paqijî ji Xwedê re ye û pesn ji Xwedê re ye, paqijî ji Xwedayê Mezin re ye. Xwedê ji me re bes e, û ew çêtirîn wekîl û çêtirîn alîkar e.»',
     kifayah: '«Ya Xwedê, min bi helala xwe ji herama xwe serbixwe bike, û bi qenciya xwe min ji kesên din ji xeynî te serbixwe bike.»',
@@ -1226,6 +1530,7 @@ const PHONETIC = {
   ruqya2: 'Allāhumma rabban-nās, adhhibil-bāsa, ishfihi wa antash-shāfī, lā shifāʾa illā shifāʾuk, shifāʾan lā yughādiru saqamā.',
   ruqya3: 'Bismillāhil-ladhī lā yaḍurru maʿasmihī shayʾun fil-arḍi wa lā fis-samāʾ, wa huwas-samīʿul-ʿalīm.',
   ruqya4: 'Allāhumma lā sahla illā mā jaʿaltahū sahlā, wa anta tajʿalul-ḥazna idhā shiʾta sahlā.',
+  qalam51: 'Wa in yakādul-ladhīna kafarū layuzliqūnaka bi-abṣārihim lammā samiʿūdh-dhikra wa yaqūlūna innahū lamajnūn.',
   nasr: 'Idhā jāʾa naṣrullāhi wal-fatḥ. Wa raʾaytan-nāsa yadkhulūna fī dīnillāhi afwājā. Fa-sabbiḥ bi-ḥamdi rabbika wastaghfirh, innahū kāna tawwābā.',
   tasbihcombo: 'Subḥānallāhi wal-ḥamdu lillāh, wa lā ilāha illallāhu wallāhu akbar, wa lā ḥawla wa lā quwwata illā billāh. Astaghfirullāhal-ʿaẓīma wa atūbu ilayh. Subḥānallāhi wal-ḥamdu lillāhi subḥānallāhil-ʿaẓīm. Ḥasbunallāhu wa niʿmal-wakīlu wa niʿman-naṣīr.',
   kifayah: 'Allāhumma-kfinī bi-ḥalālika ʿan ḥarāmik, wa aghninī bi-faḍlika ʿamman siwāk.',
@@ -1233,254 +1538,430 @@ const PHONETIC = {
 };
 
 /* ============================================================
-   TAFSIR – endast riktiga tafsir-databaser (arabiska + engelska
-   + kurdiska sorani + persiska). Översättning av tafsir till
-   andra språk görs via Google Translate-knappar i modalen.
+   ARABISK NORMALISERING
    ============================================================ */
-const TAFSIRS = [
-  { lang:'ar-ibnkathir', flag:'🇸🇦', label:'العربية · ابن كثير', slug:'ar-tafsir-ibn-kathir', name:'تفسير ابن كثير', rtl:true },
-  { lang:'ar-tabari', flag:'🇸🇦', label:'العربية · الطبري', slug:'ar-tafsir-al-tabari', name:'تفسير الطبري', rtl:true },
-  { lang:'ar-saddi', flag:'🇸🇦', label:'العربية · السعدي', slug:'ar-tafseer-al-saddi', name:'تفسير السعدي', rtl:true },
-  { lang:'en-ibnkathir', flag:'🇬🇧', label:'English · Ibn Kathir', slug:'en-tafisr-ibn-kathir', name:'Tafsir Ibn Kathir (English)', rtl:false },
-  { lang:'en-maarif', flag:'🇬🇧', label:'English · Maarif-ul-Quran', slug:'en-tafsir-maarif-ul-quran', name:'Maarif-ul-Quran', rtl:false },
-  { lang:'fa-mokhtasar', flag:'🇮🇷', label:'فارسی · المختصر', slug:'persian-mokhtasar', name:'تفسیر المختصر (فارسی)', rtl:true },
-  { lang:'fa-saadi', flag:'🇮🇷', label:'فارسی · سعدی', slug:'fr-tafsir-as-saadi', name:'تفسیر السعدی (فارسی)', rtl:true },
-  { lang:'ku-rebar', flag:'🏳️', label:'کوردی سۆرانی · ڕەبار', slug:'kurd-tafsir-rebar', name:'تەفسیری ڕەبار', rtl:true }
-];
-
-let currentTafsirRef = null;
-let currentTafsirLang = localStorage.getItem('quranTafsirLang') || 'ar-ibnkathir';
-let currentTafsirHtml = '';
-let currentTafsirTranslation = localStorage.getItem('quranTafsirTranslation') || 'original';
-
-function openTafsirAyah(surah, ayah, title){
-  currentTafsirRef = { type:'ayah', surah, ayah };
-  openTafsirModalCommon(title);
-}
-function openTafsirChapter(chapter, title){
-  currentTafsirRef = { type:'chapter', chapter };
-  openTafsirModalCommon(title);
-}
-function openTafsirDaily(){
-  if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
-  currentTafsirRef = { type:'ayah', surah: currentAyaData.surahNum, ayah: currentAyaData.ayahNum };
-  openTafsirModalCommon(currentAyaData.surahName + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum);
+function normalizeArabic(text){
+  if(!text) return '';
+  return String(text)
+    .replace(/[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06DC\u06DF-\u06E8\u06EA-\u06ED]/g, '')
+    .replace(/\u0640/g, '')
+    .replace(/[\u06DD\u06DE\u08E3-\u08FF\uFE70-\uFE7F]/g, '')
+    .replace(/[\uFD3E\uFD3F]/g, '')
+    .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, '')
+    .replace(/[،؛؟!.:\-_()[\]{}'"»«]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[أإآٱا]/g, 'ا')
+    .replace(/[يىیۍ]/g, 'ي')
+    .replace(/[ةه]/g, 'ه')
+    .replace(/[ؤو]/g, 'و')
+    .replace(/[كک]/g, 'ك');
 }
 
-function openTafsirModalCommon(title){
-  document.getElementById('tafsirTitle').innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + title;
-  renderTafsirLangBar();
-  renderTafsirTranslateBar();
-  applyTafsirDisplay();
-  document.getElementById('tafsirModal').classList.remove('h');
-  document.querySelector('.tafsir-scroll').scrollTop = 0;
-  loadTafsir(currentTafsirLang);
-}
-function closeTafsir(){
-  document.getElementById('tafsirModal').classList.add('h');
+function normalizeSearchTerm(text){
+  return normalizeArabic(text).toLowerCase();
 }
 
-function renderTafsirLangBar(){
-  const bar = document.getElementById('tafsirLangBar');
-  bar.innerHTML = TAFSIRS.map(t =>
-    `<button class="${t.lang === currentTafsirLang ? 'active' : ''}" onclick="selectTafsir('${t.lang}')">${t.flag} ${t.label}</button>`
-  ).join('');
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
-function renderTafsirTranslateBar(){
-  const bar = document.getElementById('tafsirTranslateBar');
-  if(!bar) return;
-  bar.querySelectorAll('button').forEach(b=>{
-    b.classList.toggle('active', b.dataset.tl === currentTafsirTranslation);
-  });
-}
-
-/* Textstorlek & typsnitt i tafsir-fönstret, sparas mellan besök */
-let tafsirFontSize = parseInt(localStorage.getItem('quranTafsirFontSize'), 10) || 19;
-let tafsirFontFamily = localStorage.getItem('quranTafsirFontFamily') || 'default';
-const TAFSIR_FONT_FAMILIES = {
-  default: "'Times New Roman', Times, serif",
-  inter: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-  georgia: "Georgia, 'Times New Roman', serif",
-  timesnewroman: "'Times New Roman', Times, serif",
-  arial: "Arial, Helvetica, sans-serif",
-  roboto: "'Roboto', Arial, sans-serif",
-  opensans: "'Open Sans', Arial, sans-serif",
-  verdana: "Verdana, Geneva, sans-serif",
-  couriernew: "'Courier New', Courier, monospace",
-  amiri: 'var(--quran-font)',
-  kurdish: 'var(--kurdish-font)'
+/* ============================================================
+   VIRTUELLT TANGENTBORD
+   ============================================================ */
+const VK_LAYOUT = {
+  name: 'العربية',
+  rows: [
+    ['ض','ص','ث','ق','ف','غ','ع','ه','خ','ح','ج','د'],
+    ['ش','س','ي','ب','ل','ا','ت','ن','م','ك','ط'],
+    ['ئ','ء','ؤ','ر','لا','ى','ة','و','ز','ظ'],
+    ['ذ','\u200c','\u200d','،','؟','!','.','؛',':']
+  ]
 };
 
-function applyTafsirDisplay(){
-  const body = document.getElementById('tafsirBody');
-  const sizeLabel = document.getElementById('tafsirSizeLabel');
-  const fontSelect = document.getElementById('tafsirFontSelect');
-  if(body){
-    body.style.fontSize = tafsirFontSize + 'px';
-    body.style.fontFamily = TAFSIR_FONT_FAMILIES[tafsirFontFamily] || TAFSIR_FONT_FAMILIES.default;
-  }
-  if(sizeLabel) sizeLabel.textContent = tafsirFontSize + 'px';
-  if(fontSelect) fontSelect.value = tafsirFontFamily;
+function renderVkKeyboard(){
+  const container = document.getElementById('vkKeys');
+  if(!container) return;
+
+  let html = '';
+  VK_LAYOUT.rows.forEach((row, idx) => {
+    html += '<div class="vk-row">';
+    if(idx === VK_LAYOUT.rows.length - 1){
+      html += '<button class="vk-key backspace" onclick="vkBackspace()" title="Radera"><i class="fas fa-delete-left"></i></button>';
+      row.forEach(k => {
+        html += `<button class="vk-key" onclick="vkInsert('${k.replace(/'/g, "\\'")}')">${k}</button>`;
+      });
+      html += '<button class="vk-key enter" onclick="performQuranSearch()" title="Sök"><i class="fas fa-search"></i></button>';
+    } else {
+      row.forEach(k => {
+        html += `<button class="vk-key" onclick="vkInsert('${k.replace(/'/g, "\\'")}')">${k}</button>`;
+      });
+    }
+    html += '</div>';
+  });
+
+  html += '<div class="vk-row">';
+  html += '<button class="vk-key wide" onclick="vkInsert(\' \')">␣ Mellanslag</button>';
+  html += '<button class="vk-key wide" onclick="vkClear()">Rensa</button>';
+  html += '</div>';
+
+  container.innerHTML = html;
 }
 
-function changeTafsirFontSize(delta){
-  tafsirFontSize = Math.min(34, Math.max(14, tafsirFontSize + delta));
-  localStorage.setItem('quranTafsirFontSize', tafsirFontSize);
-  applyTafsirDisplay();
+function vkInsert(char){
+  const inp = document.getElementById('quranSearchInput');
+  if(!inp) return;
+  const start = inp.selectionStart || inp.value.length;
+  const end = inp.selectionEnd || inp.value.length;
+  inp.value = inp.value.slice(0, start) + char + inp.value.slice(end);
+  inp.focus();
+  inp.selectionStart = inp.selectionEnd = start + char.length;
 }
 
-function setTafsirFontFamily(fam){
-  tafsirFontFamily = TAFSIR_FONT_FAMILIES[fam] ? fam : 'default';
-  localStorage.setItem('quranTafsirFontFamily', tafsirFontFamily);
-  applyTafsirDisplay();
-}
-
-/* Helskärm för tafsir-fönstret */
-function toggleTafsirFullscreen(){
-  const el = document.querySelector('.tafsir-card');
-  if(!el) return;
-  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  if(!isFs){
-    (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen).call(el);
+function vkBackspace(){
+  const inp = document.getElementById('quranSearchInput');
+  if(!inp) return;
+  const start = inp.selectionStart || 0;
+  const end = inp.selectionEnd || 0;
+  if(start === end && start > 0){
+    inp.value = inp.value.slice(0, start - 1) + inp.value.slice(start);
+    inp.selectionStart = inp.selectionEnd = start - 1;
   } else {
-    (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+    inp.value = inp.value.slice(0, start) + inp.value.slice(end);
+    inp.selectionStart = inp.selectionEnd = start;
   }
-}
-function updateTafsirFsIcon(){
-  const icon = document.getElementById('tafsirFsIcon');
-  if(!icon) return;
-  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
-}
-document.addEventListener('fullscreenchange', updateTafsirFsIcon);
-document.addEventListener('webkitfullscreenchange', updateTafsirFsIcon);
-
-function selectTafsir(lang){
-  currentTafsirLang = lang;
-  localStorage.setItem('quranTafsirLang', lang);
-  renderTafsirLangBar();
-  loadTafsir(lang);
+  inp.focus();
 }
 
-function translateTafsirTo(targetLang){
-  currentTafsirTranslation = targetLang;
-  localStorage.setItem('quranTafsirTranslation', targetLang);
-  renderTafsirTranslateBar();
-  if(targetLang === 'original'){
-    document.getElementById('tafsirBody').innerHTML = currentTafsirHtml;
-  } else {
-    applyGoogleTranslate(targetLang);
+function vkClear(){
+  const inp = document.getElementById('quranSearchInput');
+  if(inp){ inp.value = ''; inp.focus(); }
+}
+
+function toggleSearchPanel(){
+  const panel = document.getElementById('searchPanel');
+  const btn = document.getElementById('searchToggleBtn');
+  if(!panel) return;
+  panel.classList.toggle('open');
+  if(btn) btn.classList.toggle('active', panel.classList.contains('open'));
+  if(panel.classList.contains('open')){
+    renderVkKeyboard();
+    setTimeout(()=> {
+      const inp = document.getElementById('quranSearchInput');
+      if(inp) inp.focus();
+    }, 100);
   }
 }
 
-function applyGoogleTranslate(targetLang){
-  const body = document.getElementById('tafsirBody');
-  if(!currentTafsirHtml){ return; }
+/* ============================================================
+   QURAN-SÖKNING
+   ============================================================ */
+let searchInProgress = false;
+let lastSearchQuery = '';
+let quranCache = {};
+let quranIndex = null;
+let quranIndexPromise = null;
+let searchResultsAll = [];
+let searchCurrentPage = 1;
+const RESULTS_PER_PAGE = 10;
 
-  const map = {
-    'sv': 'sv',
-    'fa': 'fa',
-    'ku': 'ku',
-    'ku-KM': 'ku'
-  };
-  const gtLang = targetLang === 'ku' ? 'ckb' : (map[targetLang] || 'en');
-
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = currentTafsirHtml;
-  const plainText = tempDiv.textContent || tempDiv.innerText || '';
-
-  body.innerHTML = '<div class="daily-aya-loading">Översätter med Google Translate…</div>';
-
-  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(gtLang)}&dt=t&q=${encodeURIComponent(plainText.slice(0, 4500))}`;
-
-  fetch(url)
-    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
-    .then(data => {
-      if(data && data[0]){
-        const translated = data[0].map(seg => seg[0]).join('');
-        const dir = ['fa','ku','ckb','ar'].includes(gtLang) ? 'rtl' : 'ltr';
-        body.innerHTML = `<div class="tafsir-verse-num" style="background:var(--emerald-soft);color:#0A7B4E">🌐 Översatt med Google Translate (${gtLang.toUpperCase()})</div>
-          <p dir="${dir}" style="direction:${dir};text-align:${dir === 'rtl' ? 'right' : 'left'}">${escapeHtml(translated)}</p>`;
-      } else {
-        throw new Error('Ingen översättning returnerades');
-      }
-    })
-    .catch(err => {
-      console.error('Google Translate-fel:', err);
-      body.innerHTML = `<div class="fav-empty">
-        <i class="fas fa-triangle-exclamation"></i>
-        Kunde inte översätta automatiskt.<br><br>
-        <span style="font-size:13px;font-weight:600">
-          Tips: Öppna sidan i Edge och använd <b>Högerklicka → Översätt till…</b>,<br>
-          eller markera texten och använd webbläsarens inbyggda översättning.
-        </span>
-      </div>`;
-    });
+function detectSearchLang(query){
+  const arabicRange = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  if(arabicRange.test(query)) return 'ar';
+  return 'en';
 }
 
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function sanitizeTafsirHtml(html){
-  if(!html) return '';
-  return html.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/ on\w+="[^"]*"/gi, '');
-}
-
-async function fetchTafsirFromSpa5k(slug, surah, ayah){
-  const url = `https://cdn.jsdelivr.net/gh/spa5k/tafsir_api@main/tafsir/${slug}/${surah}/${ayah}.json`;
-  const res = await fetch(url);
-  if(!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
-  return {
-    html: sanitizeTafsirHtml(data.text || ''),
-    resourceName: (data.edition && data.edition.name) || slug
-  };
-}
-
-async function loadTafsir(lang){
-  const body = document.getElementById('tafsirBody');
-  const sourceEl = document.getElementById('tafsirSource');
-  const meta = TAFSIRS.find(t => t.lang === lang) || TAFSIRS[0];
-
-  body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
-  body.classList.toggle('rtl', !!meta.rtl);
-  sourceEl.textContent = '';
-
-  if(!currentTafsirRef) return;
-
+async function fetchSurahFromApi(surahNum){
+  if(quranCache[surahNum]) return quranCache[surahNum];
   try{
-    const surah = currentTafsirRef.type === 'ayah' ? currentTafsirRef.surah : currentTafsirRef.chapter;
-    const ayah = currentTafsirRef.type === 'ayah' ? currentTafsirRef.ayah : 1;
+    const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/ar.alafasy`);
+    if(!res.ok) return null;
+    const data = await res.json();
+    if(data && data.data && Array.isArray(data.data.ayahs)){
+      quranCache[surahNum] = data.data.ayahs.map(a => ({
+        numberInSurah: a.numberInSurah,
+        text: a.text
+      }));
+      return quranCache[surahNum];
+    }
+  }catch(e){ /* tyst */ }
+  return null;
+}
 
-    const result = await fetchTafsirFromSpa5k(meta.slug, surah, ayah);
+async function buildQuranIndex(onProgress){
+  if(quranIndex) return quranIndex;
+  if(quranIndexPromise) return quranIndexPromise;
 
-    if(!result || !result.html || result.html.trim() === ''){
-      body.innerHTML = '<div class="fav-empty"><i class="fas fa-circle-info"></i>Tafsir-text saknas för denna vers på detta språk.</div>';
-      currentTafsirHtml = '';
+  quranIndexPromise = (async () => {
+    const index = [];
+    const totalSurahs = 114;
+    let loaded = 0;
+    const batchSize = 6;
+
+    for(let start = 1; start <= totalSurahs; start += batchSize){
+      const batch = [];
+      for(let s = start; s < Math.min(start + batchSize, totalSurahs + 1); s++){
+        batch.push(
+          fetchSurahFromApi(s).then(ayahs => {
+            loaded++;
+            if(onProgress) onProgress(loaded, totalSurahs);
+            return { surah: s, ayahs };
+          })
+        );
+      }
+      const results = await Promise.all(batch);
+      for(const { surah, ayahs } of results){
+        if(!ayahs) continue;
+        for(const ayah of ayahs){
+          index.push({
+            surah: surah,
+            surahName: SURAH_NAMES[surah - 1],
+            ayah: ayah.numberInSurah,
+            arabic: ayah.text,
+            normalized: normalizeSearchTerm(ayah.text)
+          });
+        }
+      }
+    }
+
+    quranIndex = index;
+    quranIndexPromise = null;
+    return index;
+  })();
+
+  return quranIndexPromise;
+}
+
+function searchLocalIndex(query){
+  const normalizedQuery = normalizeSearchTerm(query);
+  if(normalizedQuery.length < 2) return [];
+  const results = [];
+  for(const entry of quranIndex){
+    if(entry.normalized.includes(normalizedQuery)){
+      results.push(entry);
+    }
+  }
+  return results;
+}
+
+async function performQuranSearch(){
+  if(searchInProgress) return;
+  const inp = document.getElementById('quranSearchInput');
+  const results = document.getElementById('searchResults');
+  const pagination = document.getElementById('searchPagination');
+  const loadMoreWrap = document.getElementById('searchLoadMoreWrap');
+  if(!inp || !results) return;
+
+  const query = inp.value.trim();
+  if(query.length < 2){
+    results.innerHTML = '<div class="search-empty"><i class="fas fa-keyboard"></i>Skriv minst 2 tecken att söka efter.</div>';
+    if(pagination) pagination.style.display = 'none';
+    if(loadMoreWrap) loadMoreWrap.style.display = 'none';
+    return;
+  }
+
+  searchInProgress = true;
+  lastSearchQuery = query;
+  searchCurrentPage = 1;
+
+  if(!quranIndex){
+    results.innerHTML = `
+      <div class="search-loading">
+        <i class="fas fa-spinner fa-spin"></i> Förbereder sökindex (första gången tar det lite tid)…
+      </div>
+      <div class="search-loading-bar"></div>
+      <div class="search-index-progress" id="indexProgress">0 / 114 suror</div>
+    `;
+    if(pagination) pagination.style.display = 'none';
+    if(loadMoreWrap) loadMoreWrap.style.display = 'none';
+    try {
+      await buildQuranIndex((loaded, total) => {
+        const el = document.getElementById('indexProgress');
+        if(el) el.textContent = `${loaded} / ${total} suror`;
+      });
+    } catch(e){
+      results.innerHTML = '<div class="search-empty"><i class="fas fa-exclamation-triangle"></i>Kunde inte bygga sökindex. Kontrollera internetanslutningen.</div>';
+      searchInProgress = false;
       return;
     }
+  }
 
-    sourceEl.textContent = result.resourceName || meta.name || '';
-    currentTafsirHtml = result.html;
+  results.innerHTML = '<div class="search-loading"><i class="fas fa-spinner fa-spin"></i> Söker…</div>';
 
-    if(currentTafsirTranslation !== 'original'){
-      applyGoogleTranslate(currentTafsirTranslation);
-    } else {
-      body.innerHTML = currentTafsirHtml;
+  let matches = searchLocalIndex(query);
+
+  if(matches.length === 0 && detectSearchLang(query) === 'ar'){
+    const editions = ['ar.alafasy', 'ar.muhammadfarooq', 'ar.husary'];
+    const seen = new Set();
+    for(const edition of editions){
+      try{
+        const url = `https://api.alquran.cloud/v1/search/${encodeURIComponent(query)}/all/${edition}`;
+        const res = await fetch(url);
+        if(!res.ok) continue;
+        const data = await res.json();
+        if(data && data.data && Array.isArray(data.data.matches)){
+          data.data.matches.forEach(m => {
+            const key = m.surah.number + ':' + m.numberInSurah;
+            if(!seen.has(key)){
+              seen.add(key);
+              matches.push({
+                surah: m.surah.number,
+                surahName: m.surah.englishName,
+                ayah: m.numberInSurah,
+                arabic: m.text,
+                normalized: normalizeSearchTerm(m.text)
+              });
+            }
+          });
+        }
+      }catch(e){ /* fortsätt */ }
     }
+  }
 
-  }catch(err){
-    console.error('Tafsir-fel:', err);
-    body.innerHTML = `
-      <div class="fav-empty">
-        <i class="fas fa-triangle-exclamation"></i>
-        Kunde inte hämta tafsir just nu.<br>
-        <span style="font-size:13px;font-weight:600">${err.message || 'Nätverksfel'}</span>
-      </div>`;
+  if(!matches.length){
+    results.innerHTML = '<div class="search-empty"><i class="fas fa-search-minus"></i>Inga träffar hittades för "' + escapeHtml(query) + '".<br><span style="font-size:13px">Prova ett annat ord eller stavning (erab ignoreras).</span></div>';
+    if(pagination) pagination.style.display = 'none';
+    if(loadMoreWrap) loadMoreWrap.style.display = 'none';
+    searchInProgress = false;
+    return;
+  }
+
+  searchResultsAll = matches;
+  searchInProgress = false;
+  renderSearchResultsPage(1);
+}
+
+function renderSearchResultsPage(page){
+  const results = document.getElementById('searchResults');
+  const pagination = document.getElementById('searchPagination');
+  const loadMoreWrap = document.getElementById('searchLoadMoreWrap');
+  if(!results) return;
+
+  searchCurrentPage = page;
+  const total = searchResultsAll.length;
+  const totalPages = Math.ceil(total / RESULTS_PER_PAGE);
+  const startIdx = (page - 1) * RESULTS_PER_PAGE;
+  const pageItems = searchResultsAll.slice(startIdx, startIdx + RESULTS_PER_PAGE);
+
+  let html = `<div style="font-size:12px;font-weight:800;color:var(--text3);padding:4px 8px 10px;text-transform:uppercase;letter-spacing:.06em">
+    <i class="fas fa-list"></i> ${total} träffar för "${escapeHtml(lastSearchQuery)}" – sida ${page} av ${totalPages} (visar ${startIdx + 1}–${Math.min(startIdx + RESULTS_PER_PAGE, total)})
+  </div>`;
+
+  pageItems.forEach(m => {
+    html += `
+      <div class="search-result-item" onclick="goToSearchResult(${m.surah}, ${m.ayah})">
+        <div class="sr-ref"><i class="fas fa-bookmark"></i> ${escapeHtml(m.surahName)} ${m.surah}:${m.ayah}</div>
+        <div class="sr-arabic">${escapeHtml(m.arabic)}</div>
+      </div>
+    `;
+  });
+
+  results.innerHTML = html;
+  results.scrollTop = 0;
+
+  if(loadMoreWrap){
+    if(page < totalPages){
+      loadMoreWrap.style.display = 'flex';
+      const remaining = total - (page * RESULTS_PER_PAGE);
+      const nextBatch = Math.min(RESULTS_PER_PAGE, remaining);
+      const txt = document.getElementById('searchLoadMoreText');
+      if(txt) txt.textContent = `Ladda fler (${nextBatch} till, ${remaining} kvar)`;
+    } else {
+      loadMoreWrap.style.display = 'none';
+    }
+  }
+
+  if(pagination){
+    if(totalPages <= 1){
+      pagination.style.display = 'none';
+    } else {
+      pagination.style.display = 'flex';
+      let pagHtml = '';
+
+      pagHtml += `<button onclick="renderSearchResultsPage(${page - 1})" ${page === 1 ? 'disabled' : ''} title="Föregående"><i class="fas fa-chevron-left"></i></button>`;
+
+      const pagesToShow = [];
+      if(totalPages <= 7){
+        for(let i = 1; i <= totalPages; i++) pagesToShow.push(i);
+      } else {
+        pagesToShow.push(1);
+        if(page > 4) pagesToShow.push('...');
+        for(let i = Math.max(2, page - 2); i <= Math.min(totalPages - 1, page + 2); i++){
+          pagesToShow.push(i);
+        }
+        if(page < totalPages - 3) pagesToShow.push('...');
+        pagesToShow.push(totalPages);
+      }
+
+      pagesToShow.forEach(p => {
+        if(p === '...'){
+          pagHtml += `<span class="page-info">…</span>`;
+        } else {
+          pagHtml += `<button onclick="renderSearchResultsPage(${p})" class="${p === page ? 'active' : ''}">${p}</button>`;
+        }
+      });
+
+      pagHtml += `<button onclick="renderSearchResultsPage(${page + 1})" ${page === totalPages ? 'disabled' : ''} title="Nästa"><i class="fas fa-chevron-right"></i></button>`;
+
+      pagination.innerHTML = pagHtml;
+    }
   }
 }
+
+function loadMoreSearchResults(){
+  const totalPages = Math.ceil(searchResultsAll.length / RESULTS_PER_PAGE);
+  if(searchCurrentPage < totalPages){
+    renderSearchResultsPage(searchCurrentPage + 1);
+  }
+}
+
+function goToSearchResult(surah, ayah){
+  const panel = document.getElementById('searchPanel');
+  const btn = document.getElementById('searchToggleBtn');
+  const pagination = document.getElementById('searchPagination');
+  const loadMoreWrap = document.getElementById('searchLoadMoreWrap');
+  if(panel) panel.classList.remove('open');
+  if(btn) btn.classList.remove('active');
+  if(pagination) pagination.style.display = 'none';
+  if(loadMoreWrap) loadMoreWrap.style.display = 'none';
+
+  fetchAya(surah, ayah);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  toast('📖 ' + SURAH_NAMES[surah - 1] + ' ' + surah + ':' + ayah);
+}
+
+function clearQuranSearch(){
+  const inp = document.getElementById('quranSearchInput');
+  const results = document.getElementById('searchResults');
+  const pagination = document.getElementById('searchPagination');
+  const loadMoreWrap = document.getElementById('searchLoadMoreWrap');
+  if(inp) inp.value = '';
+  if(results) results.innerHTML = '';
+  if(pagination) pagination.style.display = 'none';
+  if(loadMoreWrap) loadMoreWrap.style.display = 'none';
+  lastSearchQuery = '';
+  searchResultsAll = [];
+  searchCurrentPage = 1;
+  if(inp) inp.focus();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('quranSearchInput');
+  if(inp){
+    inp.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        performQuranSearch();
+      }
+    });
+  }
+});
 
 /* ============================================================
    HJÄLPFUNKTIONER
@@ -1514,10 +1995,7 @@ let currentAyaData = null;
 let currentLang = localStorage.getItem('quranLang') || 'sv';
 
 /* ============================================================
-   QARI (RECITATÖR) & LJUDUPPSPELNING
-   Endast reciter som är bekräftat fungerande på cdn.islamic.network
-   är kvar i listan. Övriga togs bort eftersom deras ljudfiler
-   saknades för många verser (spelades tyst eller föll tillbaka).
+   QARI & LJUDUPPSPELNING
    ============================================================ */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy', kind:'cdn' },
@@ -1532,7 +2010,7 @@ const QARIS = [
 let currentAudio = null;
 let currentPlayBtn = null;
 let currentAudioUrl = null;
-let currentQueue = null; // { urls, index, btn } – används vid uppspelning av hela suror
+let currentQueue = null;
 
 function getCurrentQari(){
   return localStorage.getItem('quranQari') || 'ar.alafasy';
@@ -1570,14 +2048,22 @@ function buildAyahAudioUrl(surah, ayah, overrideQariId){
   return `https://cdn.islamic.network/quran/audio/128/${qari}/${global}.mp3`;
 }
 
-// Bygger en lista med en ljudfil per vers i en sura, istället för att
-// förlita sig på CDN:ns hopslagna "hel-sura"-fil, vars täckning är
-// opålitlig för många qaris (fungerade t.ex. inte alls för Al-Minshawi).
-// Per-vers-ljud är samma pålitliga källa som redan används för
-// Dagens aya och Ayat al-Kursi.
+function buildBismillahUrl(overrideQariId){
+  return buildAyahAudioUrl(1, 1, overrideQariId);
+}
+
+const SURAHS_WITHOUT_BISMILLAH = [1, 9, 109];
+
+function surahNeedsBismillah(surahNum){
+  return !SURAHS_WITHOUT_BISMILLAH.includes(surahNum);
+}
+
 function buildSurahAyahUrls(surah, overrideQariId){
   const count = SURAH_AYAH_COUNTS[surah - 1];
   const urls = [];
+  if(surahNeedsBismillah(surah)){
+    urls.push(buildBismillahUrl(overrideQariId));
+  }
   for(let ayah = 1; ayah <= count; ayah++){
     urls.push(buildAyahAudioUrl(surah, ayah, overrideQariId));
   }
@@ -1595,13 +2081,14 @@ function stopCurrentAudio(){
   if(currentAudio){
     currentAudio.loop = false;
     currentAudio.pause();
-    currentAudio.src = '';
+    try { currentAudio.src = ''; } catch(e){}
+    currentAudio.load && currentAudio.load();
   }
-  currentQueue = null;
   resetPlayBtn(currentPlayBtn);
   currentAudio = null;
   currentPlayBtn = null;
   currentAudioUrl = null;
+  currentQueue = null;
 }
 
 function toggleAudio(url, btn){
@@ -1639,7 +2126,7 @@ function toggleAudio(url, btn){
     if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy' && !btn.dataset.triedFallback){
       btn.dataset.triedFallback = '1';
       const fallbackUrl = fallbackMatch[1] + 'ar.alafasy' + fallbackMatch[3];
-      toast('⚠️ Ljud saknas för vald qari på denna vers – spelar Alafasy istället');
+      toast('⚠️ Ljud saknas – spelar Alafasy istället');
       currentAudio = null; currentPlayBtn = null; currentAudioUrl = null;
       toggleAudio(fallbackUrl, btn);
       return;
@@ -1655,10 +2142,6 @@ function toggleAudio(url, btn){
   });
 }
 
-/* Spelar en lista av ljudfiler (t.ex. en hel suras alla verser) i följd.
-   Samma play/paus/laddnings-beteende som toggleAudio, men kedjar vidare
-   till nästa vers när en fil tar slut, och faller tillbaka till Alafasy
-   om en enskild vers saknar ljud för vald qari. */
 function toggleAudioQueue(urls, btn, surahNum){
   if(!btn || !urls || !urls.length) return;
   if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
@@ -1674,7 +2157,7 @@ function toggleAudioQueue(urls, btn, surahNum){
   }
   stopCurrentAudio();
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  currentQueue = { urls: urls.slice(), index: 0, btn, surahNum: surahNum || null };
+  currentQueue = { urls: urls.slice(), index: 0, btn, surahNum: surahNum || null, hasBismillah: urls.length > (surahNum ? SURAH_AYAH_COUNTS[surahNum - 1] : 0) };
   currentPlayBtn = btn;
   playQueueStep();
 }
@@ -1684,7 +2167,7 @@ function playQueueStep(){
   const q = currentQueue;
   const loopMode = q.btn.dataset.loopMode || (q.btn.dataset.loop === '1' ? 'sura' : 'off');
   if(q.index >= q.urls.length){
-    if(loopMode === 'sura'){
+    if(loopMode === 'sura' || loopMode === 'all'){
       q.index = 0;
     } else {
       resetPlayBtn(q.btn);
@@ -1695,9 +2178,7 @@ function playQueueStep(){
   }
   const url = q.urls[q.index];
   const audio = new Audio(url);
-  // "Upprepa endast denna vers" görs med webbläsarens egen loop – filen
-  // spelas då om utan att kedjan ropar "ended" och går vidare.
-  audio.loop = (loopMode === 'ayah');
+  audio.loop = (loopMode === 'ayah' || loopMode === 'one');
   currentAudio = audio;
   currentAudioUrl = url;
   audio.addEventListener('playing', ()=>{
@@ -1706,7 +2187,11 @@ function playQueueStep(){
       q.btn.classList.add('playing');
       if(q.btn.id === 'playSuraBtn' && q.surahNum){
         updateSuraProgress(q);
-        loadAndRenderAya(q.surahNum, q.index + 1);
+        const hasBismillah = q.hasBismillah;
+        const ayahIndex = hasBismillah ? q.index : q.index + 1;
+        if(ayahIndex >= 1){
+          loadAndRenderAya(q.surahNum, Math.min(ayahIndex, SURAH_AYAH_COUNTS[q.surahNum - 1]));
+        }
       }
     }
   });
@@ -1720,12 +2205,11 @@ function playQueueStep(){
     if(currentQueue !== q) return;
     const fallbackMatch = url.match(/^(https:\/\/cdn\.islamic\.network\/quran\/audio\/128\/)(ar\.[a-zA-Z]+)(\/.+\.mp3)$/);
     if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy' && !q.urls['fb' + q.index]){
-      q.urls['fb' + q.index] = true; // markera att vi redan försökt fallback för detta index
+      q.urls['fb' + q.index] = true;
       q.urls[q.index] = fallbackMatch[1] + 'ar.alafasy' + fallbackMatch[3];
       playQueueStep();
       return;
     }
-    // Kunde inte spela denna vers ens med Alafasy – hoppa till nästa
     q.index++;
     playQueueStep();
   });
@@ -1737,7 +2221,6 @@ function playQueueStep(){
   });
 }
 
-/* Hoppa till föregående vers i den sura som just nu spelas i Dagens aya-fönstret */
 function suraPlayerBack(){
   if(!currentQueue || !currentPlayBtn || currentPlayBtn.id !== 'playSuraBtn'){
     toast('❌ Ingen sura spelas just nu');
@@ -1748,7 +2231,6 @@ function suraPlayerBack(){
   playQueueStep();
 }
 
-/* Stoppa uppspelningen av suran helt (till skillnad från paus) */
 function stopSuraPlayback(){
   const btn = document.getElementById('playSuraBtn');
   if(currentPlayBtn === btn){
@@ -1758,17 +2240,28 @@ function stopSuraPlayback(){
   }
 }
 
-/* Visar "Vers X av Y" medan en sura spelas från Dagens aya-fönstret */
 function updateSuraProgress(q){
   const el = document.getElementById('suraProgress');
   if(!el) return;
   if(!q){ el.textContent = ''; return; }
   const surahName = q.surahNum ? SURAH_NAMES[q.surahNum - 1] : '';
-  el.textContent = 'Vers ' + (q.index + 1) + ' av ' + q.urls.length + (surahName ? ' · ' + surahName : '');
+  let displayIndex = q.index + 1;
+  let suffix = '';
+  if(q.hasBismillah && q.index === 0){
+    suffix = ' · Bismillah';
+  } else if(q.hasBismillah){
+    displayIndex = q.index;
+  }
+  el.textContent = 'Vers ' + displayIndex + ' av ' + (q.surahNum ? SURAH_AYAH_COUNTS[q.surahNum - 1] : q.urls.length) + (surahName ? ' · ' + surahName : '') + suffix;
 }
 
 async function playAyah(surah, ayah, btn){
-  toggleAudio(buildAyahAudioUrl(surah, ayah), btn);
+  if(ayah === 1 && surahNeedsBismillah(surah)){
+    const urls = [buildBismillahUrl(), buildAyahAudioUrl(surah, ayah)];
+    toggleAudioQueue(urls, btn, surah);
+  } else {
+    toggleAudio(buildAyahAudioUrl(surah, ayah), btn);
+  }
 }
 
 async function playSurah(surah, btn){
@@ -1777,7 +2270,13 @@ async function playSurah(surah, btn){
 
 async function playDailyAya(btn){
   if(!currentAyaData){ toast('❌ Ingen aya laddad'); return; }
-  toggleAudio(buildAyahAudioUrl(currentAyaData.surahNum, currentAyaData.ayahNum), btn);
+  const { surahNum, ayahNum } = currentAyaData;
+  if(ayahNum === 1 && surahNeedsBismillah(surahNum)){
+    const urls = [buildBismillahUrl(), buildAyahAudioUrl(surahNum, ayahNum)];
+    toggleAudioQueue(urls, btn, surahNum);
+  } else {
+    toggleAudio(buildAyahAudioUrl(surahNum, ayahNum), btn);
+  }
 }
 
 function toggleDailyLoop(){
@@ -1792,7 +2291,6 @@ function toggleDailyLoop(){
   toast(isOn ? '🔁 Upprepning avstängd' : '🔁 Upprepar tills vidare');
 }
 
-/* Generisk upprepningsknapp för Ayat al-Kursi, al-Fātiha och de fyra Qul-suran */
 function toggleVerseLoop(loopBtn){
   const container = loopBtn.closest('.verse-tools');
   if(!container) return;
@@ -1800,9 +2298,6 @@ function toggleVerseLoop(loopBtn){
   if(!playBtn) return;
   const isOn = playBtn.dataset.loop === '1';
   playBtn.dataset.loop = isOn ? '0' : '1';
-  // OBS: sätt bara audio.loop för enskilda verser (t.ex. Ayat al-Kursi).
-  // För suror med flera verser sköts upprepningen av playQueueStep istället –
-  // annars skulle bara den just spelande versen loopa och kedjan brytas.
   if(currentAudio && currentPlayBtn === playBtn && !currentQueue){
     currentAudio.loop = !isOn;
   }
@@ -1840,8 +2335,6 @@ function autoTransliterate(arabic){
 
 /* ============================================================
    DAGENS AYA
-   Kurmanji: hämtas nu från fawazahmed0/quran-api (edition kmr-unknown),
-   ett stabilt, statiskt CDN-baserat bibliotek med riktig Kurmanji-text.
    ============================================================ */
 function safeFetchJson(url){
   return fetch(url)
@@ -1861,9 +2354,6 @@ async function fetchKuKmTranslation(surah, ayah){
   return '';
 }
 
-/* Hämtar och visar en vers i Dagens aya-rutan utan att röra ljuduppspelningen.
-   Används dels av fetchAya (som även stoppar ljud), dels när sura-spelaren
-   i Dagens aya-fönstret visar vilken vers som just nu spelas. */
 async function loadAndRenderAya(surah, ayah){
   try{
     const arRes = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar.alafasy`)
@@ -1945,7 +2435,7 @@ function renderDailyAya(data){
   } else if(currentLang === 'ku-KM'){
     displayText = data['ku-KM'] || '';
     extraClass = ' ku-KM';
-    if(!displayText) displayText = '⚠️ Kurmanji-översättning ej tillgänglig för denna vers. Prova persiska eller ett annat språk.';
+    if(!displayText) displayText = '⚠️ Kurmanji-översättning ej tillgänglig för denna vers.';
   } else if(currentLang === 'fa'){
     displayText = data.fa || '';
     extraClass = ' fa';
@@ -1980,12 +2470,11 @@ function renderFallbackAya(){
 
 function nextDailyAya(){ fetchRandomAya(); }
 
-/* Sekventiell navigering – gå till nästa/föregående vers i Mushaf-ordning */
 function goToNextAya(){
   if(!currentAyaData){ fetchRandomAya(); return; }
   const currentGlobal = getGlobalAyahNumber(currentAyaData.surahNum, currentAyaData.ayahNum);
   let nextGlobal = currentGlobal + 1;
-  if(nextGlobal > TOTAL_AYAS) nextGlobal = 1; // börja om från Al-Fātiha 1:1
+  if(nextGlobal > TOTAL_AYAS) nextGlobal = 1;
   const { surah, ayah } = globalAyaToSurahAya(nextGlobal);
   fetchAya(surah, ayah);
 }
@@ -1994,7 +2483,7 @@ function goToPrevAya(){
   if(!currentAyaData){ fetchRandomAya(); return; }
   const currentGlobal = getGlobalAyahNumber(currentAyaData.surahNum, currentAyaData.ayahNum);
   let prevGlobal = currentGlobal - 1;
-  if(prevGlobal < 1) prevGlobal = TOTAL_AYAS; // hoppa till sista versen (An-Nās)
+  if(prevGlobal < 1) prevGlobal = TOTAL_AYAS;
   const { surah, ayah } = globalAyaToSurahAya(prevGlobal);
   fetchAya(surah, ayah);
 }
@@ -2013,7 +2502,6 @@ function populateSuraSelect(){
   });
 }
 
-/* Spela valfri sura direkt från Dagens aya-fönstret, med upprepning */
 function populatePlaySuraSelect(){
   const sel = document.getElementById('playSuraSelect');
   if(!sel) return;
@@ -2026,7 +2514,6 @@ function populatePlaySuraSelect(){
     sel.addEventListener('change', ()=>{
       localStorage.setItem('quranPlaySura', sel.value);
       updateFavSuraBtn();
-      // Byter man sura mitt i uppspelning, starta om med den nya suran
       const btn = document.getElementById('playSuraBtn');
       if(btn && currentPlayBtn === btn){
         playSelectedSura(btn);
@@ -2045,7 +2532,6 @@ function playSelectedSura(btn){
   playSurah(surahNum, btn);
 }
 
-/* Upprepningsläge för sura-spelaren: av → hela suran → endast denna vers → av */
 function cycleSuraLoopMode(){
   const loopBtn = document.getElementById('loopSuraBtn');
   const playBtn = document.getElementById('playSuraBtn');
@@ -2069,7 +2555,6 @@ function cycleSuraLoopMode(){
   }
 }
 
-/* Favoritmarkera hela den valda suran (inte bara en enskild vers) */
 function isSuraFavorited(surahNum){
   return favorites.some(f => f.type === 'surah' && f.surahNum === surahNum);
 }
@@ -2133,6 +2618,10 @@ const FAV_KEY = 'quranFavorites';
 let favorites = [];
 try{ favorites = JSON.parse(localStorage.getItem(FAV_KEY)) || []; }catch(e){ favorites = []; }
 
+let favLoopMode = 'off'; // 'off' | 'all' | 'one'
+let favCurrentPlayingId = null;
+let favQueue = null;
+
 function saveFavorites(){
   try{ localStorage.setItem(FAV_KEY, JSON.stringify(favorites)); }catch(e){}
   updateFavBadge();
@@ -2142,6 +2631,8 @@ function updateFavBadge(){
   if(!b) return;
   b.textContent = favorites.length;
   b.classList.toggle('h', favorites.length === 0);
+  const fc = document.getElementById('favCount');
+  if(fc) fc.textContent = favorites.length;
 }
 function isCurrentAyaSaved(){
   if(!currentAyaData) return false;
@@ -2197,31 +2688,49 @@ function removeFavorite(id){
 function openFavorites(){
   renderFavorites();
   document.getElementById('favModal').classList.remove('h');
+  updateFavFullscreenIcon();
 }
 function closeFavorites(){
   document.getElementById('favModal').classList.add('h');
 }
 
-/* Spelar upp en favorit – hel sura eller enskild vers, beroende på typ */
-function playFavorite(id, btn){
-  const f = favorites.find(x => x.id === id);
-  if(!f) return;
-  if((f.type || 'ayah') === 'surah'){
-    toggleAudioQueue(buildSurahAyahUrls(f.surahNum), btn, f.surahNum);
+/* ===== HELSKÄRM FÖR FAVORITMODAL ===== */
+function toggleFavFullscreen(){
+  const el = document.getElementById('favModalCard');
+  if(!el) return;
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if(!isFs){
+    const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if(req) req.call(el);
   } else {
-    toggleAudio(buildAyahAudioUrl(f.surahNum, f.ayahNum), btn);
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    if(exit) exit.call(document);
   }
 }
+function updateFavFullscreenIcon(){
+  const icon = document.getElementById('favFsIcon');
+  if(!icon) return;
+  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
+}
+document.addEventListener('fullscreenchange', updateFavFullscreenIcon);
+document.addEventListener('webkitfullscreenchange', updateFavFullscreenIcon);
 
-/* Spela en eller flera favoriter i följd från favoritfönstret */
+/* ===== CHECKBOX-URVAL ===== */
 function toggleSelectAllFavorites(checkbox){
   document.querySelectorAll('.fav-checkbox').forEach(cb => { cb.checked = checkbox.checked; });
+  updateSelectedCount();
 }
-
+function updateSelectedCount(){
+  const count = document.querySelectorAll('.fav-checkbox:checked').length;
+  const el = document.getElementById('favSelectedCount');
+  if(el) el.textContent = count + ' valda';
+}
 function getCheckedFavoriteIds(){
   return Array.from(document.querySelectorAll('.fav-checkbox:checked')).map(cb => parseInt(cb.dataset.favId, 10));
 }
 
+/* ===== BYGG LJUDEKÖ FRÅN FAVORITER ===== */
 function buildFavoriteQueueUrls(ids){
   let urls = [];
   ids.forEach(id => {
@@ -2230,32 +2739,211 @@ function buildFavoriteQueueUrls(ids){
     if((f.type || 'ayah') === 'surah'){
       urls = urls.concat(buildSurahAyahUrls(f.surahNum));
     } else {
+      if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
+        urls.push(buildBismillahUrl());
+      }
       urls.push(buildAyahAudioUrl(f.surahNum, f.ayahNum));
     }
   });
   return urls;
 }
 
+/* ===== SPELA FAVORITER I SEKVENS ===== */
 function playFavoritesSequence(){
   let ids = getCheckedFavoriteIds();
-  let label = 'markerade';
   if(!ids.length){
-    // Inget markerat – spela alla, i den ordning de visas (nyast först)
     ids = favorites.slice().reverse().map(f => f.id);
-    label = 'alla';
   }
+  if(!ids.length){ toast('❌ Inga favoriter att spela'); return; }
+
   const urls = buildFavoriteQueueUrls(ids);
-  if(!urls.length){ toast('❌ Inga favoriter att spela'); return; }
-  const btn = document.getElementById('favPlaySelectedBtn');
-  toggleAudioQueue(urls, btn);
-  toast('▶️ Spelar ' + ids.length + ' ' + (ids.length === 1 ? 'favorit' : label + ' favoriter'));
+  if(!urls.length){ toast('❌ Inga ljud att spela'); return; }
+
+  const btn = document.getElementById('favPlayBtn');
+  if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
+    currentAudio.pause();
+    resetPlayBtn(btn);
+    return;
+  }
+
+  stopCurrentAudio();
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.classList.add('primary');
+
+  // Bygg en kö med metadata om vilken favorit varje URL tillhör
+  const urlItems = [];
+  ids.forEach(id => {
+    const f = favorites.find(x => x.id === id);
+    if(!f) return;
+    if((f.type || 'ayah') === 'surah'){
+      const surahUrls = buildSurahAyahUrls(f.surahNum);
+      surahUrls.forEach(u => urlItems.push({ url: u, favId: id }));
+    } else {
+      if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
+        urlItems.push({ url: buildBismillahUrl(), favId: id });
+      }
+      urlItems.push({ url: buildAyahAudioUrl(f.surahNum, f.ayahNum), favId: id });
+    }
+  });
+
+  currentQueue = {
+    urls: urlItems.map(x => x.url),
+    items: urlItems,
+    index: 0,
+    btn,
+    favIds: ids,
+    isFavorites: true,
+    hasBismillah: false,
+    surahNum: null
+  };
+  currentPlayBtn = btn;
+  playFavoritesStep();
+}
+
+function playFavoritesStep(){
+  if(!currentQueue || !currentQueue.isFavorites) return;
+  const q = currentQueue;
+
+  if(q.index >= q.urls.length){
+    if(favLoopMode === 'all'){
+      q.index = 0;
+    } else {
+      // Klart
+      resetPlayBtn(q.btn);
+      const q2 = q.btn.querySelector('#favPlayText');
+      if(q2) q2.textContent = 'Spela';
+      document.querySelectorAll('.fav-item.playing-now').forEach(el => el.classList.remove('playing-now'));
+      favCurrentPlayingId = null;
+      currentAudio = null; currentPlayBtn = null; currentAudioUrl = null; currentQueue = null;
+      toast('✅ Uppspelning klar');
+      return;
+    }
+  }
+
+  const item = q.items[q.index];
+  const url = item.url;
+  favCurrentPlayingId = item.favId;
+
+  // Markera aktuell favorit
+  document.querySelectorAll('.fav-item').forEach(el => el.classList.remove('playing-now'));
+  const el = document.querySelector(`.fav-item[data-fav-id="${item.favId}"]`);
+  if(el) el.classList.add('playing-now');
+
+  const audio = new Audio(url);
+  audio.loop = (favLoopMode === 'one');
+  currentAudio = audio;
+  currentAudioUrl = url;
+
+  audio.addEventListener('playing', ()=>{
+    if(currentAudio === audio){
+      q.btn.innerHTML = '<i class="fas fa-pause"></i>';
+      q.btn.classList.add('playing');
+    }
+  });
+  audio.addEventListener('ended', ()=>{
+    if(currentAudio === audio && currentQueue === q && !audio.loop){
+      q.index++;
+      playFavoritesStep();
+    }
+  });
+  audio.addEventListener('error', ()=>{
+    if(currentQueue !== q) return;
+    // Prova Alafasy som fallback
+    const fallbackMatch = url.match(/^(https:\/\/cdn\.islamic\.network\/quran\/audio(?:-surah)?\/128\/)(ar\.[a-zA-Z]+)(\/.+\.mp3)$/);
+    if(fallbackMatch && fallbackMatch[2] !== 'ar.alafasy'){
+      q.urls[q.index] = fallbackMatch[1] + 'ar.alafasy' + fallbackMatch[3];
+      q.items[q.index].url = q.urls[q.index];
+      playFavoritesStep();
+      return;
+    }
+    // Hoppa över
+    q.index++;
+    playFavoritesStep();
+  });
+  audio.play().catch(()=>{
+    if(currentQueue === q){
+      q.index++;
+      playFavoritesStep();
+    }
+  });
 }
 
 function stopFavoritesSequence(){
-  const btn = document.getElementById('favPlaySelectedBtn');
-  if(currentPlayBtn === btn){
+  if(currentQueue && currentQueue.isFavorites){
     stopCurrentAudio();
+    document.querySelectorAll('.fav-item.playing-now').forEach(el => el.classList.remove('playing-now'));
+    favCurrentPlayingId = null;
+    const btn = document.getElementById('favPlayBtn');
+    if(btn){
+      btn.innerHTML = '<i class="fas fa-play"></i> <span id="favPlayText">Spela</span>';
+    }
     toast('⏹️ Uppspelning stoppad');
+  }
+}
+
+function cycleFavLoopMode(){
+  const btn = document.getElementById('favLoopBtn');
+  const icon = document.getElementById('favLoopIcon');
+  const txt = document.getElementById('favLoopText');
+  if(!btn || !icon || !txt) return;
+
+  if(favLoopMode === 'off'){
+    favLoopMode = 'all';
+    icon.className = 'fas fa-repeat';
+    txt.textContent = 'Alla';
+    btn.classList.add('active');
+    toast('🔁 Upprepar alla favoriter');
+  } else if(favLoopMode === 'all'){
+    favLoopMode = 'one';
+    icon.className = 'fas fa-arrow-rotate-left';
+    txt.textContent = 'En';
+    btn.classList.add('active');
+    toast('🔂 Upprepar en i taget (samma tills vidare)');
+  } else {
+    favLoopMode = 'off';
+    icon.className = 'fas fa-repeat';
+    txt.textContent = 'Av';
+    btn.classList.remove('active');
+    toast('➡️ Upprepning avstängd');
+  }
+
+  // Applicera på pågående uppspelning
+  if(currentQueue && currentQueue.isFavorites){
+    if(currentAudio){
+      currentAudio.loop = (favLoopMode === 'one');
+    }
+  }
+}
+
+/* ===== SPELA EN ENSKILD FAVORIT ===== */
+function playFavorite(id, btn){
+  const f = favorites.find(x => x.id === id);
+  if(!f) return;
+
+  // Om samma spelas – pausa
+  if(currentPlayBtn === btn && currentAudio && !currentAudio.paused){
+    currentAudio.pause();
+    resetPlayBtn(btn);
+    return;
+  }
+  if(currentPlayBtn === btn && currentAudio && currentAudio.paused && !currentQueue?.isFavorites){
+    currentAudio.play().catch(()=>toast('❌ Kunde inte spela upp ljud'));
+    btn.innerHTML = '<i class="fas fa-pause"></i>';
+    btn.classList.add('playing');
+    return;
+  }
+
+  stopCurrentAudio();
+
+  if((f.type || 'ayah') === 'surah'){
+    toggleAudioQueue(buildSurahAyahUrls(f.surahNum), btn, f.surahNum);
+  } else {
+    if(f.ayahNum === 1 && surahNeedsBismillah(f.surahNum)){
+      const urls = [buildBismillahUrl(), buildAyahAudioUrl(f.surahNum, f.ayahNum)];
+      toggleAudioQueue(urls, btn, f.surahNum);
+    } else {
+      toggleAudio(buildAyahAudioUrl(f.surahNum, f.ayahNum), btn);
+    }
   }
 }
 
@@ -2268,14 +2956,13 @@ function renderFavorites(){
     return;
   }
   if(toolbar) toolbar.style.display = 'flex';
-  const selectAll = document.getElementById('favSelectAll');
-  if(selectAll) selectAll.checked = false;
+
   c.innerHTML = favorites.slice().reverse().map(f => {
     if((f.type || 'ayah') === 'surah'){
       return `
-        <div class="fav-item">
-          <div class="fav-ref" style="display:flex;align-items:center;gap:10px">
-            <input type="checkbox" class="fav-checkbox" data-fav-id="${f.id}">
+        <div class="fav-item" data-fav-id="${f.id}">
+          <div class="fav-ref">
+            <input type="checkbox" class="fav-checkbox" data-fav-id="${f.id}" onchange="updateSelectedCount()">
             <span><i class="fas fa-book"></i> ${f.surahName} · sura ${f.surahNum} · ${f.ayahCount} verser</span>
           </div>
           <div class="fav-actions" style="justify-content:space-between">
@@ -2299,9 +2986,9 @@ function renderFavorites(){
     }
     if(!text) text = '—';
     return `
-      <div class="fav-item">
-        <div class="fav-ref" style="display:flex;align-items:center;gap:10px">
-          <input type="checkbox" class="fav-checkbox" data-fav-id="${f.id}">
+      <div class="fav-item" data-fav-id="${f.id}">
+        <div class="fav-ref">
+          <input type="checkbox" class="fav-checkbox" data-fav-id="${f.id}" onchange="updateSelectedCount()">
           <span>${f.surahName} ${f.surahNum}:${f.ayahNum}</span>
         </div>
         <div class="fav-arabic">${f.arabic}</div>
@@ -2314,9 +3001,13 @@ function renderFavorites(){
       </div>
     `;
   }).join('');
+
+  // Återställ checkboxar
+  const selAll = document.getElementById('favSelectAll');
+  if(selAll) selAll.checked = false;
+  updateSelectedCount();
 }
 
-/* Går till "Hoppa till sura" med den favoritmarkerade suran vald */
 function goToSuraFromFavorite(surahNum){
   closeFavorites();
   const sel = document.getElementById('suraSelect');
@@ -2350,26 +3041,6 @@ function viewFavorite(id){
 function closeViewFav(){
   document.getElementById('viewFavModal').classList.add('h');
 }
-
-/* Helskärm för favoritfönstret */
-function toggleFavFullscreen(){
-  const el = document.querySelector('#favModal .modal-card');
-  if(!el) return;
-  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  if(!isFs){
-    (el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen).call(el);
-  } else {
-    (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
-  }
-}
-function updateFavFsIcon(){
-  const icon = document.getElementById('favFsIcon');
-  if(!icon) return;
-  const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand';
-}
-document.addEventListener('fullscreenchange', updateFavFsIcon);
-document.addEventListener('webkitfullscreenchange', updateFavFsIcon);
 
 function setLang(lang){
   currentLang = lang;
@@ -2435,6 +3106,29 @@ function copyVerse(btn){
   });
 }
 
+/* ============================================================
+   VISA/GÖM ALLT UNDER DAGENS AYA
+   ============================================================ */
+let sectionsHidden = localStorage.getItem('quranSectionsHidden') === 'true';
+function applySectionsVisibility(){
+  const el = document.getElementById('collapsibleSections');
+  const icon = document.getElementById('toggleSectionsIcon');
+  const btn = document.getElementById('toggleSectionsBtn');
+  if(!el) return;
+  el.style.display = sectionsHidden ? 'none' : '';
+  if(icon) icon.className = sectionsHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+  if(btn){
+    btn.classList.toggle('active', sectionsHidden);
+    btn.title = sectionsHidden ? 'Visa allt under Dagens aya' : 'Göm allt under Dagens aya';
+  }
+}
+function toggleAllSections(){
+  sectionsHidden = !sectionsHidden;
+  localStorage.setItem('quranSectionsHidden', sectionsHidden);
+  applySectionsVisibility();
+  toast(sectionsHidden ? '🙈 Innehåll gömt' : '👁️ Innehåll synligt');
+}
+
 let night = localStorage.getItem('quranNightMode') === 'true';
 function applyNight(){
   document.body.classList.toggle('night', night);
@@ -2477,7 +3171,7 @@ function toast(msg){
   if(!el){
     el = document.createElement('div');
     el.id = 'qToast';
-    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.25);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
+    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:#1E1535;color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.35);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
     document.body.appendChild(el);
   }
   el.textContent = msg;
@@ -2493,14 +3187,15 @@ function toast(msg){
 }
 
 applyNight();
+applySectionsVisibility();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
 populatePlaySuraSelect();
 populateQariSelect();
 updateFavBadge();
-renderTafsirTranslateBar();
 fetchRandomAya();
+renderVkKeyboard();
 </script>
 
 </body>
