@@ -70,11 +70,23 @@
         radial-gradient(circle at 100% 100%, rgba(34,192,138,.07) 0%, transparent 45%);
       background-attachment:fixed;
       overflow-x:hidden;
+      transition:padding .3s;
     }
     body.night{
       background-image:
         radial-gradient(circle at 0% 0%, rgba(108,71,232,.20) 0%, transparent 45%),
         radial-gradient(circle at 100% 100%, rgba(34,192,138,.12) 0%, transparent 45%);
+    }
+    /* När toppbar + språkfält är gömda, ta bort överflödig padding */
+    body.chrome-hidden{
+      padding-top:12px;
+      padding-bottom:24px;
+    }
+    body.chrome-hidden .bottom-lang-bar{
+      display:none !important;
+    }
+    body.chrome-hidden .top-bar{
+      display:none !important;
     }
     .container{
       max-width:1400px;
@@ -97,6 +109,7 @@
       align-items:center;
       gap:12px;
       flex-wrap:wrap;
+      transition:opacity .3s, transform .3s;
     }
     .top-bar-side-left{
       display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;min-width:0;
@@ -1047,6 +1060,7 @@
       padding:10px 16px max(10px, env(safe-area-inset-bottom));
       display:flex;justify-content:center;
       backdrop-filter:blur(10px);
+      transition:transform .3s, opacity .3s;
     }
     body.night .bottom-lang-bar{
       background:var(--surface);
@@ -1086,6 +1100,27 @@
       font-family:var(--kurdish-font);font-size:15px;
     }
 
+    /* Liten flytande knapp för att visa top-bar igen när den är gömd */
+    .restore-chrome-btn{
+      position:fixed;
+      top:12px;
+      right:12px;
+      z-index:120;
+      width:44px;height:44px;
+      border-radius:50%;
+      border:1.5px solid var(--border);
+      background:var(--surface);
+      color:var(--primary);
+      cursor:pointer;
+      display:none;
+      align-items:center;justify-content:center;
+      font-size:16px;
+      box-shadow:0 4px 14px var(--primary-glow);
+      transition:all .2s;
+    }
+    .restore-chrome-btn:active{transform:scale(.92)}
+    .restore-chrome-btn.show{display:flex}
+
     /* ===== RESPONSIV TOPPBAR FÖR MOBIL ===== */
     @media (max-width:1100px){
       .top-bar-title{order:-2;flex-basis:100%}
@@ -1098,7 +1133,6 @@
       .arabic{font-size:32px;line-height:2.3;padding:16px 18px}
       .arabic-small{font-size:28px;line-height:2.2}
 
-      /* TOPPBAR MOBIL: stapla vertikalt och centrera */
       .top-bar{
         padding:12px 14px;
         gap:10px;
@@ -1184,7 +1218,6 @@
       .fav-modal-header{flex-wrap:wrap}
       .fav-toolbar{padding:10px}
 
-      /* Qari-raden på mobil: full bredd, tydlig text */
       .daily-aya-qari-row{padding:8px 12px;gap:10px}
       .daily-aya-qari-row select{height:42px;font-size:14px;padding:0 12px}
     }
@@ -1223,11 +1256,9 @@
       .sura-picker select,.sura-picker button{font-size:15px;height:48px}
       .sura-picker input{height:48px;font-size:15px}
 
-      /* Qari-raden på liten mobil: full bredd, tydlig text */
       .daily-aya-qari-row{padding:6px 10px;gap:8px}
       .daily-aya-qari-row select{height:40px;font-size:13px;padding:0 10px}
 
-      /* Sura-kontroller: knappar med jämn storlek */
       .daily-aya-qari-row[style*="justify-content:center"]{
         flex-wrap:wrap;
         gap:8px !important;
@@ -1282,10 +1313,15 @@
 </head>
 <body>
 
+<!-- Liten flytande knapp för att visa top-bar igen när den är gömd -->
+<button class="restore-chrome-btn" id="restoreChromeBtn" onclick="toggleChrome()" title="Visa toppbar & språkfält">
+  <i class="fas fa-eye"></i>
+</button>
+
 <div class="container">
 
   <!-- TOPPBAR -->
-  <div class="top-bar">
+  <div class="top-bar" id="topBar">
     <div class="top-bar-side-left">
       <!-- VÄDER -->
       <div class="top-bar-weather" onclick="openWeatherModal()" title="Klicka för veckans väder">
@@ -1328,7 +1364,8 @@
         <button class="icon-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
           <i class="fas fa-moon" id="nightIcon"></i>
         </button>
-        <button class="icon-btn" onclick="toggleAllSections()" title="Visa/Göm allt under Dagens aya" id="toggleSectionsBtn">
+        <!-- ÖGON-KNAPP: 1 klick = visa/göm innehåll, 2 klick = visa/göm hela toppbar + språkfält -->
+        <button class="icon-btn" onclick="eyeBtnClick(event)" title="1 klick: visa/göm innehåll · Dubbelklick: visa/göm toppbar & språkfält" id="toggleSectionsBtn">
           <i class="fas fa-eye" id="toggleSectionsIcon"></i>
         </button>
       </div>
@@ -1416,7 +1453,6 @@
       </button>
     </div>
 
-    <!-- SURA-KONTROLLER: nu med forward-knapp -->
     <div class="daily-aya-qari-row" style="justify-content:center;gap:8px;flex-wrap:wrap">
       <button class="day-action-btn" onclick="suraPlayerBack()" title="Föregående vers i suran">
         <i class="fas fa-backward-step"></i>
@@ -1706,7 +1742,7 @@
 
 </div>
 
-<div class="bottom-lang-bar">
+<div class="bottom-lang-bar" id="bottomLangBar">
   <div class="bottom-lang-inner">
     <button data-lang="sv" onclick="setLang('sv')">🇸🇪 Svenska</button>
     <button data-lang="en" onclick="setLang('en')">🇬🇧 English</button>
@@ -1934,7 +1970,7 @@ const PHONETIC = {
 };
 
 /* ============================================================
-   HJÄLPFUNKTIONER — SURAH-DATA (MÅSTE DEFINTERAS FÖRE ANVÄNDNING)
+   HJÄLPFUNKTIONER — SURAH-DATA
    ============================================================ */
 const SURAH_NAMES = [
   "Al-Fatiha","Al-Baqarah","Ali 'Imran","An-Nisa","Al-Ma'idah","Al-An'am","Al-A'raf","Al-Anfal","At-Tawbah","Yunus",
@@ -2991,7 +3027,6 @@ function suraPlayerBack(){
   playQueueStep();
 }
 
-/* NY: Hoppa framåt en vers i suran */
 function suraPlayerForward(){
   if(!currentQueue || !currentPlayBtn || currentPlayBtn.id !== 'playSuraBtn'){
     toast('❌ Ingen sura spelas just nu');
@@ -3872,24 +3907,84 @@ function copyVerse(btn){
   });
 }
 
+/* ============================================================
+   VISA/GÖM — 1 klick = innehåll, 2 klick = hela toppbar + språkfält
+   ============================================================ */
 let sectionsHidden = localStorage.getItem('quranSectionsHidden') === 'true';
+let chromeHidden = localStorage.getItem('quranChromeHidden') === 'true';
+let eyeClickTimer = null;
+const EYE_DOUBLE_CLICK_DELAY = 280; // ms
+
 function applySectionsVisibility(){
   const el = document.getElementById('collapsibleSections');
   const icon = document.getElementById('toggleSectionsIcon');
   const btn = document.getElementById('toggleSectionsBtn');
   if(!el) return;
   el.style.display = sectionsHidden ? 'none' : '';
-  if(icon) icon.className = sectionsHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+  updateEyeIcon();
   if(btn){
-    btn.classList.toggle('active', sectionsHidden);
-    btn.title = sectionsHidden ? 'Visa allt under Dagens aya' : 'Göm allt under Dagens aya';
+    btn.title = chromeHidden
+      ? 'Dubbelklick: visa toppbar & språkfält'
+      : (sectionsHidden ? '1 klick: visa innehåll · Dubbelklick: göm toppbar' : '1 klick: göm innehåll · Dubbelklick: göm toppbar');
   }
 }
-function toggleAllSections(){
+
+function updateEyeIcon(){
+  const icon = document.getElementById('toggleSectionsIcon');
+  const btn = document.getElementById('toggleSectionsBtn');
+  if(!icon || !btn) return;
+  if(chromeHidden){
+    icon.className = 'fas fa-eye-slash';
+    btn.classList.add('active');
+  } else if(sectionsHidden){
+    icon.className = 'fas fa-eye-slash';
+    btn.classList.remove('active');
+  } else {
+    icon.className = 'fas fa-eye';
+    btn.classList.remove('active');
+  }
+}
+
+function applyChromeVisibility(){
+  document.body.classList.toggle('chrome-hidden', chromeHidden);
+  const restore = document.getElementById('restoreChromeBtn');
+  if(restore){
+    restore.classList.toggle('show', chromeHidden);
+  }
+  updateEyeIcon();
+}
+
+function toggleSectionsContent(){
   sectionsHidden = !sectionsHidden;
   localStorage.setItem('quranSectionsHidden', sectionsHidden);
   applySectionsVisibility();
   toast(sectionsHidden ? '🙈 Innehåll gömt' : '👁️ Innehåll synligt');
+}
+
+function toggleChrome(){
+  chromeHidden = !chromeHidden;
+  localStorage.setItem('quranChromeHidden', chromeHidden);
+  applyChromeVisibility();
+  toast(chromeHidden
+    ? '🙈 Toppbar & språkfält gömda – klicka på ögat uppe till höger för att visa'
+    : '👁️ Toppbar & språkfält synliga');
+}
+
+/* Ögon-knappen: 1 klick = toggle innehåll, dubbelklick = toggle toppbar+språkfält */
+function eyeBtnClick(event){
+  if(event) event.stopPropagation();
+  if(eyeClickTimer){
+    clearTimeout(eyeClickTimer);
+    eyeClickTimer = null;
+    // Dubbelklick
+    toggleChrome();
+  } else {
+    eyeClickTimer = setTimeout(()=>{
+      eyeClickTimer = null;
+      // Enkelklick
+      toggleSectionsContent();
+    }, EYE_DOUBLE_CLICK_DELAY);
+  }
 }
 
 let night = localStorage.getItem('quranNightMode') === 'true';
@@ -3954,6 +4049,7 @@ function toast(msg){
    ============================================================ */
 applyNight();
 applySectionsVisibility();
+applyChromeVisibility();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
