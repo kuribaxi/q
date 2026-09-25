@@ -69,6 +69,7 @@
         radial-gradient(circle at 0% 0%, rgba(108,71,232,.08) 0%, transparent 45%),
         radial-gradient(circle at 100% 100%, rgba(34,192,138,.07) 0%, transparent 45%);
       background-attachment:fixed;
+      overflow-x:hidden;
     }
     body.night{
       background-image:
@@ -202,6 +203,8 @@
       user-select:none;
       flex-direction:column;
       align-items:flex-end;
+      max-width:100%;
+      overflow:hidden;
     }
     .top-bar-clock:hover{background:var(--primary-soft)}
     .top-bar-clock:active{transform:scale(.97)}
@@ -214,7 +217,7 @@
       display:flex;align-items:center;justify-content:center;
       font-size:18px;color:var(--primary);flex-shrink:0;
     }
-    .top-bar-clock .clock-time{letter-spacing:.02em}
+    .top-bar-clock .clock-time{letter-spacing:.02em;white-space:nowrap}
     .top-bar-clock .clock-date{
       font-size:10px;font-weight:700;color:var(--text2);
       margin-top:2px;
@@ -222,6 +225,10 @@
       line-height:1.2;
       min-height:13px;
       transition:all .2s;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:100%;
     }
     .top-bar-clock .clock-date .date-label{
       font-size:9px;font-weight:800;
@@ -344,7 +351,7 @@
       display:flex;gap:8px;align-items:center;margin-bottom:12px;
     }
     .search-input-row input{
-      flex:1;height:46px;border-radius:12px;
+      flex:1;min-width:0;height:46px;border-radius:12px;
       border:1.5px solid rgba(255,255,255,.5);
       background:rgba(255,255,255,.95);
       color:#1E1535;
@@ -362,6 +369,7 @@
       font-family:var(--font);font-size:15px;font-weight:800;
       display:flex;align-items:center;justify-content:center;gap:6px;
       transition:all .2s;
+      flex-shrink:0;
     }
     .search-input-row .search-go{
       background:#fff;color:var(--primary);
@@ -638,6 +646,8 @@
       border-radius:12px;padding:8px 14px;
       backdrop-filter:blur(6px);
       box-shadow:0 2px 8px rgba(0,0,0,.08);
+      min-width:0;
+      overflow:hidden;
     }
     .daily-aya-qari-row i{
       color:#fff;
@@ -647,6 +657,7 @@
     }
     .daily-aya-qari-row select{
       flex:1;
+      min-width:0;
       height:40px;
       border:none;
       background:rgba(255,255,255,.95);
@@ -660,6 +671,9 @@
       padding:0 12px;
       box-shadow:0 2px 6px rgba(0,0,0,.1);
       transition:all .2s;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      overflow:hidden;
     }
     .daily-aya-qari-row select:hover{
       background:#fff;
@@ -1072,30 +1086,72 @@
       font-family:var(--kurdish-font);font-size:15px;
     }
 
+    /* ===== RESPONSIV TOPPBAR FÖR MOBIL ===== */
     @media (max-width:1100px){
       .top-bar-title{order:-2;flex-basis:100%}
-      .top-bar-side-left{order:-1}
-      .top-bar-right{order:0}
+      .top-bar-side-left{order:-1;flex-basis:100%;justify-content:space-between}
+      .top-bar-right{order:0;flex-basis:100%;justify-content:space-between}
     }
     @media (max-width:768px){
       body{padding:16px 14px calc(var(--bottom-bar-height) + 20px)}
       .section{padding:20px 18px}
       .arabic{font-size:32px;line-height:2.3;padding:16px 18px}
       .arabic-small{font-size:28px;line-height:2.2}
-      .top-bar{padding:12px 14px;gap:10px}
+
+      /* TOPPBAR MOBIL: stapla vertikalt och centrera */
+      .top-bar{
+        padding:12px 14px;
+        gap:10px;
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .top-bar-title{
+        order:1;
+        flex-basis:auto;
+        width:100%;
+      }
       .top-bar-title .bismillah{font-size:20px}
-      .top-bar-weather,.top-bar-azan{min-width:0}
+      .top-bar-side-left{
+        order:2;
+        flex-basis:auto;
+        width:100%;
+        justify-content:space-between;
+        gap:8px;
+      }
+      .top-bar-right{
+        order:3;
+        flex-basis:auto;
+        width:100%;
+        justify-content:space-between;
+        gap:8px;
+        flex-wrap:nowrap;
+      }
+      .top-bar-weather,.top-bar-azan{
+        flex:1 1 0;
+        min-width:0;
+      }
       .top-bar-weather .weather-icon-wrap,
       .top-bar-azan .azan-icon-wrap{width:36px;height:36px;font-size:16px;border-radius:10px}
       .top-bar-weather .weather-temp,
       .top-bar-azan .azan-next-time{font-size:14px}
       .top-bar-weather .weather-desc,
-      .top-bar-azan .azan-next-label{font-size:10px}
-      .top-bar-clock{font-size:14px}
+      .top-bar-azan .azan-next-label{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+      .top-bar-icons{flex-shrink:0}
+      .top-bar-clock{
+        font-size:14px;
+        align-items:flex-end;
+        flex:1 1 auto;
+        min-width:0;
+        padding:6px 8px;
+      }
       .top-bar-clock .clock-icon-wrap{width:36px;height:36px;font-size:16px;border-radius:10px}
-      .top-bar-clock .clock-date{font-size:9px}
+      .top-bar-clock .clock-time{font-size:14px}
+      .top-bar-clock .clock-date{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
       .icon-btn{width:38px;height:38px;font-size:15px;border-radius:11px}
       .bdg{min-width:18px;height:18px;font-size:10px;top:-4px;right:-4px;border-width:1.5px}
+
       .daily-aya{padding:22px}
       .daily-aya-top{
         flex-direction:column;
@@ -1127,6 +1183,10 @@
       .vk-key.wide,.vk-key.space,.vk-key.backspace,.vk-key.enter{font-size:12px}
       .fav-modal-header{flex-wrap:wrap}
       .fav-toolbar{padding:10px}
+
+      /* Qari-raden på mobil: full bredd, tydlig text */
+      .daily-aya-qari-row{padding:8px 12px;gap:10px}
+      .daily-aya-qari-row select{height:42px;font-size:14px;padding:0 12px}
     }
     @media (max-width:480px){
       body{padding:12px 10px calc(var(--bottom-bar-height) + 15px)}
@@ -1143,9 +1203,12 @@
       .top-bar-weather .weather-desc,
       .top-bar-azan .azan-next-label{font-size:9px}
       .top-bar-clock{font-size:12px;gap:5px}
+      .top-bar-clock .clock-time{font-size:13px}
       .top-bar-clock .clock-date{font-size:8px}
+      .top-bar-clock .clock-date .date-label{font-size:8px}
       .icon-btn{width:34px;height:34px;font-size:14px;border-radius:10px}
       .bdg{min-width:16px;height:16px;font-size:9px;top:-4px;right:-4px;padding:0 3px}
+
       .daily-aya{padding:18px 16px}
       .daily-aya-arabic{font-size:29px;line-height:2.3}
       .daily-aya-text{font-size:24px;line-height:1.7}
@@ -1159,8 +1222,17 @@
       .verse-tool{width:32px;height:32px;font-size:13px}
       .sura-picker select,.sura-picker button{font-size:15px;height:48px}
       .sura-picker input{height:48px;font-size:15px}
+
+      /* Qari-raden på liten mobil: full bredd, tydlig text */
       .daily-aya-qari-row{padding:6px 10px;gap:8px}
-      .daily-aya-qari-row select{height:36px;font-size:14px;padding:0 10px}
+      .daily-aya-qari-row select{height:40px;font-size:13px;padding:0 10px}
+
+      /* Sura-kontroller: knappar med jämn storlek */
+      .daily-aya-qari-row[style*="justify-content:center"]{
+        flex-wrap:wrap;
+        gap:8px !important;
+      }
+
       .fav-arabic{font-size:22px;line-height:2.1}
       .fav-text{font-size:24px}
       .fav-text.ku,
@@ -1343,7 +1415,9 @@
         <i class="far fa-star"></i>
       </button>
     </div>
-    <div class="daily-aya-qari-row" style="justify-content:center;gap:8px">
+
+    <!-- SURA-KONTROLLER: nu med forward-knapp -->
+    <div class="daily-aya-qari-row" style="justify-content:center;gap:8px;flex-wrap:wrap">
       <button class="day-action-btn" onclick="suraPlayerBack()" title="Föregående vers i suran">
         <i class="fas fa-backward-step"></i>
       </button>
@@ -1352,6 +1426,9 @@
       </button>
       <button class="day-action-btn" onclick="stopSuraPlayback()" title="Stoppa">
         <i class="fas fa-stop"></i>
+      </button>
+      <button class="day-action-btn" onclick="suraPlayerForward()" title="Nästa vers i suran">
+        <i class="fas fa-forward-step"></i>
       </button>
       <button class="day-action-btn" id="loopSuraBtn" onclick="cycleSuraLoopMode()" title="Upprepning: av">
         <i class="fas fa-repeat"></i>
@@ -2677,13 +2754,10 @@ function clearQuranSearch(){
 /* ============================================================
    QARI & LJUDUPPSPELNING
    ============================================================ */
-/* Qari-lista med verifierade ID:n från Al Quran Cloud CDN.
-   Parhizgar använder 64 kbps (enligt CDN-dokumentation),
-   övriga använder 128 kbps. */
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy', bitrate:128 },
   { id:'ar.husary', name:'Mahmoud Khalil Al-Husary', bitrate:128 },
-  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi (Murattal)', bitrate:128 },
+  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi', bitrate:128 },
   { id:'ar.sudais', name:'Abdur-Rahman As-Sudais', bitrate:128 },
   { id:'ar.abdulbasitmurattal', name:'Abdul Basit (Murattal)', bitrate:128 },
   { id:'ar.ajamy', name:'Ahmed Al-Ajamy', bitrate:128 },
@@ -2698,11 +2772,6 @@ let currentQueue = null;
 
 function getCurrentQari(){
   return localStorage.getItem('quranQari') || 'ar.alafasy';
-}
-
-function getCurrentQariBitrate(){
-  const q = QARIS.find(x => x.id === getCurrentQari());
-  return q ? q.bitrate : 128;
 }
 
 function populateQariSelect(){
@@ -2918,6 +2987,21 @@ function suraPlayerBack(){
     return;
   }
   currentQueue.index = Math.max(0, currentQueue.index - 1);
+  if(currentAudio){ currentAudio.pause(); currentAudio.src = ''; }
+  playQueueStep();
+}
+
+/* NY: Hoppa framåt en vers i suran */
+function suraPlayerForward(){
+  if(!currentQueue || !currentPlayBtn || currentPlayBtn.id !== 'playSuraBtn'){
+    toast('❌ Ingen sura spelas just nu');
+    return;
+  }
+  if(currentQueue.index >= currentQueue.urls.length - 1){
+    toast('ℹ️ Redan vid sista versen');
+    return;
+  }
+  currentQueue.index = Math.min(currentQueue.urls.length - 1, currentQueue.index + 1);
   if(currentAudio){ currentAudio.pause(); currentAudio.src = ''; }
   playQueueStep();
 }
