@@ -1744,11 +1744,10 @@
     </div>
     <div class="tafsir-translate-bar" id="tafsirTranslateBar">
       <span class="label"><i class="fas fa-language"></i> Tafsir:</span>
-      <button data-tl="original" class="active" onclick="translateTafsirTo('original')">📄 Original (EN)</button>
-      <button data-tl="ar" onclick="translateTafsirTo('ar')">🇸🇦 العربية</button>
-      <button data-tl="fa" onclick="translateTafsirTo('fa')">🇮🇷 فارسی</button>
+      <button data-tl="original" class="active" onclick="translateTafsirTo('original')">📄 Original</button>
       <button data-tl="ku" onclick="translateTafsirTo('ku')">🏳️ کوردی سۆرانی</button>
       <button data-tl="ku-KM" onclick="translateTafsirTo('ku-KM')">🏴 Kurdî</button>
+      <button data-tl="fa" onclick="translateTafsirTo('fa')">🇮🇷 فارسی</button>
       <button data-tl="sv" onclick="translateTafsirTo('sv')">🇸🇪 Svenska</button>
     </div>
     <div class="tafsir-scroll">
@@ -3197,113 +3196,52 @@ function playAyaOnlySelected(){
 /* ============================================================
    TAFSIR-FUNKTION
    ============================================================ */
-const TAFSIR_SOURCES = {
-  en: { quranComId: 169, label: 'Ibn Kathir (English)' },
-  ar: { quranComId: 14,  label: 'تفسير ابن كثير (العربية)' },
-  ku: { quranComId: 804, label: 'ڕەبەر · تەفسیری کوردی (سۆرانی)' }
-};
-const NATIVE_TAFSIR_LANGS = ['ar', 'fa', 'ku'];
-
 let tafsirState = {
   surah: null,
   ayah: null,
   chapterLabel: '',
   translatedTo: 'original',
   originalBody: '',
-  originalSource: '',
-  nativeCache: {}
+  originalSource: ''
 };
 
-async function fetchTafsirForAyah(surah, ayah, lang){
-  lang = lang || 'en';
-  if(lang === 'fa') return await fetchPersianTafsirAyah(surah, ayah);
-  const src = TAFSIR_SOURCES[lang] || TAFSIR_SOURCES.en;
+async function fetchTafsirForAyah(surah, ayah){
   try{
-    const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${src.quranComId}/by_ayah/${surah}:${ayah}`);
+    const res = await fetch(`https://api.quran.com/api/v4/tafsirs/169/by_ayah/${surah}:${ayah}`);
     if(res.ok){
       const data = await res.json();
       if(data && data.tafsir && data.tafsir.text){
         return {
-          source: src.label + ' · quran.com',
+          source: 'Ibn Kathir (English) · quran.com',
           body: cleanTafsirHtml(data.tafsir.text)
         };
       }
     }
   }catch(e){}
-  if(lang === 'en'){
-    try{
-      const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/en.maududi`);
-      if(res.ok){
-        const data = await res.json();
-        if(data && data.data && data.data.text){
-          return {
-            source: 'Sayyid Abul A\'la Maududi (English) · alquran.cloud',
-            body: cleanTafsirHtml(data.data.text)
-          };
-        }
+  try{
+    const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/en.maududi`);
+    if(res.ok){
+      const data = await res.json();
+      if(data && data.data && data.data.text){
+        return {
+          source: 'Sayyid Abul A\'la Maududi (English) · alquran.cloud',
+          body: cleanTafsirHtml(data.data.text)
+        };
       }
-    }catch(e){}
-  }
+    }
+  }catch(e){}
   return null;
 }
 
-async function fetchTafsirForChapter(surah, lang){
-  lang = lang || 'en';
-  if(lang === 'fa') return await fetchPersianTafsirChapter(surah);
-  const src = TAFSIR_SOURCES[lang] || TAFSIR_SOURCES.en;
+async function fetchTafsirForChapter(surah){
   try{
-    const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${src.quranComId}/by_chapter/${surah}`);
+    const res = await fetch(`https://api.quran.com/api/v4/tafsirs/169/by_chapter/${surah}`);
     if(res.ok){
       const data = await res.json();
       if(data && data.tafsirs && Array.isArray(data.tafsirs)){
         return {
-          source: src.label + ' · quran.com',
+          source: 'Ibn Kathir (English) · quran.com',
           tafsirs: data.tafsirs
-        };
-      }
-    }
-  }catch(e){}
-  return null;
-}
-
-/* Tafsir al-Sa'di på persiska, via QuranEnc.com (persian_saadi) */
-function formatQuranEncBody(translation, footnotes){
-  let body = '<p>' + escapeHtml(translation || '').replace(/\n+/g, '</p><p>') + '</p>';
-  if(footnotes){
-    body += '<p style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border);font-size:.92em;opacity:.85">'
-      + escapeHtml(footnotes).replace(/\n+/g, '<br>') + '</p>';
-  }
-  return body;
-}
-async function fetchPersianTafsirAyah(surah, ayah){
-  try{
-    const res = await fetch(`https://quranenc.com/api/v1/translation/aya/persian_saadi/${surah}/${ayah}`);
-    if(res.ok){
-      const data = await res.json();
-      const item = Array.isArray(data && data.result) ? data.result[0] : (data && (data.result || data));
-      if(item && item.translation){
-        return {
-          source: 'تفسیر السعدی (فارسی) · quranenc.com',
-          body: formatQuranEncBody(item.translation, item.footnotes)
-        };
-      }
-    }
-  }catch(e){}
-  return null;
-}
-async function fetchPersianTafsirChapter(surah){
-  try{
-    const res = await fetch(`https://quranenc.com/api/v1/translation/sura/persian_saadi/${surah}`);
-    if(res.ok){
-      const data = await res.json();
-      const list = Array.isArray(data && data.result) ? data.result : [];
-      if(list.length){
-        return {
-          source: 'تفسیر السعدی (فارسی) · quranenc.com',
-          tafsirs: list.map(item => ({
-            ayah: item.aya,
-            text: formatQuranEncBody(item.translation, item.footnotes)
-          }))
         };
       }
     }
@@ -3326,7 +3264,6 @@ async function openTafsirAyah(surah, ayah, label){
   tafsirState.ayah = ayah;
   tafsirState.chapterLabel = label || (SURAH_NAMES[surah-1] + ' ' + surah + ':' + ayah);
   tafsirState.translatedTo = 'original';
-  tafsirState.nativeCache = {};
 
   const modal = document.getElementById('tafsirModal');
   const title = document.getElementById('tafsirTitle');
@@ -3336,12 +3273,11 @@ async function openTafsirAyah(surah, ayah, label){
   title.innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + escapeHtml(tafsirState.chapterLabel);
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
-  body.classList.remove('rtl');
 
   modal.classList.remove('h');
   updateTafsirTranslateBar();
 
-  const result = await fetchTafsirForAyah(surah, ayah, 'en');
+  const result = await fetchTafsirForAyah(surah, ayah);
   if(!result){
     source.textContent = 'Tafsir ej tillgänglig';
     body.innerHTML = '<p>Kunde inte hämta tafsir för denna vers just nu. Kontrollera internetanslutningen och försök igen.</p>';
@@ -3360,7 +3296,6 @@ async function openTafsirChapter(surah, chapterName){
   tafsirState.ayah = null;
   tafsirState.chapterLabel = (chapterName || SURAH_NAMES[surah-1]) + ' (hela suran)';
   tafsirState.translatedTo = 'original';
-  tafsirState.nativeCache = {};
 
   const modal = document.getElementById('tafsirModal');
   const title = document.getElementById('tafsirTitle');
@@ -3370,12 +3305,11 @@ async function openTafsirChapter(surah, chapterName){
   title.innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + escapeHtml(tafsirState.chapterLabel);
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir för hela suran…</div>';
-  body.classList.remove('rtl');
 
   modal.classList.remove('h');
   updateTafsirTranslateBar();
 
-  const result = await fetchTafsirForChapter(surah, 'en');
+  const result = await fetchTafsirForChapter(surah);
   if(!result || !result.tafsirs || !result.tafsirs.length){
     source.textContent = 'Tafsir ej tillgänglig';
     body.innerHTML = '<p>Kunde inte hämta tafsir för denna sura just nu. Prova igen senare.</p>';
@@ -3458,71 +3392,14 @@ async function translateTafsirTo(lang){
   if(lang === 'original' || !tafsirState.originalBody){
     body.innerHTML = tafsirState.originalBody;
     source.textContent = tafsirState.originalSource;
-    body.classList.remove('rtl');
     return;
   }
 
-  /* Riktig tafsir på originalspråket (inte maskinöversatt) för ar / fa / ku */
-  if(NATIVE_TAFSIR_LANGS.includes(lang)){
-    if(tafsirState.nativeCache[lang]){
-      body.innerHTML = tafsirState.nativeCache[lang].body;
-      source.textContent = tafsirState.nativeCache[lang].source;
-      body.classList.add('rtl');
-      return;
-    }
-
-    body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Hämtar tafsir…</div>';
-    source.textContent = 'Laddar…';
-    body.classList.remove('rtl');
-
-    let resultBody = null;
-    let resultSource = null;
-
-    if(tafsirState.ayah){
-      const r = await fetchTafsirForAyah(tafsirState.surah, tafsirState.ayah, lang);
-      if(r){ resultBody = r.body; resultSource = r.source; }
-    } else {
-      const chapterResult = await fetchTafsirForChapter(tafsirState.surah, lang);
-      if(chapterResult && chapterResult.tafsirs && chapterResult.tafsirs.length){
-        let html = '';
-        chapterResult.tafsirs.forEach(t => {
-          const ayahNum = t.ayah || t.ayah_number || '';
-          const text = lang === 'fa' ? t.text : cleanTafsirHtml(t.text || '');
-          if(text){
-            html += `
-              <div class="tafsir-verse-block">
-                <div class="tafsir-verse-num">Vers ${ayahNum}</div>
-                ${text}
-              </div>
-            `;
-          }
-        });
-        resultBody = html || null;
-        resultSource = chapterResult.source + ' · ' + SURAH_NAMES[tafsirState.surah - 1];
-      }
-    }
-
-    if(resultBody){
-      tafsirState.nativeCache[lang] = { body: resultBody, source: resultSource };
-      body.innerHTML = resultBody;
-      source.textContent = resultSource;
-      body.classList.add('rtl');
-    } else {
-      body.innerHTML = '<p>Tafsir är inte tillgänglig på detta språk just nu. Kontrollera internetanslutningen eller försök igen senare.</p>';
-      source.textContent = 'Ej tillgänglig';
-      body.classList.remove('rtl');
-    }
-    return;
-  }
-
-  /* Övriga språk (Kurmancî, Svenska) har ingen egen tafsir-källa ännu,
-     så de maskinöversätts från den engelska originaltexten. */
   const plainText = stripHtmlForTranslation(tafsirState.originalBody);
   const chunks = splitIntoChunks(plainText, 450);
 
   body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter tafsir till ' + ({ku:'sorani', 'ku-KM':'kurmanji', fa:'persiska', sv:'svenska'}[lang] || lang) + '…<br><span style="font-size:12px">Detta kan ta en stund.</span></div>';
   source.textContent = 'Översätts… (kan vara ungefärlig)';
-  body.classList.remove('rtl');
 
   const targetLangCode = ({'ku':'ku', 'ku-KM':'ku', 'fa':'fa', 'sv':'sv'})[lang] || 'en';
   const sourceLangCode = 'en';
