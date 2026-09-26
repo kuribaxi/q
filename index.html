@@ -337,9 +337,7 @@
       font-size:16px;flex-shrink:0;transition:all .2s;
     }
     .tafsir-close:active{transform:scale(.92)}
-
-    /* Tafsir-källväljare */
-    .tafsir-source-bar{
+    .tafsir-translate-bar{
       display:flex;gap:6px;flex-wrap:wrap;align-items:center;
       padding:12px 24px;
       background:var(--surface2);
@@ -347,13 +345,13 @@
       border-bottom:1.5px solid var(--border);
       flex-shrink:0;
     }
-    .tafsir-source-bar .label{
+    .tafsir-translate-bar .label{
       font-size:12px;font-weight:800;color:var(--text3);
       text-transform:uppercase;letter-spacing:.06em;
       margin-right:4px;
       display:flex;align-items:center;gap:6px;
     }
-    .tafsir-source-bar button{
+    .tafsir-translate-bar button{
       padding:6px 12px;border-radius:50px;
       border:1.5px solid var(--border);
       background:var(--surface);color:var(--text2);
@@ -361,39 +359,10 @@
       cursor:pointer;transition:all .2s;
       display:flex;align-items:center;gap:5px;
     }
-    .tafsir-source-bar button.active{
-      background:var(--primary);color:#fff;border-color:var(--primary);
-      box-shadow:0 4px 12px var(--primary-glow);
-    }
-    .tafsir-source-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
-
-    /* Tafsir-översättningsväljare */
-    .tafsir-translate-bar{
-      display:flex;gap:6px;flex-wrap:wrap;align-items:center;
-      padding:10px 24px;
-      background:var(--surface);
-      border-bottom:1.5px solid var(--border);
-      flex-shrink:0;
-    }
-    .tafsir-translate-bar .label{
-      font-size:11px;font-weight:800;color:var(--text3);
-      text-transform:uppercase;letter-spacing:.06em;
-      margin-right:4px;
-      display:flex;align-items:center;gap:6px;
-    }
-    .tafsir-translate-bar button{
-      padding:5px 10px;border-radius:50px;
-      border:1.5px solid var(--border);
-      background:var(--surface2);color:var(--text2);
-      font-family:var(--font);font-size:11px;font-weight:800;
-      cursor:pointer;transition:all .2s;
-      display:flex;align-items:center;gap:4px;
-    }
     .tafsir-translate-bar button.active{
       background:var(--emerald);color:#fff;border-color:var(--emerald);
     }
     .tafsir-translate-bar button:not(.active):active{background:var(--primary-soft);color:var(--primary)}
-
     .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
     .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
     .tafsir-body{font-size:19px;line-height:1.9;color:var(--text)}
@@ -546,6 +515,7 @@
       backdrop-filter:blur(6px);
     }
     .search-panel.open{display:block}
+
     .search-input-row{
       display:flex;gap:8px;align-items:center;margin-bottom:12px;
     }
@@ -1179,10 +1149,8 @@
       .aya-picker-actions button{height:48px;font-size:14px;min-width:100px}
       .tafsir-topbar{padding:16px 16px 10px}
       .tafsir-title{font-size:16px}
-      .tafsir-source-bar{padding:10px 16px;gap:5px}
-      .tafsir-source-bar button{font-size:11px;padding:5px 10px}
-      .tafsir-translate-bar{padding:8px 16px;gap:4px}
-      .tafsir-translate-bar button{font-size:10px;padding:4px 8px}
+      .tafsir-translate-bar{padding:10px 16px;gap:5px}
+      .tafsir-translate-bar button{font-size:11px;padding:5px 10px}
       .tafsir-scroll{padding:14px 16px 20px}
       .tafsir-body{font-size:16px;line-height:1.8}
     }
@@ -1235,11 +1203,11 @@
       .tafsir-card{padding:0}
       .tafsir-topbar{padding:14px 14px 8px}
       .tafsir-title{font-size:15px}
-      .tafsir-source-bar{padding:8px 14px;gap:4px}
-      .tafsir-source-bar button{font-size:10px;padding:4px 8px}
-      .tafsir-source-bar .label{font-size:10px}
-      .tafsir-translate-bar{padding:6px 14px;gap:4px}
+      .tafsir-lang-bar{padding:0 14px 10px;gap:4px}
+      .tafsir-lang-bar button{font-size:11px;padding:6px 10px}
+      .tafsir-translate-bar{padding:8px 14px;gap:4px}
       .tafsir-translate-bar button{font-size:10px;padding:4px 8px}
+      .tafsir-translate-bar .label{font-size:10px}
       .tafsir-scroll{padding:12px 14px 18px}
       .tafsir-body{font-size:15px;line-height:1.75}
       .modal-card .modal-arabic{font-size:28px;line-height:2.3}
@@ -1346,6 +1314,7 @@
         <button class="day-action-btn" id="loopDailyBtn" onclick="toggleDailyLoop()" title="Upprepa tills vidare">
           <i class="fas fa-repeat"></i>
         </button>
+        <!-- TAFSIR-KNAPP TILLBAKA -->
         <button class="day-action-btn" onclick="openTafsirDaily()" title="Tafsir">
           <i class="fas fa-book-open"></i>
         </button>
@@ -1773,19 +1742,14 @@
         <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
       </div>
     </div>
-    <div class="tafsir-source-bar" id="tafsirSourceBar">
-      <span class="label"><i class="fas fa-book"></i> Tafsir-källa:</span>
-      <button data-src="en-ibn-kathir" class="active" onclick="switchTafsirSource('en-ibn-kathir')">🇬🇧 Ibn Kathir</button>
-      <button data-src="ar-tabari" onclick="switchTafsirSource('ar-tabari')">🇸🇦 Tabari (عربي)</button>
-      <button data-src="fa-makarem" onclick="switchTafsirSource('fa-makarem')">🇮🇷 Makarem (فارسی)</button>
-      <button data-src="ku-asan" onclick="switchTafsirSource('ku-asan')">🏳️ Sorani (کوردی)</button>
-      <button data-src="ku-KM" onclick="switchTafsirSource('ku-KM')">🏴 Kurmanji</button>
-    </div>
     <div class="tafsir-translate-bar" id="tafsirTranslateBar">
-      <span class="label"><i class="fas fa-language"></i> Översätt:</span>
-      <button data-tl="original" class="active" onclick="translateTafsirTo('original')">📄 Original</button>
+      <span class="label"><i class="fas fa-language"></i> Tafsir:</span>
+      <button data-tl="original" class="active" onclick="translateTafsirTo('original')">📄 Original (EN)</button>
+      <button data-tl="ar" onclick="translateTafsirTo('ar')">🇸🇦 العربية</button>
+      <button data-tl="fa" onclick="translateTafsirTo('fa')">🇮🇷 فارسی</button>
+      <button data-tl="ku" onclick="translateTafsirTo('ku')">🏳️ کوردی سۆرانی</button>
+      <button data-tl="ku-KM" onclick="translateTafsirTo('ku-KM')">🏴 Kurdî</button>
       <button data-tl="sv" onclick="translateTafsirTo('sv')">🇸🇪 Svenska</button>
-      <button data-tl="en" onclick="translateTafsirTo('en')">🇬🇧 English</button>
     </div>
     <div class="tafsir-scroll">
       <div class="tafsir-source" id="tafsirSource"></div>
@@ -3231,143 +3195,120 @@ function playAyaOnlySelected(){
 }
 
 /* ============================================================
-   TAFSIR-FUNKTION (med flera källor)
+   TAFSIR-FUNKTION
    ============================================================ */
+const TAFSIR_SOURCES = {
+  en: { quranComId: 169, label: 'Ibn Kathir (English)' },
+  ar: { quranComId: 14,  label: 'تفسير ابن كثير (العربية)' },
+  ku: { quranComId: 804, label: 'ڕەبەر · تەفسیری کوردی (سۆرانی)' }
+};
+const NATIVE_TAFSIR_LANGS = ['ar', 'fa', 'ku'];
+
 let tafsirState = {
   surah: null,
   ayah: null,
   chapterLabel: '',
-  source: 'en-ibn-kathir',
   translatedTo: 'original',
   originalBody: '',
   originalSource: '',
-  sourceCache: {} // cache per källa
+  nativeCache: {}
 };
 
-/* Tafsir-källor och deras API-konfiguration */
-const TAFSIR_SOURCES = {
-  'en-ibn-kathir': {
-    label: 'Ibn Kathir (English)',
-    lang: 'en',
-    rtl: false,
-    fetch: async (surah, ayah) => {
-      try {
-        const res = await fetch(`https://api.quran.com/api/v4/tafsirs/169/by_ayah/${surah}:${ayah}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.tafsir && data.tafsir.text) {
-            return {
-              source: 'Ibn Kathir (English) · quran.com',
-              body: cleanTafsirHtml(data.tafsir.text)
-            };
-          }
-        }
-      } catch(e) {}
-      // Fallback
-      try {
-        const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/en.maududi`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.data && data.data.text) {
-            return {
-              source: 'Sayyid Abul A\'la Maududi (English) · alquran.cloud',
-              body: cleanTafsirHtml(data.data.text)
-            };
-          }
-        }
-      } catch(e) {}
-      return null;
+async function fetchTafsirForAyah(surah, ayah, lang){
+  lang = lang || 'en';
+  if(lang === 'fa') return await fetchPersianTafsirAyah(surah, ayah);
+  const src = TAFSIR_SOURCES[lang] || TAFSIR_SOURCES.en;
+  try{
+    const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${src.quranComId}/by_ayah/${surah}:${ayah}`);
+    if(res.ok){
+      const data = await res.json();
+      if(data && data.tafsir && data.tafsir.text){
+        return {
+          source: src.label + ' · quran.com',
+          body: cleanTafsirHtml(data.tafsir.text)
+        };
+      }
     }
-  },
-  'ar-tabari': {
-    label: 'Tabari (عربي)',
-    lang: 'ar',
-    rtl: true,
-    fetch: async (surah, ayah) => {
-      try {
-        const res = await fetch(`https://api.quran.com/api/v4/tafsirs/15/by_ayah/${surah}:${ayah}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.tafsir && data.tafsir.text) {
-            return {
-              source: 'Tafsir al-Tabari (Arabic) · quran.com',
-              body: cleanTafsirHtml(data.tafsir.text)
-            };
-          }
+  }catch(e){}
+  if(lang === 'en'){
+    try{
+      const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/en.maududi`);
+      if(res.ok){
+        const data = await res.json();
+        if(data && data.data && data.data.text){
+          return {
+            source: 'Sayyid Abul A\'la Maududi (English) · alquran.cloud',
+            body: cleanTafsirHtml(data.data.text)
+          };
         }
-      } catch(e) {}
-      return null;
-    }
-  },
-  'fa-makarem': {
-    label: 'Makarem (فارسی)',
-    lang: 'fa',
-    rtl: true,
-    fetch: async (surah, ayah) => {
-      try {
-        const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/fa.makarem`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.data && data.data.text) {
-            return {
-              source: 'Tafsir Makarem Shirazi (فارسی) · alquran.cloud',
-              body: cleanTafsirHtml(data.data.text)
-            };
-          }
-        }
-      } catch(e) {}
-      return null;
-    }
-  },
-  'ku-asan': {
-    label: 'Sorani (کوردی)',
-    lang: 'ku',
-    rtl: true,
-    fetch: async (surah, ayah) => {
-      try {
-        const res = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ku.asan`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.data && data.data.text) {
-            return {
-              source: 'Tafsir Asan (کوردی سۆرانی) · alquran.cloud',
-              body: cleanTafsirHtml(data.data.text)
-            };
-          }
-        }
-      } catch(e) {}
-      return null;
-    }
-  },
-  'ku-KM': {
-    label: 'Kurmanji',
-    lang: 'ku-KM',
-    rtl: false,
-    fetch: async (surah, ayah) => {
-      // Ingen känd tafsir på kurmanji – visa förklaring
-      return {
-        source: 'Kurmanji tafsir',
-        body: '<p>Det finns ingen tillgänglig kurmanji-tafsir via de öppna API:erna just nu. Prova Sorani eller en annan källa.</p>'
-      };
-    }
+      }
+    }catch(e){}
   }
-};
+  return null;
+}
 
-async function fetchTafsirForAyah(surah, ayah){
-  const sourceConfig = TAFSIR_SOURCES[tafsirState.source];
-  if (!sourceConfig) return null;
+async function fetchTafsirForChapter(surah, lang){
+  lang = lang || 'en';
+  if(lang === 'fa') return await fetchPersianTafsirChapter(surah);
+  const src = TAFSIR_SOURCES[lang] || TAFSIR_SOURCES.en;
+  try{
+    const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${src.quranComId}/by_chapter/${surah}`);
+    if(res.ok){
+      const data = await res.json();
+      if(data && data.tafsirs && Array.isArray(data.tafsirs)){
+        return {
+          source: src.label + ' · quran.com',
+          tafsirs: data.tafsirs
+        };
+      }
+    }
+  }catch(e){}
+  return null;
+}
 
-  // Kolla cache
-  const cacheKey = `${tafsirState.source}-${surah}-${ayah}`;
-  if (tafsirState.sourceCache[cacheKey]) {
-    return tafsirState.sourceCache[cacheKey];
+/* Tafsir al-Sa'di på persiska, via QuranEnc.com (persian_saadi) */
+function formatQuranEncBody(translation, footnotes){
+  let body = '<p>' + escapeHtml(translation || '').replace(/\n+/g, '</p><p>') + '</p>';
+  if(footnotes){
+    body += '<p style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border);font-size:.92em;opacity:.85">'
+      + escapeHtml(footnotes).replace(/\n+/g, '<br>') + '</p>';
   }
-
-  const result = await sourceConfig.fetch(surah, ayah);
-  if (result) {
-    tafsirState.sourceCache[cacheKey] = result;
-  }
-  return result;
+  return body;
+}
+async function fetchPersianTafsirAyah(surah, ayah){
+  try{
+    const res = await fetch(`https://quranenc.com/api/v1/translation/aya/persian_saadi/${surah}/${ayah}`);
+    if(res.ok){
+      const data = await res.json();
+      const item = Array.isArray(data && data.result) ? data.result[0] : (data && (data.result || data));
+      if(item && item.translation){
+        return {
+          source: 'تفسیر السعدی (فارسی) · quranenc.com',
+          body: formatQuranEncBody(item.translation, item.footnotes)
+        };
+      }
+    }
+  }catch(e){}
+  return null;
+}
+async function fetchPersianTafsirChapter(surah){
+  try{
+    const res = await fetch(`https://quranenc.com/api/v1/translation/sura/persian_saadi/${surah}`);
+    if(res.ok){
+      const data = await res.json();
+      const list = Array.isArray(data && data.result) ? data.result : [];
+      if(list.length){
+        return {
+          source: 'تفسیر السعدی (فارسی) · quranenc.com',
+          tafsirs: list.map(item => ({
+            ayah: item.aya,
+            text: formatQuranEncBody(item.translation, item.footnotes)
+          }))
+        };
+      }
+    }
+  }catch(e){}
+  return null;
 }
 
 function cleanTafsirHtml(html){
@@ -3385,6 +3326,7 @@ async function openTafsirAyah(surah, ayah, label){
   tafsirState.ayah = ayah;
   tafsirState.chapterLabel = label || (SURAH_NAMES[surah-1] + ' ' + surah + ':' + ayah);
   tafsirState.translatedTo = 'original';
+  tafsirState.nativeCache = {};
 
   const modal = document.getElementById('tafsirModal');
   const title = document.getElementById('tafsirTitle');
@@ -3394,15 +3336,15 @@ async function openTafsirAyah(surah, ayah, label){
   title.innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + escapeHtml(tafsirState.chapterLabel);
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
+  body.classList.remove('rtl');
 
   modal.classList.remove('h');
-  updateTafsirSourceBar();
   updateTafsirTranslateBar();
 
-  const result = await fetchTafsirForAyah(surah, ayah);
+  const result = await fetchTafsirForAyah(surah, ayah, 'en');
   if(!result){
     source.textContent = 'Tafsir ej tillgänglig';
-    body.innerHTML = '<p>Kunde inte hämta tafsir för denna vers från vald källa. Prova en annan källa.</p>';
+    body.innerHTML = '<p>Kunde inte hämta tafsir för denna vers just nu. Kontrollera internetanslutningen och försök igen.</p>';
     tafsirState.originalBody = body.innerHTML;
     tafsirState.originalSource = 'Tafsir ej tillgänglig';
     return;
@@ -3411,7 +3353,6 @@ async function openTafsirAyah(surah, ayah, label){
   tafsirState.originalBody = result.body;
   source.textContent = result.source;
   body.innerHTML = result.body;
-  applyTafsirBodyClass();
 }
 
 async function openTafsirChapter(surah, chapterName){
@@ -3419,6 +3360,7 @@ async function openTafsirChapter(surah, chapterName){
   tafsirState.ayah = null;
   tafsirState.chapterLabel = (chapterName || SURAH_NAMES[surah-1]) + ' (hela suran)';
   tafsirState.translatedTo = 'original';
+  tafsirState.nativeCache = {};
 
   const modal = document.getElementById('tafsirModal');
   const title = document.getElementById('tafsirTitle');
@@ -3428,65 +3370,40 @@ async function openTafsirChapter(surah, chapterName){
   title.innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + escapeHtml(tafsirState.chapterLabel);
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir för hela suran…</div>';
+  body.classList.remove('rtl');
 
   modal.classList.remove('h');
-  updateTafsirSourceBar();
   updateTafsirTranslateBar();
 
-  // För hela suran, hämta från vald källa
-  const sourceConfig = TAFSIR_SOURCES[tafsirState.source];
+  const result = await fetchTafsirForChapter(surah, 'en');
+  if(!result || !result.tafsirs || !result.tafsirs.length){
+    source.textContent = 'Tafsir ej tillgänglig';
+    body.innerHTML = '<p>Kunde inte hämta tafsir för denna sura just nu. Prova igen senare.</p>';
+    tafsirState.originalBody = body.innerHTML;
+    tafsirState.originalSource = 'Tafsir ej tillgänglig';
+    return;
+  }
+
+  tafsirState.originalSource = result.source + ' · ' + SURAH_NAMES[surah-1];
   let html = '';
-  let sourceName = sourceConfig ? sourceConfig.label : 'Tafsir';
-
-  if (tafsirState.source === 'en-ibn-kathir') {
-    try {
-      const res = await fetch(`https://api.quran.com/api/v4/tafsirs/169/by_chapter/${surah}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.tafsirs && Array.isArray(data.tafsirs)) {
-          sourceName = 'Ibn Kathir (English) · quran.com';
-          data.tafsirs.forEach(t => {
-            const ayahNum = t.ayah || t.ayah_number || '';
-            const text = cleanTafsirHtml(t.text || '');
-            if (text) {
-              html += `
-                <div class="tafsir-verse-block">
-                  <div class="tafsir-verse-num">Vers ${ayahNum}</div>
-                  ${text}
-                </div>
-              `;
-            }
-          });
-        }
-      }
-    } catch(e) {}
-  }
-
-  if (!html) {
-    // Fallback: hämta per vers från vald källa
-    const count = SURAH_AYAH_COUNTS[surah - 1];
-    body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir vers för vers…</div>';
-    for (let ayah = 1; ayah <= count; ayah++) {
-      const result = await sourceConfig.fetch(surah, ayah);
-      if (result && result.body) {
-        html += `
-          <div class="tafsir-verse-block">
-            <div class="tafsir-verse-num">Vers ${ayah}</div>
-            ${result.body}
-          </div>
-        `;
-      }
+  result.tafsirs.forEach(t => {
+    const ayahNum = t.ayah || t.ayah_number || '';
+    const text = cleanTafsirHtml(t.text || '');
+    if(text){
+      html += `
+        <div class="tafsir-verse-block">
+          <div class="tafsir-verse-num">Vers ${ayahNum}</div>
+          ${text}
+        </div>
+      `;
     }
+  });
+  if(!html){
+    html = '<p>Ingen tafsir-text hittades för denna sura.</p>';
   }
-
-  if (!html) {
-    html = '<p>Ingen tafsir-text hittades för denna sura från vald källa.</p>';
-  }
-  tafsirState.originalSource = sourceName + ' · ' + SURAH_NAMES[surah-1];
   tafsirState.originalBody = html;
   source.textContent = tafsirState.originalSource;
   body.innerHTML = html;
-  applyTafsirBodyClass();
 }
 
 async function openTafsirDaily(){
@@ -3523,46 +3440,12 @@ function updateTafsirFsIcon(){
 document.addEventListener('fullscreenchange', updateTafsirFsIcon);
 document.addEventListener('webkitfullscreenchange', updateTafsirFsIcon);
 
-function updateTafsirSourceBar(){
-  const bar = document.getElementById('tafsirSourceBar');
-  if(!bar) return;
-  bar.querySelectorAll('button[data-src]').forEach(b => {
-    b.classList.toggle('active', b.dataset.src === tafsirState.source);
-  });
-}
-
-function switchTafsirSource(sourceId){
-  if (tafsirState.source === sourceId) return;
-  tafsirState.source = sourceId;
-  updateTafsirSourceBar();
-
-  // Ladda om tafsir för nuvarande vers/sura
-  if (tafsirState.surah) {
-    if (tafsirState.ayah) {
-      openTafsirAyah(tafsirState.surah, tafsirState.ayah, tafsirState.chapterLabel);
-    } else {
-      openTafsirChapter(tafsirState.surah, SURAH_NAMES[tafsirState.surah - 1]);
-    }
-  }
-}
-
 function updateTafsirTranslateBar(){
   const bar = document.getElementById('tafsirTranslateBar');
   if(!bar) return;
   bar.querySelectorAll('button[data-tl]').forEach(b => {
     b.classList.toggle('active', b.dataset.tl === tafsirState.translatedTo);
   });
-}
-
-function applyTafsirBodyClass(){
-  const body = document.getElementById('tafsirBody');
-  if (!body) return;
-  const sourceConfig = TAFSIR_SOURCES[tafsirState.source];
-  if (sourceConfig && sourceConfig.rtl) {
-    body.classList.add('rtl');
-  } else {
-    body.classList.remove('rtl');
-  }
 }
 
 async function translateTafsirTo(lang){
@@ -3575,17 +3458,73 @@ async function translateTafsirTo(lang){
   if(lang === 'original' || !tafsirState.originalBody){
     body.innerHTML = tafsirState.originalBody;
     source.textContent = tafsirState.originalSource;
-    applyTafsirBodyClass();
+    body.classList.remove('rtl');
     return;
   }
 
+  /* Riktig tafsir på originalspråket (inte maskinöversatt) för ar / fa / ku */
+  if(NATIVE_TAFSIR_LANGS.includes(lang)){
+    if(tafsirState.nativeCache[lang]){
+      body.innerHTML = tafsirState.nativeCache[lang].body;
+      source.textContent = tafsirState.nativeCache[lang].source;
+      body.classList.add('rtl');
+      return;
+    }
+
+    body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Hämtar tafsir…</div>';
+    source.textContent = 'Laddar…';
+    body.classList.remove('rtl');
+
+    let resultBody = null;
+    let resultSource = null;
+
+    if(tafsirState.ayah){
+      const r = await fetchTafsirForAyah(tafsirState.surah, tafsirState.ayah, lang);
+      if(r){ resultBody = r.body; resultSource = r.source; }
+    } else {
+      const chapterResult = await fetchTafsirForChapter(tafsirState.surah, lang);
+      if(chapterResult && chapterResult.tafsirs && chapterResult.tafsirs.length){
+        let html = '';
+        chapterResult.tafsirs.forEach(t => {
+          const ayahNum = t.ayah || t.ayah_number || '';
+          const text = lang === 'fa' ? t.text : cleanTafsirHtml(t.text || '');
+          if(text){
+            html += `
+              <div class="tafsir-verse-block">
+                <div class="tafsir-verse-num">Vers ${ayahNum}</div>
+                ${text}
+              </div>
+            `;
+          }
+        });
+        resultBody = html || null;
+        resultSource = chapterResult.source + ' · ' + SURAH_NAMES[tafsirState.surah - 1];
+      }
+    }
+
+    if(resultBody){
+      tafsirState.nativeCache[lang] = { body: resultBody, source: resultSource };
+      body.innerHTML = resultBody;
+      source.textContent = resultSource;
+      body.classList.add('rtl');
+    } else {
+      body.innerHTML = '<p>Tafsir är inte tillgänglig på detta språk just nu. Kontrollera internetanslutningen eller försök igen senare.</p>';
+      source.textContent = 'Ej tillgänglig';
+      body.classList.remove('rtl');
+    }
+    return;
+  }
+
+  /* Övriga språk (Kurmancî, Svenska) har ingen egen tafsir-källa ännu,
+     så de maskinöversätts från den engelska originaltexten. */
   const plainText = stripHtmlForTranslation(tafsirState.originalBody);
   const chunks = splitIntoChunks(plainText, 450);
 
-  body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter tafsir till ' + ({'sv':'svenska', 'en':'engelska'}[lang] || lang) + '…<br><span style="font-size:12px">Detta kan ta en stund.</span></div>';
+  body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter tafsir till ' + ({ku:'sorani', 'ku-KM':'kurmanji', fa:'persiska', sv:'svenska'}[lang] || lang) + '…<br><span style="font-size:12px">Detta kan ta en stund.</span></div>';
   source.textContent = 'Översätts… (kan vara ungefärlig)';
+  body.classList.remove('rtl');
 
-  const targetLangCode = lang;
+  const targetLangCode = ({'ku':'ku', 'ku-KM':'ku', 'fa':'fa', 'sv':'sv'})[lang] || 'en';
   const sourceLangCode = 'en';
 
   let translated = '';
@@ -3615,7 +3554,6 @@ async function translateTafsirTo(lang){
   const paragraphs = translated.split(/\n{2,}/).filter(p => p.trim()).map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
   body.innerHTML = paragraphs || '<p>Ingen översättning tillgänglig.</p>';
   source.textContent = 'Maskinöversatt (kan vara ungefärlig) · ' + tafsirState.originalSource;
-  applyTafsirBodyClass();
 }
 
 function stripHtmlForTranslation(html){
