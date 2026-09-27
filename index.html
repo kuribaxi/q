@@ -976,6 +976,14 @@
 </div>
 
 <script>
+// ==================== GLOBALA VARIABLER ====================
+let currentSura = 1;
+let currentAya = 1;
+let totalSurahs = 114;
+let dailyAyaData = null;
+let ayaFavorites = [];
+let clockDateMode = 0;
+
 // ==================== FAVORITFUNKTIONER PER AYA ====================
 
 function getAyaFavorites() {
@@ -1049,9 +1057,6 @@ function refreshAyaFavoriteButtons() {
   });
 }
 
-// ==================== ÖVRIGA FUNKTIONER (PLATSHÅLLARE) ====================
-// Dessa måste finnas i din ursprungliga JS. Behåll dem som de är.
-
 function updateFavoriteBadge() {
   const favorites = getAyaFavorites();
   const badge = document.getElementById('favBdg');
@@ -1064,20 +1069,301 @@ function updateFavoriteBadge() {
   }
 }
 
-function openFavorites() {
-  // Din befintliga funktion – behåll oförändrad
-  console.log('Öppna favoriter');
+// ==================== KLOCKA ====================
+
+function updateClock() {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('clockTime').textContent = timeStr;
+  updateClockDate(now);
 }
+
+function updateClockDate(now) {
+  const dateEl = document.getElementById('clockDate');
+  const modes = [
+    () => {
+      const date = now.toLocaleDateString('sv-SE', { weekday: 'short', month: 'short', day: 'numeric' });
+      return `<span class="date-label">DATUM</span> ${date}`;
+    },
+    () => {
+      const date = now.toLocaleDateString('sv-SE', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      return `<span class="date-label">IDAG</span> ${date}`;
+    },
+    () => {
+      const date = now.toLocaleDateString('sv-SE', { month: 'long', day: 'numeric' });
+      return `<span class="date-label">MÅNAD</span> ${date}`;
+    }
+  ];
+  dateEl.innerHTML = modes[clockDateMode % modes.length]();
+}
+
+function cycleClockDate() {
+  clockDateMode++;
+  updateClockDate(new Date());
+}
+
+// ==================== VÄDER (Open-Meteo API) ====================
+
+async function loadWeather() {
+  try {
+    const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=59.3293&longitude=18.0686&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Europe%2FStockholm');
+    const data = await response.json();
+    
+    const temp = data.current_weather.temperature;
+    const code = data.current_weather.weathercode;
+    
+    const icons = {
+      0: 'fa-sun',
+      1: 'fa-cloud-sun',
+      2: 'fa-cloud',
+      3: 'fa-cloud',
+      45: 'fa-smog',
+      48: 'fa-smog',
+      51: 'fa-cloud-rain',
+      53: 'fa-cloud-rain',
+      55: 'fa-cloud-rain',
+      61: 'fa-cloud-showers-heavy',
+      63: 'fa-cloud-showers-heavy',
+      65: 'fa-cloud-showers-heavy',
+      71: 'fa-snowflake',
+      73: 'fa-snowflake',
+      75: 'fa-snowflake',
+      95: 'fa-bolt',
+      96: 'fa-bolt',
+      99: 'fa-bolt'
+    };
+    
+    const icon = icons[code] || 'fa-cloud-sun';
+    document.getElementById('weatherIcon').className = `fas ${icon}`;
+    document.getElementById('weatherTemp').textContent = `${temp}°C`;
+    document.getElementById('weatherDesc').textContent = 'Stockholm';
+  } catch (error) {
+    console.error('Väderfel:', error);
+    document.getElementById('weatherTemp').textContent = '--°C';
+    document.getElementById('weatherDesc').textContent = 'Ej tillgänglig';
+  }
+}
+
+function openWeatherModal() {
+  document.getElementById('weatherModal').classList.remove('h');
+}
+
+function closeWeatherModal() {
+  document.getElementById('weatherModal').classList.add('h');
+}
+
+// ==================== AZAN / BÖNETIDER (Aladhan API) ====================
+
+async function loadAzan() {
+  try {
+    const date = new Date();
+    const response = await fetch(`https://api.aladhan.com/v1/timingsByCity/${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}?city=Stockholm&country=Sweden&method=3`);
+    const data = await response.json();
+    
+    if (data.code === 200) {
+      const timings = data.data.timings;
+      const nextPrayer = getNextPrayer(timings);
+      
+      document.getElementById('azanNextTime').textContent = nextPrayer.time;
+      document.getElementById('azanNextLabel').textContent = nextPrayer.name;
+    }
+  } catch (error) {
+    console.error('Azan-fel:', error);
+    document.getElementById('azanNextTime').textContent = '--:--';
+    document.getElementById('azanNextLabel').textContent = 'Ej tillgänglig';
+  }
+}
+
+function getNextPrayer(timings) {
+  const now = new Date();
+  const currentTime = now.getHours() * 60 + now.getMinutes();
+  
+  const prayers = [
+    { name: 'Fajr', time: timings.Fajr },
+    { name: 'Dhuhr', time: timings.Dhuhr },
+    { name: 'Asr', time: timings.Asr },
+    { name: 'Maghrib', time: timings.Maghrib },
+    { name: 'Isha', time: timings.Isha }
+  ];
+  
+  for (const prayer of prayers) {
+    const [hours, minutes] = prayer.time.split(':').map(Number);
+    const prayerTime = hours * 60 + minutes;
+    
+    if (prayerTime > currentTime) {
+      return prayer;
+    }
+  }
+  
+  return prayers[0];
+}
+
+function openAzanModal() {
+  document.getElementById('azanModal').classList.remove('h');
+}
+
+function closeAzanModal() {
+  document.getElementById('azanModal').classList.add('h');
+}
+
+// ==================== QURAN DATA (API) ====================
+
+const quranApi = 'https://api.quran.com/api/v4';
+
+async function loadQuranData() {
+  await loadSurahList();
+  await loadDailyAya();
+  await loadQariList();
+}
+
+async function loadSurahList() {
+  try {
+    const response = await fetch(`${quranApi}/chapters?language=sv`);
+    const data = await response.json();
+    
+    const suraSelect = document.getElementById('suraSelect');
+    const playSuraSelect = document.getElementById('playSuraSelect');
+    
+    suraSelect.innerHTML = '';
+    playSuraSelect.innerHTML = '';
+    
+    data.chapters.forEach(chapter => {
+      const option1 = document.createElement('option');
+      option1.value = chapter.id;
+      option1.textContent = `${chapter.id}. ${chapter.name_arabic} - ${chapter.name_simple}`;
+      suraSelect.appendChild(option1);
+      
+      const option2 = document.createElement('option');
+      option2.value = chapter.id;
+      option2.textContent = `${chapter.id}. ${chapter.name_arabic} - ${chapter.name_simple}`;
+      playSuraSelect.appendChild(option2);
+    });
+    
+    currentSura = 1;
+  } catch (error) {
+    console.error('Sura-lista fel:', error);
+  }
+}
+
+async function loadDailyAya() {
+  try {
+    const randomSura = Math.floor(Math.random() * 114) + 1;
+    const response = await fetch(`${quranApi}/verses/by_chapter/${randomSura}?language=sv&words=false`);
+    const data = await response.json();
+    
+    const randomVerse = data.verses[Math.floor(Math.random() * data.verses.length)];
+    dailyAyaData = {
+      sura: randomSura,
+      aya: randomVerse.verse_key.split(':')[1],
+      arabic: randomVerse.text_uthmani,
+      translation: randomVerse.translations?.[0]?.text || ''
+    };
+    
+    renderDailyAya();
+  } catch (error) {
+    console.error('Dagens aya fel:', error);
+    document.getElementById('dailyAyaContent').innerHTML = '<div class="daily-aya-loading">Kunde inte ladda</div>';
+  }
+}
+
+function renderDailyAya() {
+  const content = document.getElementById('dailyAyaContent');
+  content.innerHTML = `
+    <div class="daily-aya-ref">Sura ${dailyAyaData.sura}, Vers ${dailyAyaData.aya}</div>
+    <div class="daily-aya-arabic">${dailyAyaData.arabic}</div>
+    <div class="daily-aya-text">${dailyAyaData.translation}</div>
+  `;
+}
+
+async function loadQariList() {
+  try {
+    const response = await fetch(`${quranApi}/reciters?language=sv`);
+    const data = await response.json();
+    
+    const qariSelect = document.getElementById('qariSelect');
+    qariSelect.innerHTML = '';
+    
+    data.reciters.forEach(reciter => {
+      const option = document.createElement('option');
+      option.value = reciter.id;
+      option.textContent = reciter.name;
+      qariSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Qari-lista fel:', error);
+  }
+}
+
+// ==================== SURA-VERSER MED FAVORITKNAPPAR ====================
+
+async function loadSuraVerses(suraNumber) {
+  try {
+    const response = await fetch(`${quranApi}/verses/by_chapter/${suraNumber}?language=sv&words=false`);
+    const data = await response.json();
+    
+    const content = document.getElementById('dailyAyaContent');
+    let html = `<div class="daily-aya-ref">Sura ${suraNumber}</div>`;
+    
+    data.verses.forEach(verse => {
+      const ayaNumber = verse.verse_key.split(':')[1];
+      const isFav = isAyaFavorite(suraNumber, ayaNumber);
+      
+      html += `
+        <div class="verse-block">
+          <div class="verse-tools">
+            <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+            <button class="verse-tool" data-role="play" onclick="playAyah(${suraNumber},${ayaNumber},this)" title="Spela upp"><i class="fas fa-play"></i></button>
+            <button 
+              class="verse-tool aya-favorite-btn"
+              data-sura="${suraNumber}"
+              data-ayah="${ayaNumber}"
+              onclick="toggleAyaFavorite(${suraNumber}, ${ayaNumber}, this)"
+              title="${isFav ? 'Ta bort från favoriter' : 'Spara aya som favorit'}">
+              <i class="${isFav ? 'fas' : 'far'} fa-star"></i>
+            </button>
+            <button class="verse-tool" onclick="openTafsirAyah(${suraNumber},${ayaNumber},'Sura ${suraNumber}:${ayaNumber}')" title="Tafsir"><i class="fas fa-book-open"></i></button>
+          </div>
+          <div class="arabic arabic-small">${verse.text_uthmani}</div>
+          <div class="translation">${verse.translations?.[0]?.text || ''}</div>
+        </div>
+        <hr class="divider">
+      `;
+    });
+    
+    content.innerHTML = html;
+    refreshAyaFavoriteButtons();
+  } catch (error) {
+    console.error('Sura-verser fel:', error);
+  }
+}
+
+// ==================== EVENT LISTENERS ====================
+
+document.getElementById('playSuraSelect').addEventListener('change', function() {
+  const suraNumber = parseInt(this.value);
+  loadSuraVerses(suraNumber);
+});
+
+document.getElementById('suraSelect').addEventListener('change', function() {
+  currentSura = parseInt(this.value);
+  document.getElementById('ayahInput').value = '1';
+});
+
+// ==================== ÖVRIGA FUNKTIONER ====================
 
 function toggleNight() {
   document.body.classList.toggle('night');
+  const icon = document.getElementById('nightIcon');
+  icon.className = document.body.classList.contains('night') ? 'fas fa-sun' : 'fas fa-moon';
 }
 
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen();
+    document.getElementById('fsIcon').className = 'fas fa-compress';
   } else {
     document.exitFullscreen();
+    document.getElementById('fsIcon').className = 'fas fa-expand';
   }
 }
 
@@ -1098,19 +1384,18 @@ function eyeBtnClick(e) {
 
 function setLang(lang) {
   console.log('Språk:', lang);
-}
-
-function openWeatherModal() {
-  console.log('Öppna väder');
-}
-
-function openAzanModal() {
-  console.log('Öppna bönetider');
+  document.querySelectorAll('.bottom-lang-inner button').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.lang === lang) {
+      btn.classList.add('active');
+    }
+  });
 }
 
 function toggleSearchPanel() {
   const panel = document.getElementById('searchPanel');
   panel.classList.toggle('open');
+  document.getElementById('searchToggleBtn').classList.toggle('active', panel.classList.contains('open'));
 }
 
 function performQuranSearch() {
@@ -1142,11 +1427,13 @@ function goToNextAya() {
 }
 
 function nextDailyAya() {
-  console.log('Slumpa aya');
+  loadDailyAya();
 }
 
 function saveCurrentAyaAsFavorite() {
-  console.log('Spara som favorit');
+  if (dailyAyaData) {
+    toggleAyaFavorite(dailyAyaData.sura, dailyAyaData.aya, document.getElementById('saveFavBtn'));
+  }
 }
 
 function toggleSuraFavorite() {
@@ -1158,7 +1445,8 @@ function suraPlayerBack() {
 }
 
 function playSelectedSura(btn) {
-  console.log('Spela sura');
+  const suraNumber = parseInt(document.getElementById('playSuraSelect').value);
+  loadSuraVerses(suraNumber);
 }
 
 function stopSuraPlayback() {
@@ -1174,7 +1462,9 @@ function cycleSuraLoopMode() {
 }
 
 function goToSuraAyah() {
-  console.log('Hoppa till sura');
+  const sura = parseInt(document.getElementById('suraSelect').value);
+  const aya = parseInt(document.getElementById('ayahInput').value);
+  loadSuraVerses(sura);
 }
 
 function copyVerse(btn) {
@@ -1194,7 +1484,7 @@ function openTafsirAyah(sura, aya, title) {
 }
 
 function playSurah(sura, btn) {
-  console.log('Spela sura', sura);
+  loadSuraVerses(sura);
 }
 
 function openTafsirChapter(sura, title) {
@@ -1285,25 +1575,75 @@ function closeViewFav() {
   document.getElementById('viewFavModal').classList.add('h');
 }
 
-function closeWeatherModal() {
-  document.getElementById('weatherModal').classList.add('h');
+function openFavorites() {
+  const modal = document.getElementById('favModal');
+  modal.classList.remove('h');
+  renderFavoritesList();
 }
 
-function closeAzanModal() {
-  document.getElementById('azanModal').classList.add('h');
+function closeFavorites() {
+  document.getElementById('favModal').classList.add('h');
 }
 
-function cycleClockDate() {
-  console.log('Växla datum');
+function renderFavoritesList() {
+  const favorites = getAyaFavorites();
+  const list = document.getElementById('favList');
+  const count = document.getElementById('favCount');
+  const toolbar = document.getElementById('favToolbar');
+  
+  count.textContent = favorites.length;
+  toolbar.style.display = favorites.length > 0 ? 'flex' : 'none';
+  
+  if (favorites.length === 0) {
+    list.innerHTML = '<div class="fav-empty"><i class="fas fa-star"></i>Inga favoriter sparade</div>';
+    return;
+  }
+  
+  let html = '';
+  favorites.forEach((fav, index) => {
+    html += `
+      <div class="fav-item">
+        <div class="fav-ref">
+          <input type="checkbox" class="fav-checkbox" data-index="${index}">
+          <span>Sura ${fav.sura}:${fav.aya}</span>
+        </div>
+        <div class="fav-arabic">${fav.arabic}</div>
+        <div class="fav-text">${fav.translation}</div>
+        <div class="fav-actions">
+          <button class="fav-view" onclick="viewFavorite(${index})"><i class="fas fa-eye"></i></button>
+          <button class="fav-del" onclick="deleteFavorite(${index})"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
+    `;
+  });
+  
+  list.innerHTML = html;
+}
+
+function viewFavorite(index) {
+  console.log('Visa favorit', index);
+}
+
+function deleteFavorite(index) {
+  const favorites = getAyaFavorites();
+  favorites.splice(index, 1);
+  saveAyaFavorites(favorites);
+  renderFavoritesList();
 }
 
 // ==================== INITIERING ====================
 
 document.addEventListener('DOMContentLoaded', function() {
+  updateClock();
+  setInterval(updateClock, 1000);
+  
+  loadWeather();
+  loadAzan();
+  loadQuranData();
   updateFavoriteBadge();
   
-  // Simulera att dagens sura har laddats – uppdatera favoritknappar
-  setTimeout(refreshAyaFavoriteButtons, 500);
+  // Sätt aktivt språk
+  setLang('sv');
 });
 </script>
 
