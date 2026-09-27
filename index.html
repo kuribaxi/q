@@ -203,7 +203,12 @@
     }
     .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: var(--text); }
 
-    /* ARABIC AYAH SPAN INSIDE TAFSIR */
+    /* ============================================================
+       ARABIC AYAH SPAN INSIDE TAFSIR
+       FIX 1: unicode-bidi:plaintext tvingar alltid RTL på arabisk text
+       (oavsett om omgivande tafsir är LTR som engelska eller RTL)
+       FIX 2: samma font-size/line-height för alla tafsir-språk
+       ============================================================ */
     .tafsir-body .tafsir-aya-green {
       background: none !important;
       color: var(--emerald) !important;
@@ -212,10 +217,10 @@
       margin: 0 !important;
       border-radius: 0 !important;
       font-family: var(--quran-font) !important;
-      font-size: 1em !important;
-      line-height: 1.9 !important;
+      font-size: 1.05em !important;
+      line-height: 2 !important;
       direction: rtl !important;
-      unicode-bidi: isolate !important;
+      unicode-bidi: plaintext !important;
       text-align: right !important;
       font-weight: 700;
       display: inline-block;
@@ -224,14 +229,14 @@
     .tafsir-body .tafsir-aya-green * {
       color: var(--emerald) !important;
     }
-    .tafsir-body.tafsir-ar .tafsir-aya-green { font-size: 1em !important; line-height: 1.85 !important; }
-    .tafsir-body.tafsir-ku .tafsir-aya-green { font-size: 1em !important; line-height: 1.85 !important; }
-    .tafsir-body.tafsir-fa .tafsir-aya-green { font-size: 1.02em !important; line-height: 1.9 !important; }
+    .tafsir-body.tafsir-ar .tafsir-aya-green,
+    .tafsir-body.tafsir-ku .tafsir-aya-green,
+    .tafsir-body.tafsir-fa .tafsir-aya-green,
     .tafsir-body.tafsir-en .tafsir-aya-green {
       font-size: 1.05em !important;
       line-height: 2 !important;
       direction: rtl !important;
-      unicode-bidi: isolate !important;
+      unicode-bidi: plaintext !important;
       text-align: right !important;
       display: inline-block;
     }
@@ -337,25 +342,7 @@
     .verse-tool.copied{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
     .verse-tool.playing{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
     .verse-tool.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,255,255,.6)}
-
-    /* === Stopp-knapp i vers-block: gömd tills versen spelas === */
-    .verse-tool.stop-tool{
-      display: none;
-      background: rgba(240,94,122,.85) !important;
-      border-color: rgba(240,94,122,.9) !important;
-    }
-    .verse-tool.stop-tool:hover{
-      background: var(--rose) !important;
-      border-color: var(--rose) !important;
-    }
-    .verse-block.is-playing .verse-tool.stop-tool{
-      display: flex;
-    }
-    .verse-block.is-playing .arabic{
-      box-shadow: 0 0 0 3px var(--emerald), 0 10px 28px var(--arabic-glow);
-    }
-
-    .arabic{font-family:var(--quran-font);font-size:40px;line-height:2.5;direction:rtl;text-align:right;color:#fff;padding:20px 24px;background:linear-gradient(135deg,var(--arabic-grad-1),var(--arabic-grad-2));border-radius:var(--rsm);box-shadow:0 10px 28px var(--arabic-glow);word-break:break-word;position:relative;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased;text-shadow:0 2px 4px rgba(0,0,0,.18);transition:box-shadow .3s}
+    .arabic{font-family:var(--quran-font);font-size:40px;line-height:2.5;direction:rtl;text-align:right;color:#fff;padding:20px 24px;background:linear-gradient(135deg,var(--arabic-grad-1),var(--arabic-grad-2));border-radius:var(--rsm);box-shadow:0 10px 28px var(--arabic-glow);word-break:break-word;position:relative;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased;text-shadow:0 2px 4px rgba(0,0,0,.18)}
     .arabic-small{font-size:34px;line-height:2.3;padding:18px 22px}
     .translation{font-size:34px;color:var(--text);padding:14px 20px;margin:12px 0 18px;border-left:4px solid var(--translation-border);background:var(--translation-bg);border-radius:0 12px 12px 0;min-height:26px;line-height:1.8;box-shadow:0 2px 8px rgba(34,192,138,.08)}
     .translation.ku,.translation.ku-KM,.translation.fa{font-family:var(--kurdish-font);font-size:36px;line-height:1.9;direction:rtl;text-align:right}
@@ -672,7 +659,6 @@
         <button class="verse-tool" data-role="play" onclick="playAyah(2,255,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="toggleVerseLoop(this)" title="Upprepa"><i class="fas fa-repeat"></i></button>
         <button class="verse-tool" onclick="openTafsirAyah(2,255,'Ayat al-Kursi · 2:255')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-        <button class="verse-tool stop-tool" onclick="stopVerseFromBlock(this)" title="Stoppa"><i class="fas fa-stop"></i></button>
       </div>
       <div class="arabic">اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ</div>
     </div>
@@ -686,7 +672,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(1,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(1,'Al-Fātiha')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-        <button class="verse-tool stop-tool" onclick="stopVerseFromBlock(this)" title="Stoppa"><i class="fas fa-stop"></i></button>
       </div>
       <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾</div>
     </div>
@@ -702,7 +687,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(109,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(109,'Al-Kāfirūn')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-        <button class="verse-tool stop-tool" onclick="stopVerseFromBlock(this)" title="Stoppa"><i class="fas fa-stop"></i></button>
       </div>
       <div class="arabic arabic-small">قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَا عَبَدْتُمْ ﴿٤﴾ وَلَا أَنْتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾</div>
     </div>
@@ -716,7 +700,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(112,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(112,'Al-Ikhlāṣ')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-        <button class="verse-tool stop-tool" onclick="stopVerseFromBlock(this)" title="Stoppa"><i class="fas fa-stop"></i></button>
       </div>
       <div class="arabic arabic-small">قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ ﴿٤﴾</div>
     </div>
@@ -730,7 +713,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(113,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(113,'Al-Falaq')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-        <button class="verse-tool stop-tool" onclick="stopVerseFromBlock(this)" title="Stoppa"><i class="fas fa-stop"></i></button>
       </div>
       <div class="arabic arabic-small">قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِنْ شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾</div>
     </div>
@@ -744,7 +726,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(114,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(114,'An-Nās')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-        <button class="verse-tool stop-tool" onclick="stopVerseFromBlock(this)" title="Stoppa"><i class="fas fa-stop"></i></button>
       </div>
       <div class="arabic arabic-small">قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾</div>
     </div>
@@ -758,7 +739,6 @@
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playSurah(110,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(110,'An-Naṣr')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-        <button class="verse-tool stop-tool" onclick="stopVerseFromBlock(this)" title="Stoppa"><i class="fas fa-stop"></i></button>
       </div>
       <div class="arabic arabic-small">إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ ﴿١﴾ وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا ﴿٢﴾ فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا ﴿٣﴾</div>
     </div>
@@ -808,15 +788,14 @@
   </div>
 
   <div class="section">
-    <div class="section-title"><i class="fas fa-book-quran"></i> سورة القلم ٦٨:٥١ · Al-Qalam 68:51</div>
+    <div class="section-title"><i class="fas fa-book-quran"></i> سورة القلم ٦٨:٥١–٥٢ · Al-Qalam 68:51–52</div>
     <div class="verse-block">
       <div class="verse-tools">
         <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
         <button class="verse-tool" data-role="play" onclick="playAyah(68,51,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="openTafsirAyah(68,51,'Al-Qalam · 68:51')" title="Tafsir"><i class="fas fa-book-open"></i></button>
-        <button class="verse-tool stop-tool" onclick="stopVerseFromBlock(this)" title="Stoppa"><i class="fas fa-stop"></i></button>
       </div>
-      <div class="arabic arabic-small">وَإِنْ يَكَادُ الَّذِينَ كَفَرُوا لَيُزْلِقُونَكَ بِأَبْصَارِهِمْ لَمَّا سَمِعُوا الذِّكْرَ وَيَقُولُونَ إِنَّهُ لَمَجْنُونٌ</div>
+      <div class="arabic arabic-small">وَإِنْ يَكَادُ الَّذِينَ كَفَرُوا لَيُزْلِقُونَكَ بِأَبْصَارِهِمْ لَمَّا سَمِعُوا الذِّكْرَ وَيَقُولُونَ إِنَّهُ لَمَجْنُونٌ ﴿٥١﴾ وَمَا هُوَ إِلَّا ذِكْرٌۭ لِّلْعَٰلَمِينَ ﴿٥٢﴾</div>
     </div>
     <div class="translation" data-tr="qalam51"></div>
   </div>
@@ -1991,43 +1970,12 @@ let audioCurrentSurah = null, audioCurrentAyah = null;
 let audioTotalVerses = null;
 let currentSuraPlaybackAyah = 1;
 
-/* === Spårar vilket .verse-block som spelas just nu === */
-let activeVerseBlock = null;
-
-function markVerseBlockPlaying(block){
-  clearVerseBlockPlaying();
-  if (!block) return;
-  block.classList.add('is-playing');
-  activeVerseBlock = block;
-  const playBtn = block.querySelector('.verse-tool[data-role="play"]');
-  if (playBtn){
-    playBtn.classList.add('playing');
-    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-  }
-}
-function clearVerseBlockPlaying(){
-  if (!activeVerseBlock) return;
-  activeVerseBlock.classList.remove('is-playing');
-  const playBtn = activeVerseBlock.querySelector('.verse-tool[data-role="play"]');
-  if (playBtn){
-    playBtn.classList.remove('playing');
-    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-  }
-  activeVerseBlock = null;
-}
-function stopVerseFromBlock(btn){
-  stopSuraPlayback();
-  clearVerseBlockPlaying();
-  toast('⏹️ Stoppad');
-}
-
 function stopSuraPlayback(){
   if (currentAudio){ currentAudio.pause(); currentAudio = null; }
   audioQueue = []; audioLoop = false; audioDoneCb = null; audioLoopTracks = null;
   audioCurrentSurah = null; audioCurrentAyah = null; audioTotalVerses = null;
   if (activePlayBtn){ resetPlayBtn(activePlayBtn); activePlayBtn = null; }
   showBismillahBanner(false);
-  clearVerseBlockPlaying();
   const p = document.getElementById('suraProgress'); if (p) p.textContent = '';
   updateSuraLoopButton();
 }
@@ -2053,7 +2001,6 @@ function playNextInQueue(){
     if (activePlayBtn) resetPlayBtn(activePlayBtn);
     activePlayBtn = null;
     showBismillahBanner(false);
-    clearVerseBlockPlaying();
     if (audioDoneCb) audioDoneCb();
     return;
   }
@@ -2164,21 +2111,17 @@ function withBismillah(surah, ayah, tracks){
 }
 
 function playAyah(surah, ayah, btn){
-  const block = btn ? btn.closest('.verse-block') : null;
   const tracks = withBismillah(surah, ayah, [track(surah, ayah)]);
   setLoopTracks(null);
-  markVerseBlockPlaying(block);
   playAudioSequence(tracks, false, btn);
 }
 function playSurah(surah, btn){
-  const block = btn ? btn.closest('.verse-block') : null;
   const count = SURAH_AYAH_COUNTS[surah - 1];
   const tracks = [];
   for (let a = 1; a <= count; a++) tracks.push(track(surah, a, count));
   if (surah !== 9 && surah !== 1) tracks.unshift(bismillahTrack());
   setLoopTracks(tracks);
   suraLoopMode = 'sura-once';
-  markVerseBlockPlaying(block);
   playAudioSequence(tracks, false, btn);
   updateSuraLoopButton();
 }
@@ -2202,10 +2145,8 @@ function updateDailyLoopButton(){
   if (btn) btn.classList.toggle('active', dailyLoop);
 }
 function toggleVerseLoop(btn){
-  const block = btn ? btn.closest('.verse-block') : null;
   const tracks = withBismillah(2, 255, [track(2, 255)]);
   setLoopTracks(tracks);
-  markVerseBlockPlaying(block);
   playAudioSequence(tracks, true, btn);
   toast('🔁 Versen upprepas');
 }
@@ -2557,6 +2498,12 @@ function applyTafsirFontStyles(bodyEl){
   bodyEl.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
 }
 
+/* ============================================================
+   highlightArabicInTafsir — tvingar RTL på DOM-nivå
+   FIX: unicode-bidi:plaintext garanterar RTL för arabiska ayat
+   även när omgivande tafsir är LTR (engelska), och samma
+   font-size/line-height används för alla tafsir-språk.
+   ============================================================ */
 function highlightArabicInTafsir(container){
   if(!container) return;
   try{
@@ -2598,7 +2545,8 @@ function highlightArabicInTafsir(container){
         span.className = 'tafsir-aya-green';
         span.setAttribute('dir', 'rtl');
         span.setAttribute('lang', 'ar');
-        span.style.cssText = 'direction:rtl !important;unicode-bidi:isolate !important;text-align:right !important;display:inline-block;font-family:var(--quran-font);color:var(--emerald);font-weight:700;line-height:1.9;font-size:1em;';
+        /* FIX: unicode-bidi:plaintext tvingar RTL – ingen extern CSS kan åsidosätta */
+        span.style.cssText = 'direction:rtl !important;unicode-bidi:plaintext !important;text-align:right !important;display:inline-block;font-family:var(--quran-font);color:var(--emerald);font-weight:700;line-height:2;font-size:1.05em;';
         span.textContent = match;
         frag.appendChild(span);
         lastIndex = m.index + match.length;
@@ -2609,11 +2557,12 @@ function highlightArabicInTafsir(container){
       }
     });
 
+    /* Extra säkerhet: alla redan existerande .tafsir-aya-green tvingas RTL */
     container.querySelectorAll('.tafsir-aya-green').forEach(el => {
       el.setAttribute('dir', 'rtl');
       el.setAttribute('lang', 'ar');
       el.style.setProperty('direction', 'rtl', 'important');
-      el.style.setProperty('unicode-bidi', 'isolate', 'important');
+      el.style.setProperty('unicode-bidi', 'plaintext', 'important');
       el.style.setProperty('text-align', 'right', 'important');
       el.style.setProperty('display', 'inline-block', 'important');
     });
