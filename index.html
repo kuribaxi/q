@@ -85,6 +85,13 @@
     }
     body.chrome-hidden .bottom-lang-bar{display:none !important}
     body.chrome-hidden .top-bar{display:none !important}
+
+    /* ===== NY: Dölj översättningar när body.translations-hidden ===== */
+    body.translations-hidden .translation,
+    body.translations-hidden .daily-aya-text,
+    body.translations-hidden .fav-text,
+    body.translations-hidden .modal-text { display: none !important; }
+
     .container{max-width:1400px;width:100%;margin:0 auto;display:flex;flex-direction:column}
 
     .top-bar{
@@ -121,6 +128,8 @@
     .icon-btn{width:42px;height:42px;border-radius:13px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:17px;transition:all .2s;position:relative}
     .icon-btn:active{background:var(--primary-soft);color:var(--primary);transform:scale(.92)}
     .icon-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+    .icon-btn.translation-off{background:var(--rose-soft);color:var(--rose);border-color:var(--rose)}
+    body.night .icon-btn.translation-off{background:rgba(240,94,122,.2);color:#FFA8B8}
     .bdg{position:absolute;top:-5px;right:-5px;min-width:20px;height:20px;border-radius:50%;background:var(--rose);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--surface);padding:0 4px;box-shadow:0 2px 6px rgba(240,94,122,.4)}
     .bdg.h{display:none}
 
@@ -203,12 +212,6 @@
     }
     .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: var(--text); }
 
-    /* ============================================================
-       ARABIC AYAH SPAN INSIDE TAFSIR
-       FIX 1: unicode-bidi:plaintext tvingar alltid RTL på arabisk text
-       (oavsett om omgivande tafsir är LTR som engelska eller RTL)
-       FIX 2: samma font-size/line-height för alla tafsir-språk
-       ============================================================ */
     .tafsir-body .tafsir-aya-green {
       background: none !important;
       color: var(--emerald) !important;
@@ -319,6 +322,7 @@
     .day-action-btn.saved{background:var(--amber);color:#fff;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
     .day-action-btn.playing{background:var(--emerald);color:#fff;border-color:var(--emerald);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
     .day-action-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18)}
+    .day-action-btn.verse-mode{background:var(--amber) !important;color:#fff !important;border-color:var(--amber) !important;box-shadow:0 0 0 3px rgba(255,255,255,.55), 0 4px 10px rgba(0,0,0,.18) !important}
     .daily-aya-qari-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;position:relative;z-index:1;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.55);border-radius:12px;padding:8px 14px;backdrop-filter:blur(6px);box-shadow:0 2px 8px rgba(0,0,0,.08);min-width:0;overflow:hidden}
     .daily-aya-qari-row i{color:#fff;font-size:15px;flex-shrink:0;text-shadow:0 1px 2px rgba(0,0,0,.2)}
     .daily-aya-qari-row select{flex:1;min-width:0;height:40px;border:none;background:rgba(255,255,255,.95);color:#1E1535;font-family:var(--font);font-size:15px;font-weight:800;outline:none;cursor:pointer;border-radius:8px;padding:0 12px;box-shadow:0 2px 6px rgba(0,0,0,.1);transition:all .2s;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
@@ -571,6 +575,10 @@
           <i class="fas fa-star"></i>
           <span class="bdg h" id="favBdg">0</span>
         </button>
+        <!-- NY KNAPP: Aktivera/avaktivera översättningar -->
+        <button class="icon-btn" onclick="toggleTranslations()" title="Visa/göm översättningar" id="translationBtn">
+          <i class="fas fa-language" id="translationIcon"></i>
+        </button>
         <button class="icon-btn" onclick="toggleFullscreen()" title="Helskärm" id="fsBtn">
           <i class="fas fa-expand" id="fsIcon"></i>
         </button>
@@ -820,6 +828,16 @@
       <div class="arabic arabic-small">اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ<br>وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ</div>
     </div>
     <div class="translation" data-tr="kifayah"></div>
+
+    <hr class="divider">
+
+    <div class="verse-block">
+      <div class="verse-tools">
+        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+      </div>
+      <div class="arabic arabic-small">اللَّهُمَّ اهْدِنَا فِيمَنْ هَدَيْتَ، وَعَافِنَا فِيمَنْ عَافَيْتَ، وَتَوَلَّنَا فِيمَنْ تَوَلَّيْتَ، وَبَارِكْ لَنَا فِيمَا أَعْطَيْتَ، وَقِنَا شَرَّ مَا قَضَيْتَ، فَإِنَّكَ تَقْضِي وَلَا يُقْضَى عَلَيْكَ، وَإِنَّهُ لَا يَذِلُّ مَنْ وَالَيْتَ، وَلَا يَعِزُّ مَنْ عَادَيْتَ، تَبَارَكْتَ رَبَّنَا وَتَعَالَيْتَ، فَلَكَ الْحَمْدُ عَلَى مَا قَضَيْتَ، وَنَسْتَغْفِرُكَ وَنَتُوبُ إِلَيْكَ، وَصَلَّى اللَّهُ عَلَى سَيِّدِنَا مُحَمَّدٍ النَّبِيِّ الْأُمِّيِّ وَعَلَى آلِهِ وَصَحْبِهِ وَسَلَّمَ</div>
+    </div>
+    <div class="translation" data-tr="qunut"></div>
   </div>
 
   <div class="section">
@@ -1000,6 +1018,7 @@ const TRANSLATIONS = {
     ruqya4: '”O Allah, inget är lätt utom det Du gör lätt, och Du gör sorgen lätt när Du vill.”',
     tasbihcombo: '”Prisad vare Allah och allt lov tillhör Allah. Det finns ingen gud utom Allah, och Allah är större. Det finns ingen makt och ingen kraft utom genom Allah. Jag ber den Väldige Allah om förlåtelse och vänder mig till Honom i ånger. Prisad vare Allah och allt lov tillhör Allah, prisad vare den Väldige Allah. Allah är oss nog, och Han är den bäste beskyddaren och den bäste hjälparen.”',
     kifayah: '”O Allah, låt det Du gjort tillåtet vara nog för mig så att jag slipper det förbjudna, och gör mig genom Din nåd oberoende av alla andra än Dig.”',
+    qunut: '”O Allah, led oss bland dem som Du har lett, och skydda oss bland dem som Du har skyddat, och ta oss till Dig bland dem som Du har tagit till Dig, och välsigna det Du har gett oss, och skydda oss från det onda i det Du har förutbestämt. Ty Du förutbestämmer och ingen förutbestämmer över Dig. Och den Du har tagit till Din vän blir aldrig förnedrad, och den Du har motsatt Dig blir aldrig upphöjd. Välsignad är Du, vår Herre, och upphöjd. Dig tillhör all lov för det Du har förutbestämt, och vi ber Dig om förlåtelse och vänder oss till Dig i ånger. Och må Allah välsigna vår herre Muhammad, den obokstavlige profeten, och hans familj, hans följeslagare och skänka dem frid.”',
     nur: '”I Guds, den Nåderikes, den Barmhärtiges namn. I Guds namn, Ljuset. I Guds namn, ljusets Ljus. I Guds namn, ett ljus över ett ljus. I Guds namn, Han som styr allt. I Guds namn, Han som skapade ljuset av ljuset. Lov och pris till Allah, som skapade ljuset av ljuset och sände ner ljuset på berget, i en skriven bok, på ett utbrett blad, efter ett bestämt mått, till en älskad profet. Lov och pris till Allah, som nämns med ära och är känd för sin stolthet, och som tackas i medgång och motgång. Må Allah välsigna vår herre Muhammad och hans rena familj.”'
   },
   en: {
@@ -1017,6 +1036,7 @@ const TRANSLATIONS = {
     ruqya4: '"O Allah, nothing is easy except what You make easy, and You make sorrow easy when You will."',
     tasbihcombo: '"Glory be to Allah and praise be to Allah. There is no deity but Allah, and Allah is the Greatest. There is no power and no strength except through Allah. I seek forgiveness from Allah the Mighty and turn to Him in repentance. Glory be to Allah and praise be to Allah, glory be to Allah the Mighty. Allah is sufficient for us, and He is the best Disposer of affairs and the best Helper."',
     kifayah: '"O Allah, suffice me with what You have made lawful instead of what You have made unlawful, and make me independent of all others besides You by Your grace."',
+    qunut: '"O Allah, guide us among those whom You have guided, and protect us among those whom You have protected, and take us to Yourself among those whom You have taken to Yourself, and bless us in what You have given, and shield us from the evil of what You have decreed. For indeed You decree and none decrees against You. And he whom You have taken as a friend is never humiliated, and he whom You have opposed is never honored. Blessed are You, our Lord, and Exalted. To You belongs all praise for what You have decreed, and we seek Your forgiveness and turn to You in repentance. And may Allah bless our master Muhammad, the unlettered Prophet, and his family and companions, and grant them peace."',
     nur: '"In the name of Allah, the Most Gracious, the Most Merciful. In the name of Allah, the Light. In the name of Allah, the Light of Light. In the name of Allah, a Light upon Light. In the name of Allah, who directs all affairs. In the name of Allah, who created Light from Light. Praise be to Allah, who created Light from Light and sent down Light upon the Mount, in a written Book, on an unrolled parchment, by a decreed measure, upon a beloved Prophet. Praise be to Allah, who is mentioned with honor and known for pride, and thanked in ease and hardship. May Allah bless our master Muhammad and his purified family."'
   },
   fa: {
@@ -1034,6 +1054,7 @@ const TRANSLATIONS = {
     ruqya4: '«خدایا! هیچ چیز آسان نیست مگر آنچه تو آسان کنی، و تو غم را هنگامی که بخواهی آسان می‌کنی.»',
     tasbihcombo: '«پاک و منزه است خدا و ستایش او راست. هیچ معبودی جز خدا نیست و خدا بزرگ‌تر است. هیچ نیرو و توانی جز به خدا نیست. از خدای بزرگ آمرزش می‌خواهم و به سوی او بازمی‌گردم. پاک و منزه است خدا و ستایش او راست، پاک و منزه است خدای بزرگ. خدا ما را کافی است و او بهترین کارساز و بهترین یاور است.»',
     kifayah: '«خدایا، مرا با حلالت از حرامت بی‌نیاز کن، و با فضل خودت از غیر خودت بی‌نیازم گردان.»',
+    qunut: '«خدایا! ما را در زمره هدایت‌یافتگان قرار ده، و ما را در زمره عافیت‌یافتگان سلامت دار، و ما را در زمره دوستانت بپذیر، و در آنچه به ما عطا کرده‌ای برکت ده، و ما را از شر آنچه مقدر کرده‌ای حفظ کن. همانا تو حکم می‌کنی و بر تو حکم نمی‌کنند، و کسی که با او دوستی کنی هرگز خوار نمی‌شود، و کسی که با او دشمنی کنی هرگز عزیز نمی‌شود. خجسته و برتری، ای پروردگار ما! تو را بر آنچه مقدر کرده‌ای سپاس می‌گوییم، و از تو آمرزش می‌خواهیم و به تو بازمی‌گردیم. و درود خدا بر آقای ما محمد، پیامبر امی، و بر خاندان و یارانش باد.»',
     nur: '«به نام خداوند بخشنده مهربان. به نام خداوند نور. به نام خداوند نورِ نور. به نام خداوند نوری بر نور. به نام خداوندی که تدبیرگر همه امور است. به نام خداوندی که نور را از نور آفرید. ستایش ویژه خدایی است که نور را از نور آفرید و آن نور را بر کوه طور فرو فرستاد، در کتابی مکتوب، بر ورق‌هایی گشوده، به اندازه‌ای مقدر، بر پیامبری نیکوکار. ستایش ویژه خدایی است که به عزتش یاد می‌شود و به افتخار شناخته شده است، و در سختی‌ها و آسانی‌ها سپاسگزار است. و درود بر پیامبر ما محمد و خاندان پاک و مطهرش باد.»'
   },
   ku: {
@@ -1051,6 +1072,7 @@ const TRANSLATIONS = {
     ruqya4: '«خوایە! هیچ شتێک ئاسان نییە جگە لەوەی تۆ ئاسانی دەکەیت، و تۆ خەفەت ئاسان دەکەیت کاتێک بیەوێت.»',
     tasbihcombo: '«پاکی بۆ خوایە و سوپاس بۆ خوایە. هیچ خوایەک نییە جگە لە خوا، و خوا گەورەترە. هیچ هێز و تواناییەک نییە جگە بە خوا. داوای لێخۆشبوون لە خوای مەزن دەکەم و بۆ لای دەگەڕێمەوە. پاکی بۆ خوایە و سوپاس بۆ خوایە، پاکی بۆ خوای مەزن. خوا بەسمانە، باشترین یارمەتیدەر و باشترین سەرکەوتووکەر.»',
     kifayah: '«خوایە، بە حەڵاڵی خۆت بێنیازم بکە لە حەرامی خۆت، و بە فەزڵی خۆت بێنیازم بکە لە کەسانی تر جگە لە خۆت.»',
+    qunut: '«خوایە! ڕێنماییمان بکە لەگەڵ ئەوانەی ڕێنماییت کردوون، و پارێزگاریمان بکە لەگەڵ ئەوانەی پارێزگاریت کردوون، و خۆشەویستیمان بکە لەگەڵ ئەوانەی خۆشەویستت کردوون، و بورکان بکە بۆمان لەوەی پێت داوین، و لە شەڕی ئەوەی بڕیارت داوە بمپارێزە. بێگومان تۆ بڕیار دەدەیت و بڕیار نادرێت بەسەرت. بەڕاستی ئەوەی تۆ دۆستی خۆت بێت زەلیل نابێت، و ئەوەی تۆ دوژمنی خۆت بێت عیززەت نابێت. پیرۆز و بەرزیت ئەی پەروەردگارمان! سوپاس بۆ تۆ لەسەر ئەوەی بڕیارت داوە، و داوای لێخۆشبوونت لێ دەکەین و بۆ لای تۆ دەگەڕێینەوە. و سەلاتی خوا لەسەر گەورەمان محەمەد پێغەمبەری ئوممی و لەسەر خێزان و هاوەڵانی بێت.»',
     nur: '«بە ناوی خوای میهرەبان و بەخشندە. بە ناوی خوای نوور. بە ناوی خوای نووری نوور. بە ناوی خوا نوورێک لەسەر نوور. بە ناوی ئەو خوایەی کە بەڕێوەبەری هەموو کارەکانە. بە ناوی ئەو خوایەی کە نووری لە نوور دروستکرد. سوپاس بۆ ئەو خوایەی کە نووری لە نوور دروستکرد و نووری دابەزاند بەسەر چیا، لە کتێبێکی نووسراو، لەسەر پەڕەیەکی کراوە، بە ئەندازەیەکی دیاریکراو، بۆ پێغەمبەرێکی خۆشەویست. سوپاس بۆ ئەو خوایەی کە بە عیززەتەوە یادی دەکرێت و بە شانازی ناسراوە، و لە خۆشی و ناخۆشیدا سوپاسی دەکرێت. و سەلاتی خوا لەسەر گەورەمان محەمەد و خێزانی پاکی بێت.»'
   },
   'ku-KM': {
@@ -1068,6 +1090,7 @@ const TRANSLATIONS = {
     ruqya4: '«Ya Allah! Tiştek hêsan nîne ji bilî tiştê ku te hêsan kir, û tu xemgînî hêsan dikî dema ku bixwazî.»',
     tasbihcombo: '«Paqijî ji Xwedê re ye û pesn ji Xwedê re ye. Ji bilî Xwedê tu xuda tune ye, û Xwedê mezintir e. Ne hêz û ne jî tîner heye ji bilî bi Xwedê. Ez ji Xwedayê Mezin lêborînê dixwazim û ber bi wî ve vedigerim. Paqijî ji Xwedê re ye û pesn ji Xwedê re ye, paqijî ji Xwedayê Mezin re ye. Xwedê ji me re bes e, û ew çêtirîn wekîl û çêtirîn alîkar e.»',
     kifayah: '«Ya Xwedê, min bi helala xwe ji herama xwe serbixwe bike, û bi qenciya xwe min ji kesên din ji xeynî te serbixwe bike.»',
+    qunut: '«Ya Xwedê! Me di nav yên ku te rêberî kirine de rêberî bike, û me di nav yên ku te parastine de biparêze, û me di nav yên ku te dostaniya wan kirî de dostaniya me bike, û di tiştê ku te daye me de bereketê bide me, û me ji xirabiya tiştê ku te qedera wê kirî biparêze. Bêguman tu qederê dikî û li ser te qeder nayê kirin. Û bi rastî ew ê ku tu dostê wî bî qet şermezar nabe, û ew ê ku tu dijminê wî bî qet serbilind nabe. Pîroz î û bilind î, ya Xwedayê me! Sipas ji te re ye ji bo tiştê ku te qeder kir, û em ji te lêborînê dixwazin û ber bi te ve vedigerin. Û selat li ser axayê me Muhammed pêxemberê ummî û li ser malbat û hevalên wî be.»',
     nur: '«Bi navê Xwedayê dilovan û bexşende. Bi navê Xwedayê nûrê. Bi navê Xwedayê nûra nûrê. Bi navê Xwedayê nûrek li ser nûrê. Bi navê wî Xwedayê ku birêvebirê hemû kar e. Bi navê wî Xwedayê ku nûr ji nûr afirand. Sipas ji bo wî Xwedayê ku nûr ji nûr afirand û nûr li ser çiyayê da xwarê, di kitêbek nivîsandî de, li ser pelên vekirî, bi pîvanek diyarkirî, li ser pêxemberek delal. Sipas ji bo wî Xwedayê ku bi rûmet tê bibîranîn û bi şanazî tê naskirin, û di xweşî û nexweşiyê de tê sipaskirin. Û selata Xwedê li ser axayê me Muhammed û malbata wî ya paqij be.»'
   }
 };
@@ -1964,27 +1987,54 @@ async function getAyahTranslation(surah, ayah, lang){
   return result;
 }
 
+/* ============================================================
+   UPPSPELNINGSMOTOR — FIXAD FÖR REPEAT
+   ============================================================ */
 let audioQueue = [], currentAudio = null, audioLoop = false, audioDoneCb = null, activePlayBtn = null;
 let audioLoopTracks = null;
+let savedSuraTracks = null;
+let suraPlaybackActive = false;
 let audioCurrentSurah = null, audioCurrentAyah = null;
 let audioTotalVerses = null;
 let currentSuraPlaybackAyah = 1;
+let suraLoopMode = 'off';
+let dailyLoop = false;
+let favLoopMode = false;
 
-function stopSuraPlayback(){
-  if (currentAudio){ currentAudio.pause(); currentAudio = null; }
-  audioQueue = []; audioLoop = false; audioDoneCb = null; audioLoopTracks = null;
-  audioCurrentSurah = null; audioCurrentAyah = null; audioTotalVerses = null;
+function resetAudioEngine(){
+  if (currentAudio){ 
+    currentAudio.pause(); 
+    currentAudio.onended = null;
+    currentAudio.onerror = null;
+    currentAudio = null; 
+  }
+  audioQueue = []; 
+  audioDoneCb = null; 
   if (activePlayBtn){ resetPlayBtn(activePlayBtn); activePlayBtn = null; }
   showBismillahBanner(false);
-  const p = document.getElementById('suraProgress'); if (p) p.textContent = '';
+}
+
+function stopSuraPlayback(){
+  resetAudioEngine();
+  audioLoop = false; 
+  audioLoopTracks = null;
+  savedSuraTracks = null;
+  suraPlaybackActive = false;
+  audioCurrentSurah = null; 
+  audioCurrentAyah = null; 
+  audioTotalVerses = null;
+  suraLoopMode = 'off';
+  const p = document.getElementById('suraProgress'); 
+  if (p) p.textContent = '';
   updateSuraLoopButton();
 }
 function resetPlayBtn(btn){
   btn.classList.remove('playing','active');
   btn.innerHTML = '<i class="fas fa-play"></i>';
 }
+
 function playAudioSequence(tracks, loop, btn, doneCb){
-  stopSuraPlayback();
+  resetAudioEngine();
   audioQueue = tracks.slice();
   audioLoop = !!loop;
   audioDoneCb = doneCb || null;
@@ -1992,25 +2042,42 @@ function playAudioSequence(tracks, loop, btn, doneCb){
   if (btn){ btn.classList.add('playing'); btn.innerHTML = '<i class="fas fa-pause"></i>'; }
   playNextInQueue();
 }
+
 function playNextInQueue(){
   if (!audioQueue.length){
     if (audioLoop && audioLoopTracks && audioLoopTracks.length){
       audioQueue = audioLoopTracks.slice();
-      playNextInQueue(); return;
+      playNextInQueue(); 
+      return;
     }
     if (activePlayBtn) resetPlayBtn(activePlayBtn);
     activePlayBtn = null;
     showBismillahBanner(false);
+    suraPlaybackActive = false;
     if (audioDoneCb) audioDoneCb();
     return;
   }
   const t = audioQueue.shift();
   currentAudio = new Audio(t.url);
-  currentAudio.onended = () => { if (t.bismillah) showBismillahBanner(false); playNextInQueue(); };
-  currentAudio.onerror = () => { if (t.bismillah) showBismillahBanner(false); playNextInQueue(); };
+  
+  currentAudio.onended = () => { 
+    if (t.bismillah) showBismillahBanner(false); 
+    currentAudio = null;
+    playNextInQueue(); 
+  };
+  currentAudio.onerror = () => { 
+    if (t.bismillah) showBismillahBanner(false); 
+    currentAudio = null;
+    playNextInQueue(); 
+  };
+  
   if (t.bismillah) showBismillahBanner(true);
   if (t.onPlay) t.onPlay();
-  currentAudio.play().catch(() => { toast('⚠️ Kunde inte spela ljud'); });
+  currentAudio.play().catch(() => { 
+    toast('⚠️ Kunde inte spela ljud');
+    currentAudio = null;
+    playNextInQueue();
+  });
 }
 function setLoopTracks(tracks){ audioLoopTracks = tracks; }
 
@@ -2110,30 +2177,49 @@ function withBismillah(surah, ayah, tracks){
   return tracks;
 }
 
-function playAyah(surah, ayah, btn){
-  const tracks = withBismillah(surah, ayah, [track(surah, ayah)]);
-  setLoopTracks(null);
-  playAudioSequence(tracks, false, btn);
-}
 function playSurah(surah, btn){
   const count = SURAH_AYAH_COUNTS[surah - 1];
   const tracks = [];
   for (let a = 1; a <= count; a++) tracks.push(track(surah, a, count));
   if (surah !== 9 && surah !== 1) tracks.unshift(bismillahTrack());
-  setLoopTracks(tracks);
-  suraLoopMode = 'sura-once';
-  playAudioSequence(tracks, false, btn);
+  
+  const shouldLoop = (suraLoopMode === 'sura');
+  
+  savedSuraTracks = tracks.slice();
+  audioLoopTracks = tracks.slice();
+  suraPlaybackActive = true;
+  if (!shouldLoop) suraLoopMode = 'sura-once';
+  
+  playAudioSequence(tracks, shouldLoop, btn, () => {
+    suraPlaybackActive = false;
+    if (suraLoopMode === 'sura-once'){
+      suraLoopMode = 'off';
+      savedSuraTracks = null;
+    }
+    updateSuraLoopButton();
+    const p = document.getElementById('suraProgress');
+    if (p) p.textContent = '✅ Klar';
+  });
   updateSuraLoopButton();
+}
+
+function playAyah(surah, ayah, btn){
+  const tracks = withBismillah(surah, ayah, [track(surah, ayah)]);
+  setLoopTracks(null);
+  savedSuraTracks = null;
+  suraPlaybackActive = false;
+  playAudioSequence(tracks, false, btn);
 }
 function playDailyAya(btn){
   if (!currentAyaData) return;
   const s = currentAyaData.surahNum, a = currentAyaData.ayahNum;
   const tracks = withBismillah(s, a, [track(s, a)]);
   setLoopTracks(tracks);
+  savedSuraTracks = null;
+  suraPlaybackActive = false;
   playAudioSequence(tracks, dailyLoop, btn);
   updateDailyLoopButton();
 }
-let dailyLoop = false;
 function toggleDailyLoop(){
   dailyLoop = !dailyLoop;
   audioLoop = dailyLoop;
@@ -2147,40 +2233,85 @@ function updateDailyLoopButton(){
 function toggleVerseLoop(btn){
   const tracks = withBismillah(2, 255, [track(2, 255)]);
   setLoopTracks(tracks);
+  savedSuraTracks = null;
+  suraPlaybackActive = false;
   playAudioSequence(tracks, true, btn);
   toast('🔁 Versen upprepas');
 }
 
-let suraLoopMode = 'off';
 function cycleSuraLoopMode(){
+  const prevMode = suraLoopMode;
   suraLoopMode = suraLoopMode === 'off' ? 'sura-once'
                : suraLoopMode === 'sura-once' ? 'sura'
                : suraLoopMode === 'sura' ? 'verse'
                : 'off';
-  applySuraLoopMode();
-  const labels = { off:'🔁 Upprepning: Av', 'sura-once':'▶ Spelas en gång', sura:'🔁 Hela suran upprepas', verse:'🔁 Versen upprepas' };
+  
+  if (prevMode === 'off' && suraLoopMode === 'sura-once' && !suraPlaybackActive && !currentAudio){
+    const surahNum = getSelectedPlaySurah();
+    const btn = document.getElementById('playSuraBtn');
+    playSurah(surahNum, btn);
+  } else if (suraLoopMode === 'verse' && !audioCurrentSurah){
+    suraLoopMode = 'off';
+    audioLoop = false;
+    toast('⚠️ Ingen vers spelar — starta uppspelning först');
+    updateSuraLoopButton();
+    return;
+  } else {
+    applySuraLoopMode();
+  }
+  
+  const labels = { 
+    off:'🔁 Upprepning: Av', 
+    'sura-once':'▶ Spelas en gång', 
+    sura:'🔁 Hela suran upprepas', 
+    verse:'🔁 Versen upprepas' 
+  };
   toast(labels[suraLoopMode]);
 }
+
 function applySuraLoopMode(){
   if (suraLoopMode === 'sura'){
-    audioLoop = true;
-    if (!audioLoopTracks && audioCurrentSurah){
-      audioLoopTracks = [track(audioCurrentSurah, audioCurrentAyah, audioTotalVerses)];
+    if (savedSuraTracks && savedSuraTracks.length){
+      audioLoopTracks = savedSuraTracks.slice();
+      audioLoop = true;
+      
+      if (!currentAudio && audioQueue.length === 0){
+        audioQueue = savedSuraTracks.slice();
+        suraPlaybackActive = true;
+        playNextInQueue();
+      }
     }
   } else if (suraLoopMode === 'verse'){
     audioLoop = true;
-    audioLoopTracks = (audioCurrentSurah)
-      ? [track(audioCurrentSurah, audioCurrentAyah, audioTotalVerses)]
-      : null;
+    if (audioCurrentSurah){
+      const verseTrack = [track(audioCurrentSurah, audioCurrentAyah, audioTotalVerses)];
+      audioLoopTracks = verseTrack;
+      
+      if (!currentAudio && audioQueue.length === 0){
+        audioQueue = verseTrack.slice();
+        suraPlaybackActive = true;
+        playNextInQueue();
+      }
+    }
   } else {
     audioLoop = false;
+    if (savedSuraTracks) audioLoopTracks = savedSuraTracks.slice();
   }
   updateSuraLoopButton();
 }
+
 function updateSuraLoopButton(){
   const btn = document.getElementById('loopSuraBtn');
   if (!btn) return;
-  btn.classList.toggle('active', suraLoopMode === 'sura' || suraLoopMode === 'verse');
+  
+  btn.classList.remove('active', 'verse-mode');
+  
+  if (suraLoopMode === 'sura'){
+    btn.classList.add('active');
+  } else if (suraLoopMode === 'verse'){
+    btn.classList.add('active', 'verse-mode');
+  }
+  
   const icon = btn.querySelector('i');
   if (icon){
     icon.style.opacity = (suraLoopMode === 'sura' || suraLoopMode === 'verse') ? '1' : '.7';
@@ -2194,9 +2325,22 @@ function playAyaFromSelected(){
   const tracks = [];
   for (let a = start; a <= count; a++) tracks.push(track(s, a, count));
   if (s !== 9 && !(s === 1 && start === 1)) tracks.unshift(bismillahTrack());
-  setLoopTracks(tracks);
-  suraLoopMode = 'sura-once';
-  playAudioSequence(tracks, false, null);
+  
+  const shouldLoop = (suraLoopMode === 'sura');
+  
+  savedSuraTracks = tracks.slice();
+  audioLoopTracks = tracks.slice();
+  suraPlaybackActive = true;
+  if (!shouldLoop) suraLoopMode = 'sura-once';
+  
+  playAudioSequence(tracks, shouldLoop, null, () => {
+    suraPlaybackActive = false;
+    if (suraLoopMode === 'sura-once'){
+      suraLoopMode = 'off';
+      savedSuraTracks = null;
+    }
+    updateSuraLoopButton();
+  });
   updateSuraLoopButton();
 }
 function playAyaOnlySelected(){
@@ -2204,6 +2348,8 @@ function playAyaOnlySelected(){
   closeAyaPicker();
   const tracks = withBismillah(s, a, [track(s, a)]);
   setLoopTracks(null);
+  savedSuraTracks = null;
+  suraPlaybackActive = false;
   suraLoopMode = 'off';
   playAudioSequence(tracks, false, null);
   updateSuraLoopButton();
@@ -2277,7 +2423,6 @@ function selectAyaNum(n){
    ============================================================ */
 let favorites = [];
 try{ favorites = JSON.parse(localStorage.getItem('quranFavorites')) || []; }catch(e){ favorites = []; }
-let favLoopMode = false;
 function saveFavorites(){ try{ localStorage.setItem('quranFavorites', JSON.stringify(favorites)); }catch(e){} updateFavBadge(); }
 function updateFavBadge(){
   const b = document.getElementById('favBdg');
@@ -2335,8 +2480,11 @@ function playFavorite(id, btn){
   if(!f) return;
   const tracks = withBismillah(f.surahNum, f.ayahNum, [track(f.surahNum, f.ayahNum)]);
   setLoopTracks(tracks);
+  savedSuraTracks = null;
+  suraPlaybackActive = false;
   playAudioSequence(tracks, false, btn);
 }
+
 function playFavoritesSequence(){
   const ids = getCheckedFavoriteIds();
   const list = ids.length ? favorites.filter(f => ids.includes(f.id)) : favorites.slice().reverse();
@@ -2346,16 +2494,31 @@ function playFavoritesSequence(){
     if (shouldPlayBismillah(f.surahNum, f.ayahNum)) tracks.push(bismillahTrack());
     tracks.push(track(f.surahNum, f.ayahNum));
   });
-  setLoopTracks(tracks);
+  
+  savedSuraTracks = null;
+  suraPlaybackActive = false;
+  audioLoopTracks = tracks.slice();
+  suraLoopMode = 'off';
+  
   playAudioSequence(tracks, favLoopMode, null);
+  
   const playText = document.getElementById('favPlayText');
-  if(playText) playText.textContent = 'Spelar ' + list.length + '…';
+  if(playText) playText.textContent = favLoopMode ? 'Upprepar ' + list.length + '…' : 'Spelar ' + list.length + '…';
+  const loopBtn = document.getElementById('favLoopBtn');
+  if(loopBtn) loopBtn.classList.toggle('active', favLoopMode);
 }
+
 function stopFavoritesSequence(){
   stopSuraPlayback();
   const playText = document.getElementById('favPlayText');
   if(playText) playText.textContent = 'Spela';
+  const loopBtn = document.getElementById('favLoopBtn');
+  if(loopBtn) loopBtn.classList.remove('active');
+  const loopText = document.getElementById('favLoopText');
+  if(loopText) loopText.textContent = 'Av';
+  favLoopMode = false;
 }
+
 function cycleFavLoopMode(){
   favLoopMode = !favLoopMode;
   audioLoop = favLoopMode;
@@ -2363,6 +2526,14 @@ function cycleFavLoopMode(){
   const b = document.getElementById('favLoopBtn');
   if(t) t.textContent = favLoopMode ? 'På' : 'Av';
   if(b) b.classList.toggle('active', favLoopMode);
+  
+  if (favLoopMode && !currentAudio && audioQueue.length === 0 && audioLoopTracks && audioLoopTracks.length){
+    audioQueue = audioLoopTracks.slice();
+    playNextInQueue();
+    const playText = document.getElementById('favPlayText');
+    if(playText) playText.textContent = 'Upprepar…';
+  }
+  
   toast(favLoopMode ? '🔁 Favoriter upprepas' : '🔁 Upprepning av');
 }
 function renderFavorites(){
@@ -2452,6 +2623,25 @@ function setLang(lang){
   renderFavorites();
   toast('🌐 ' + ({sv:'Svenska',en:'English',fa:'فارسی',ku:'کوردی','ku-KM':'Kurmancî',phonetic:'Uttal'}[lang]));
 }
+
+/* ============================================================
+   NY: ÖVERSÄTTNING AV/PA
+   ============================================================ */
+let translationsHidden = localStorage.getItem('quranTranslationsHidden') === 'true';
+function applyTranslationsVisibility(){
+  document.body.classList.toggle('translations-hidden', translationsHidden);
+  const btn = document.getElementById('translationBtn');
+  const icon = document.getElementById('translationIcon');
+  if(btn) btn.classList.toggle('translation-off', translationsHidden);
+  if(icon) icon.className = translationsHidden ? 'fas fa-language' : 'fas fa-language';
+}
+function toggleTranslations(){
+  translationsHidden = !translationsHidden;
+  try{ localStorage.setItem('quranTranslationsHidden', translationsHidden); }catch(e){}
+  applyTranslationsVisibility();
+  toast(translationsHidden ? '🙈 Översättningar dolda' : '👁️ Översättningar synliga');
+}
+
 function copyVerse(btn){
   const block = btn.closest('.verse-block');
   if(!block) return;
@@ -2498,12 +2688,6 @@ function applyTafsirFontStyles(bodyEl){
   bodyEl.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
 }
 
-/* ============================================================
-   highlightArabicInTafsir — tvingar RTL på DOM-nivå
-   FIX: unicode-bidi:plaintext garanterar RTL för arabiska ayat
-   även när omgivande tafsir är LTR (engelska), och samma
-   font-size/line-height används för alla tafsir-språk.
-   ============================================================ */
 function highlightArabicInTafsir(container){
   if(!container) return;
   try{
@@ -2545,7 +2729,6 @@ function highlightArabicInTafsir(container){
         span.className = 'tafsir-aya-green';
         span.setAttribute('dir', 'rtl');
         span.setAttribute('lang', 'ar');
-        /* FIX: unicode-bidi:plaintext tvingar RTL – ingen extern CSS kan åsidosätta */
         span.style.cssText = 'direction:rtl !important;unicode-bidi:plaintext !important;text-align:right !important;display:inline-block;font-family:var(--quran-font);color:var(--emerald);font-weight:700;line-height:2;font-size:1.05em;';
         span.textContent = match;
         frag.appendChild(span);
@@ -2557,7 +2740,6 @@ function highlightArabicInTafsir(container){
       }
     });
 
-    /* Extra säkerhet: alla redan existerande .tafsir-aya-green tvingas RTL */
     container.querySelectorAll('.tafsir-aya-green').forEach(el => {
       el.setAttribute('dir', 'rtl');
       el.setAttribute('lang', 'ar');
@@ -3117,6 +3299,7 @@ function toast(msg){
 applyNight();
 applySectionsVisibility();
 applyChromeVisibility();
+applyTranslationsVisibility();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
