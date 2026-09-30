@@ -306,7 +306,6 @@
     .search-result-item:last-child{margin-bottom:0}
     .search-result-item.saved{border-color:var(--amber);background:var(--amber-soft)}
     body.night .search-result-item.saved{background:rgba(245,158,11,.12)}
-    /* NY: favorit-knapp på sökresultat */
     .sr-fav-btn{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2;flex-shrink:0}
     .sr-fav-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-soft)}
     .sr-fav-btn:active{transform:scale(.9)}
@@ -395,13 +394,23 @@
     .fav-text{font-size:30px;color:var(--text);line-height:1.7;border-left:3px solid var(--emerald);background:var(--translation-bg);padding:10px 14px;border-radius:0 8px 8px 0}
     .fav-text.ku,.fav-text.ku-KM,.fav-text.fa{font-family:var(--kurdish-font);font-size:32px;line-height:1.85;direction:rtl;text-align:right}
     .fav-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:30px;line-height:1.7;direction:ltr;text-align:left}
+    /* NY: för hel-sura favoriter med per-vers-rader */
+    .fav-verse-list{margin-top:8px;display:flex;flex-direction:column;gap:10px;max-height:400px;overflow-y:auto;padding-right:4px}
+    .fav-verse-row{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+    .fav-verse-num-badge{font-size:11px;font-weight:800;color:var(--primary);background:var(--primary-soft);display:inline-block;padding:2px 10px;border-radius:50px;margin-bottom:6px}
+    .fav-verse-arabic{font-family:var(--quran-font);font-size:22px;line-height:2.1;direction:rtl;text-align:right;color:var(--text);margin-bottom:6px;word-break:break-word}
+    .fav-verse-text{font-size:22px;color:var(--text);line-height:1.7;border-left:3px solid var(--emerald);background:var(--translation-bg);padding:8px 12px;border-radius:0 8px 8px 0}
+    .fav-verse-text.ku,.fav-verse-text.ku-KM,.fav-verse-text.fa{font-family:var(--kurdish-font);font-size:24px;line-height:1.85;direction:rtl;text-align:right}
+    .fav-verse-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:22px;line-height:1.7;direction:ltr;text-align:left}
     .fav-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end;flex-wrap:wrap}
     .fav-actions button{width:40px;height:40px;border-radius:11px;border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
     .fav-actions .fav-view{background:var(--primary-soft);color:var(--primary)}
     .fav-actions .fav-del{background:var(--rose-soft);color:var(--rose)}
+    .fav-actions .fav-toggle-text{width:auto;padding:0 14px;background:var(--emerald-soft);color:#1a7a58;font-family:var(--font);font-size:12px;font-weight:800;gap:6px}
     .fav-actions button:active{transform:scale(.92)}
     .fav-empty{text-align:center;padding:28px;color:var(--text3);font-weight:700}
     .fav-empty i{font-size:36px;margin-bottom:12px;display:block;opacity:.5}
+    .fav-loading-text{text-align:center;padding:14px;color:var(--text3);font-size:13px;font-weight:600;font-style:italic}
 
     .fav-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:16px}
     .fav-toolbar-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -526,6 +535,9 @@
       .fav-arabic{font-size:22px;line-height:2.1}
       .fav-text{font-size:24px}
       .fav-text.ku,.fav-text.ku-KM,.fav-text.fa{font-size:26px}
+      .fav-verse-arabic{font-size:18px;line-height:2}
+      .fav-verse-text{font-size:18px;line-height:1.7}
+      .fav-verse-text.ku,.fav-verse-text.ku-KM,.fav-verse-text.fa{font-size:20px;line-height:1.8}
       .modal-card{padding:20px}
       .tafsir-card{padding:0}
       .tafsir-topbar{padding:14px 14px 8px}
@@ -1710,12 +1722,10 @@ function highlightSearchMatch(originalText, query){
     + escapeHtml(after);
 }
 
-/* NY: kolla om aya i sökresultat är sparad */
 function isSearchResultSaved(surah, ayah){
   return favorites.some(f => f.type === 'aya' && f.surahNum === surah && f.ayahNum === ayah);
 }
 
-/* NY: rendera en sökresultat-item med favorit-knapp */
 function renderSearchResultItem(m){
   const saved = isSearchResultSaved(m.surah, m.ayah);
   return `
@@ -1731,7 +1741,6 @@ function renderSearchResultItem(m){
   `;
 }
 
-/* NY: toggle favorit från sökresultat */
 async function toggleSearchResultFavorite(surah, ayah, surahName, event){
   if (event){
     event.stopPropagation();
@@ -1741,17 +1750,14 @@ async function toggleSearchResultFavorite(surah, ayah, surahName, event){
   const existingIdx = favorites.findIndex(f => f.type === 'aya' && f.surahNum === surah && f.ayahNum === ayah);
   
   if (existingIdx >= 0){
-    // Ta bort
     favorites.splice(existingIdx, 1);
     saveFavorites();
     toast('🗑️ Borttagen från favoriter');
   } else {
-    // Hämta från sökresultaten först (snabbast)
     const match = allSearchResults.find(m => m.surah === surah && m.ayah === ayah);
     let data = null;
     
     if (match){
-      // Vi har arabiskan, hämta översättningar
       const entries = Object.entries(QURAN_EDITIONS);
       const results = await Promise.allSettled(entries.map(([, ed]) => fetchAyahEdition(surah, ayah, ed)));
       data = { surahNum: surah, ayahNum: ayah, surahName: surahName, arabic: match.arabic };
@@ -1761,7 +1767,6 @@ async function toggleSearchResultFavorite(surah, ayah, surahName, event){
       data['ku-KM'] = await fetchKurmanjiTranslation(surah, ayah);
       if(!data.sv && data.en) data.sv = data.en;
     } else {
-      // Fallback: hämta allt
       data = await fetchAyaFromApi(surah, ayah);
     }
     
@@ -1780,7 +1785,6 @@ async function toggleSearchResultFavorite(surah, ayah, surahName, event){
     toast('⭐ Sparad i favoriter');
   }
   
-  // Uppdatera knappen direkt i DOM
   const resultEl = document.querySelector(`.search-result-item[data-search-key="${surah}:${ayah}"]`);
   if (resultEl){
     const saved = isSearchResultSaved(surah, ayah);
@@ -1793,7 +1797,6 @@ async function toggleSearchResultFavorite(surah, ayah, surahName, event){
     }
   }
   
-  // Uppdatera dagens aya-stjärna om det är samma
   updateSaveFavBtn();
 }
 
@@ -2149,6 +2152,27 @@ async function getAyahTranslation(surah, ayah, lang){
 
   ayahTranslationCache.set(key, result);
   return result;
+}
+
+/* ============================================================
+   NY: HÄMTA ALLA VERSER FÖR EN SURA/INTERVALL SOM FAVORIT
+   ============================================================ */
+async function fetchAyahsForRange(surah, startAyah, endAyah){
+  const ayahs = [];
+  for (let a = startAyah; a <= endAyah; a++){
+    try {
+      const [arabic, translation] = await Promise.all([
+        getAyahArabic(surah, a),
+        getAyahTranslation(surah, a, currentLang)
+      ]);
+      if (arabic){
+        ayahs.push({ ayahNum: a, arabic, translation: translation || '' });
+      }
+    } catch(e){
+      console.warn('Kunde inte hämta vers', surah, a, e);
+    }
+  }
+  return ayahs;
 }
 
 /* ============================================================
@@ -2598,14 +2622,7 @@ async function saveAyaRangeAsFavorite(){
   closeAyaPicker();
   toast('⏳ Hämtar ' + (rE - rS + 1) + ' verser…');
   
-  const ayahs = [];
-  for (let a = rS; a <= rE; a++){
-    const arabic = await getAyahArabic(s, a);
-    const translation = await getAyahTranslation(s, a, currentLang);
-    if (arabic){
-      ayahs.push({ ayahNum: a, arabic, translation: translation || '' });
-    }
-  }
+  const ayahs = await fetchAyahsForRange(s, rS, rE);
   
   if (!ayahs.length){
     toast('❌ Kunde inte hämta verserna');
@@ -2641,7 +2658,7 @@ async function saveAyaRangeAsFavorite(){
 /* ============================================================
    SEKTIONS-FAVORITER (dua + sura-block)
    ============================================================ */
-function toggleSectionFavorite(key, event, btnEl){
+async function toggleSectionFavorite(key, event, btnEl){
   if (event) event.stopPropagation();
   const meta = SECTION_REGISTRY[key];
   if (!meta) return;
@@ -2668,6 +2685,18 @@ function toggleSectionFavorite(key, event, btnEl){
     translation = langData[meta.trKey] || TRANSLATIONS.sv[meta.trKey] || '';
   }
   
+  // NY: Hämta alla verser om det är en sura
+  let ayahs = null;
+  if (meta.type === 'sura' && meta.surah && meta.ayahStart && meta.ayahEnd){
+    toast('⏳ Hämtar verser…');
+    ayahs = await fetchAyahsForRange(meta.surah, meta.ayahStart, meta.ayahEnd);
+    // Om ayahs har innehåll, bygg ihop full arabisk + översättning
+    if (ayahs && ayahs.length){
+      arabic = ayahs.map(a => a.arabic).join(' ');
+      translation = ayahs.map(a => a.translation).filter(Boolean).join(' ');
+    }
+  }
+  
   favorites.push({
     id: Date.now(),
     type: 'section',
@@ -2679,6 +2708,7 @@ function toggleSectionFavorite(key, event, btnEl){
     ayahEnd: meta.ayahEnd,
     arabic: arabic,
     translation: translation,
+    ayahs: ayahs,
     savedAt: new Date().toISOString()
   });
   
@@ -2721,7 +2751,6 @@ function saveFavorites(){
   try{ localStorage.setItem('quranFavorites', JSON.stringify(favorites)); }catch(e){} 
   updateFavBadge(); 
   updateDailySuraFavBtn();
-  // Uppdatera sökresultatens stjärnor om sökpanelen är öppen
   refreshSearchResultFavBtns();
 }
 function updateFavBadge(){
@@ -2790,7 +2819,7 @@ function updateDailySuraFavBtn(){
   btn.innerHTML = saved ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
 }
 
-function toggleSuraFavorite(){
+async function toggleSuraFavorite(){
   const sel = document.getElementById('playSuraSelect');
   const s = sel ? (parseInt(sel.value, 10) || 1) : 1;
   const key = 'daily-sura-' + s;
@@ -2802,6 +2831,15 @@ function toggleSuraFavorite(){
     toast('🗑️ Sura borttagen');
     return;
   }
+  
+  // NY: Hämta hela suran med text
+  const end = SURAH_AYAH_COUNTS[s - 1];
+  toast('⏳ Hämtar ' + SURAH_NAMES[s - 1] + ' (' + end + ' verser)…');
+  const ayahs = await fetchAyahsForRange(s, 1, end);
+  
+  const fullArabic = ayahs.map(a => a.arabic).join(' ');
+  const fullTranslation = ayahs.map(a => a.translation).filter(Boolean).join(' ');
+  
   favorites.push({
     id: Date.now(),
     type: 'full-sura',
@@ -2809,14 +2847,15 @@ function toggleSuraFavorite(){
     label: s + '. ' + SURAH_NAMES[s - 1],
     surahNum: s,
     ayahStart: 1,
-    ayahEnd: SURAH_AYAH_COUNTS[s - 1],
-    arabic: '',
-    translation: '',
+    ayahEnd: end,
+    arabic: fullArabic,
+    translation: fullTranslation,
+    ayahs: ayahs,
     savedAt: new Date().toISOString()
   });
   saveFavorites();
   updateDailySuraFavBtn();
-  toast('⭐ Hela suran sparad: ' + SURAH_NAMES[s - 1] + ' (' + SURAH_AYAH_COUNTS[s - 1] + ' verser)');
+  toast('⭐ Sparad: ' + SURAH_NAMES[s - 1] + ' (' + ayahs.length + ' verser)');
 }
 
 function removeFavorite(id){ favorites = favorites.filter(f => f.id !== id); saveFavorites(); renderFavorites(); updateSaveFavBtn(); updateAllSectionFavBtns(); toast('🗑️ Borttagen'); }
@@ -2954,6 +2993,29 @@ function cycleFavLoopMode(){
   toast(favLoopMode ? '🔁 Favoriter upprepas' : '🔁 Upprepning av');
 }
 
+/* NY: Rendera favorit-item med per-vers-rader för suror */
+function renderFavVerseList(f){
+  if (!f.ayahs || !f.ayahs.length) return '';
+  
+  const rows = f.ayahs.map(a => {
+    let textClass = '';
+    if (currentLang === 'ku') textClass = ' ku';
+    else if (currentLang === 'ku-KM') textClass = ' ku-KM';
+    else if (currentLang === 'fa') textClass = ' fa';
+    else if (currentLang === 'phonetic') textClass = ' phonetic';
+    
+    return `
+      <div class="fav-verse-row">
+        <div class="fav-verse-num-badge">${f.surahNum}:${a.ayahNum}</div>
+        <div class="fav-verse-arabic">${a.arabic}</div>
+        ${a.translation ? `<div class="fav-verse-text${textClass}">${a.translation}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+  
+  return `<div class="fav-verse-list">${rows}</div>`;
+}
+
 function renderFavorites(){
   const c = document.getElementById('favList');
   const toolbar = document.getElementById('favToolbar');
@@ -2970,6 +3032,7 @@ function renderFavorites(){
     let refLabel = '';
     let typeBadge = '';
     let verseCount = 0;
+    let showVerseList = false;
     
     if (f.type === 'aya'){
       text = f[currentLang] || f.sv || f.en || '';
@@ -2981,39 +3044,49 @@ function renderFavorites(){
       typeBadge = '<span class="fav-type-badge aya"><i class="fas fa-bookmark"></i> Aya</span>';
       if(!text) text = '—';
       verseCount = 1;
-    } else if (f.type === 'sura-range'){
-      text = f.translation || '';
-      if(currentLang === 'ku') extraClass = ' ku';
-      else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
-      else if(currentLang === 'fa') extraClass = ' fa';
-      refLabel = f.label || (f.surahName + ' ' + f.surahNum + ':' + f.ayahStart + '–' + f.ayahEnd);
-      verseCount = (f.ayahEnd - f.ayahStart + 1);
-      typeBadge = `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> ${verseCount} verser</span>`;
-      if(!text) text = '(Tryck på play för att lyssna)';
-    } else if (f.type === 'section'){
-      text = f.translation || '';
-      if(currentLang === 'ku') extraClass = ' ku';
-      else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
-      else if(currentLang === 'fa') extraClass = ' fa';
-      refLabel = f.label || f.sectionKey;
-      if (f.surahNum){
-        verseCount = (f.ayahEnd && f.ayahStart) ? (f.ayahEnd - f.ayahStart + 1) : 0;
+    } else if (f.type === 'sura-range' || f.type === 'full-sura' || f.type === 'section'){
+      // NY: Om vi har ayahs-array, visa per-vers-lista
+      if (f.ayahs && f.ayahs.length > 1){
+        showVerseList = true;
+      } else {
+        text = f.translation || '';
+        if(currentLang === 'ku') extraClass = ' ku';
+        else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
+        else if(currentLang === 'fa') extraClass = ' fa';
+        if(!text) text = '(Tryck ▶ för att lyssna)';
       }
-      typeBadge = f.sectionType === 'dua'
-        ? '<span class="fav-type-badge dua"><i class="fas fa-hands-praying"></i> Duā</span>'
-        : `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> ${verseCount} verser</span>`;
-      if(!text) text = '—';
-    } else if (f.type === 'full-sura'){
-      text = '(Tryck på play för att lyssna hela suran)';
-      refLabel = f.label;
-      verseCount = f.ayahEnd || SURAH_AYAH_COUNTS[f.surahNum - 1];
-      typeBadge = `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> Hel sura · ${verseCount} verser</span>`;
+      
+      refLabel = f.label || f.sectionKey || '';
+      
+      if (f.type === 'full-sura'){
+        verseCount = f.ayahEnd || SURAH_AYAH_COUNTS[f.surahNum - 1];
+        typeBadge = `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> Hel sura · ${verseCount} verser</span>`;
+      } else if (f.type === 'sura-range'){
+        verseCount = (f.ayahEnd - f.ayahStart + 1);
+        typeBadge = `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> ${verseCount} verser</span>`;
+      } else if (f.sectionType === 'dua'){
+        typeBadge = '<span class="fav-type-badge dua"><i class="fas fa-hands-praying"></i> Duā</span>';
+      } else {
+        verseCount = (f.ayahEnd && f.ayahStart) ? (f.ayahEnd - f.ayahStart + 1) : 0;
+        typeBadge = `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> ${verseCount} verser</span>`;
+      }
     }
     
     const cls = f.type === 'section' && f.sectionType === 'dua' ? 'fav-item dua-fav'
               : f.type === 'section' ? 'fav-item sura-fav'
               : f.type === 'sura-range' || f.type === 'full-sura' ? 'fav-item sura-fav'
               : 'fav-item';
+    
+    let contentHtml = '';
+    if (showVerseList){
+      // Visa per-vers-lista
+      contentHtml = renderFavVerseList(f);
+    } else {
+      contentHtml = `
+        ${arabic ? `<div class="fav-arabic">${arabic}</div>` : ''}
+        <div class="fav-text${extraClass}">${text}</div>
+      `;
+    }
     
     return `
       <div class="${cls}" data-fav-id="${f.id}">
@@ -3022,8 +3095,7 @@ function renderFavorites(){
           ${typeBadge}
           <span>${refLabel}</span>
         </div>
-        ${arabic ? `<div class="fav-arabic">${arabic}</div>` : ''}
-        <div class="fav-text${extraClass}">${text}</div>
+        ${contentHtml}
         <div class="fav-actions">
           <button class="fav-view" onclick="playFavorite(${f.id}, this)" title="Spela upp"><i class="fas fa-play"></i></button>
           <button class="fav-view" onclick="viewFavorite(${f.id})" title="Visa"><i class="fas fa-eye"></i></button>
@@ -3046,6 +3118,7 @@ function viewFavorite(id){
   let arabic = f.arabic || '';
   let text = '';
   let extraClass = '';
+  let contentHtml = '';
   
   if (f.type === 'aya'){
     refLabel = (f.surahName || SURAH_NAMES[f.surahNum - 1]) + ' ' + f.surahNum + ':' + f.ayahNum;
@@ -3054,26 +3127,47 @@ function viewFavorite(id){
     else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
     else if(currentLang === 'fa') extraClass = ' fa';
     else if(currentLang === 'phonetic'){ extraClass = ' phonetic'; text = f.phonetic || ''; }
-  } else if (f.type === 'sura-range'){
-    refLabel = f.label || '';
-    text = f.translation || '';
-    if(currentLang === 'ku') extraClass = ' ku';
-    else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
-    else if(currentLang === 'fa') extraClass = ' fa';
+    if(!text) text = '—';
+    contentHtml = `
+      ${arabic ? `<div class="modal-arabic">${arabic}</div>` : ''}
+      <div class="modal-text${extraClass}">${text}</div>
+    `;
   } else {
     refLabel = f.label || '';
-    text = f.translation || '';
-    if(currentLang === 'ku') extraClass = ' ku';
-    else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
-    else if(currentLang === 'fa') extraClass = ' fa';
+    
+    // NY: Visa per-vers-lista om vi har det
+    if (f.ayahs && f.ayahs.length){
+      let rows = f.ayahs.map(a => {
+        let textClass = '';
+        if (currentLang === 'ku') textClass = ' ku';
+        else if (currentLang === 'ku-KM') textClass = ' ku-KM';
+        else if (currentLang === 'fa') textClass = ' fa';
+        else if (currentLang === 'phonetic') textClass = ' phonetic';
+        return `
+          <div class="fav-verse-row">
+            <div class="fav-verse-num-badge">${f.surahNum}:${a.ayahNum}</div>
+            <div class="fav-verse-arabic">${a.arabic}</div>
+            ${a.translation ? `<div class="fav-verse-text${textClass}">${a.translation}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      contentHtml = `<div class="fav-verse-list" style="max-height:none">${rows}</div>`;
+    } else {
+      text = f.translation || '';
+      if(currentLang === 'ku') extraClass = ' ku';
+      else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
+      else if(currentLang === 'fa') extraClass = ' fa';
+      if(!text) text = '—';
+      contentHtml = `
+        ${arabic ? `<div class="modal-arabic">${arabic}</div>` : ''}
+        <div class="modal-text${extraClass}">${text}</div>
+      `;
+    }
   }
-  
-  if(!text) text = '—';
   
   document.getElementById('viewFavContent').innerHTML = `
     <div class="modal-ref">${refLabel}</div>
-    ${arabic ? `<div class="modal-arabic">${arabic}</div>` : ''}
-    <div class="modal-text${extraClass}">${text}</div>
+    ${contentHtml}
     <button class="modal-close" onclick="closeViewFav()">Stäng</button>
   `;
   document.getElementById('viewFavModal').classList.remove('h');
