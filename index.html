@@ -257,7 +257,6 @@
     .aya-num-btn:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary);transform:translateY(-2px);box-shadow:0 4px 10px var(--primary-glow)}
     .aya-num-btn:active{transform:scale(.92)}
     .aya-num-btn.selected{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 14px var(--primary-glow)}
-    /* NY: range-selection styling */
     .aya-num-btn.in-range{background:var(--amber-soft);color:var(--amber);border-color:var(--amber)}
     .aya-picker-hint{font-size:12px;font-weight:700;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--primary-soft);border-radius:10px}
     .aya-picker-hint i{color:var(--primary)}
@@ -345,7 +344,6 @@
     .section-title{font-size:19px;font-weight:900;color:var(--primary);margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:2px solid var(--border)}
     .section-title i{font-size:20px}
     .section-title-text{flex:1}
-    /* NY: Favorit-knapp på sektionsrubriken */
     .section-fav-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
     .section-fav-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-soft)}
     .section-fav-btn:active{transform:scale(.92)}
@@ -651,7 +649,7 @@
     <div class="daily-aya-qari-row">
       <i class="fas fa-book"></i>
       <select id="playSuraSelect"></select>
-      <button class="day-action-btn" id="favSuraBtn" onclick="toggleSuraFavorite()" title="Spara sura som favorit"><i class="far fa-star"></i></button>
+      <button class="day-action-btn" id="favSuraBtn" onclick="toggleSuraFavorite()" title="Spara hela suran som favorit"><i class="far fa-star"></i></button>
     </div>
 
     <div class="daily-aya-qari-row" style="justify-content:center;gap:8px;flex-wrap:wrap">
@@ -1232,22 +1230,22 @@ function splitIntoChunks(text, maxLen){
    SEKTIONS-REGISTER (för favoriter)
    ============================================================ */
 const SECTION_REGISTRY = {
-  kursi:       { key: 'kursi',       title: 'آیة الکرسی · Ayat al-Kursi',           surah: 2,   ayah: 255, trKey: 'kursi',       type: 'sura' },
-  fatiha:      { key: 'fatiha',      title: 'الفاتحة · Al-Fātiha',                  surah: 1,   ayah: 1,   trKey: 'fatiha',      type: 'sura', chapter: true },
-  kafirun:     { key: 'kafirun',     title: 'Al-Kāfirūn',                            surah: 109, ayah: 1,   trKey: 'kafirun',     type: 'sura', chapter: true },
-  ikhlas:      { key: 'ikhlas',      title: 'Al-Ikhlāṣ',                             surah: 112, ayah: 1,   trKey: 'ikhlas',      type: 'sura', chapter: true },
-  falaq:       { key: 'falaq',       title: 'Al-Falaq',                              surah: 113, ayah: 1,   trKey: 'falaq',       type: 'sura', chapter: true },
-  nas:         { key: 'nas',         title: 'An-Nās',                                surah: 114, ayah: 1,   trKey: 'nas',         type: 'sura', chapter: true },
-  nasr:        { key: 'nasr',        title: 'سورة النصر · An-Naṣr',                  surah: 110, ayah: 1,   trKey: 'nasr',        type: 'sura', chapter: true },
-  ruqya1:      { key: 'ruqya1',      title: 'Skyddsbön 1',                           surah: null, ayah: null, trKey: 'ruqya1',   type: 'dua' },
-  ruqya2:      { key: 'ruqya2',      title: 'Skyddsbön 2',                           surah: null, ayah: null, trKey: 'ruqya2',   type: 'dua' },
-  ruqya3:      { key: 'ruqya3',      title: 'Skyddsbön 3',                           surah: null, ayah: null, trKey: 'ruqya3',   type: 'dua' },
-  ruqya4:      { key: 'ruqya4',      title: 'Skyddsbön 4',                           surah: null, ayah: null, trKey: 'ruqya4',   type: 'dua' },
-  qalam51:     { key: 'qalam51',     title: 'سورة القلم ٦٨:٥١–٥٢ · Al-Qalam',         surah: 68,  ayah: 51,  trKey: 'qalam51',     type: 'sura' },
-  tasbihcombo: { key: 'tasbihcombo', title: 'Tasbīḥ & dhikr',                        surah: null, ayah: null, trKey: 'tasbihcombo', type: 'dua' },
-  kifayah:     { key: 'kifayah',     title: 'Duāʾ al-kifāya',                        surah: null, ayah: null, trKey: 'kifayah',   type: 'dua' },
-  qunut:       { key: 'qunut',       title: 'Duāʾ al-Qunūt',                         surah: null, ayah: null, trKey: 'qunut',     type: 'dua' },
-  nur:         { key: 'nur',         title: 'دعاء النور · Ljusets bön',              surah: null, ayah: null, trKey: 'nur',       type: 'dua' }
+  kursi:       { key: 'kursi',       title: 'آیة الکرسی · Ayat al-Kursi',           surah: 2,   ayahStart: 255, ayahEnd: 255, trKey: 'kursi',       type: 'sura' },
+  fatiha:      { key: 'fatiha',      title: 'الفاتحة · Al-Fātiha',                  surah: 1,   ayahStart: 1,   ayahEnd: 7,   trKey: 'fatiha',      type: 'sura' },
+  kafirun:     { key: 'kafirun',     title: 'Al-Kāfirūn',                            surah: 109, ayahStart: 1,   ayahEnd: 6,   trKey: 'kafirun',     type: 'sura' },
+  ikhlas:      { key: 'ikhlas',      title: 'Al-Ikhlāṣ',                             surah: 112, ayahStart: 1,   ayahEnd: 4,   trKey: 'ikhlas',      type: 'sura' },
+  falaq:       { key: 'falaq',       title: 'Al-Falaq',                              surah: 113, ayahStart: 1,   ayahEnd: 5,   trKey: 'falaq',       type: 'sura' },
+  nas:         { key: 'nas',         title: 'An-Nās',                                surah: 114, ayahStart: 1,   ayahEnd: 6,   trKey: 'nas',         type: 'sura' },
+  nasr:        { key: 'nasr',        title: 'سورة النصر · An-Naṣr',                  surah: 110, ayahStart: 1,   ayahEnd: 3,   trKey: 'nasr',        type: 'sura' },
+  ruqya1:      { key: 'ruqya1',      title: 'Skyddsbön 1',                           surah: null, ayahStart: null, ayahEnd: null, trKey: 'ruqya1',   type: 'dua' },
+  ruqya2:      { key: 'ruqya2',      title: 'Skyddsbön 2',                           surah: null, ayahStart: null, ayahEnd: null, trKey: 'ruqya2',   type: 'dua' },
+  ruqya3:      { key: 'ruqya3',      title: 'Skyddsbön 3',                           surah: null, ayahStart: null, ayahEnd: null, trKey: 'ruqya3',   type: 'dua' },
+  ruqya4:      { key: 'ruqya4',      title: 'Skyddsbön 4',                           surah: null, ayahStart: null, ayahEnd: null, trKey: 'ruqya4',   type: 'dua' },
+  qalam51:     { key: 'qalam51',     title: 'سورة القلم ٦٨:٥١–٥٢ · Al-Qalam',         surah: 68,  ayahStart: 51,  ayahEnd: 52,  trKey: 'qalam51',     type: 'sura' },
+  tasbihcombo: { key: 'tasbihcombo', title: 'Tasbīḥ & dhikr',                        surah: null, ayahStart: null, ayahEnd: null, trKey: 'tasbihcombo', type: 'dua' },
+  kifayah:     { key: 'kifayah',     title: 'Duāʾ al-kifāya',                        surah: null, ayahStart: null, ayahEnd: null, trKey: 'kifayah',   type: 'dua' },
+  qunut:       { key: 'qunut',       title: 'Duāʾ al-Qunūt',                         surah: null, ayahStart: null, ayahEnd: null, trKey: 'qunut',     type: 'dua' },
+  nur:         { key: 'nur',         title: 'دعاء النور · Ljusets bön',              surah: null, ayahStart: null, ayahEnd: null, trKey: 'nur',       type: 'dua' }
 };
 
 /* ============================================================
@@ -1941,6 +1939,7 @@ function populatePlaySuraSelect(){
   ).join('');
   sel.addEventListener('change', () => {
     currentSuraPlaybackAyah = 1;
+    updateDailySuraFavBtn();
   });
 }
 function goToSuraAyah(){
@@ -2499,7 +2498,6 @@ function selectAyaNum(n, event){
   renderAyaPickerGrid();
 }
 
-/* NY: Spara intervall som favorit */
 async function saveAyaRangeAsFavorite(){
   const s = ayaPickerState.surahNum;
   const rS = Math.min(ayaPickerState.rangeStart || 1, ayaPickerState.rangeEnd || 1);
@@ -2558,7 +2556,6 @@ function toggleSectionFavorite(key, event, btnEl){
   
   const existingIdx = favorites.findIndex(f => f.type === 'section' && f.sectionKey === key);
   if (existingIdx >= 0){
-    // Ta bort
     favorites.splice(existingIdx, 1);
     saveFavorites();
     updateAllSectionFavBtns();
@@ -2566,7 +2563,6 @@ function toggleSectionFavorite(key, event, btnEl){
     return;
   }
   
-  // Hämta arabisk text och översättning från DOM eller registry
   const blockEl = document.querySelector(`.verse-block[data-section-key="${key}"]`);
   let arabic = '';
   if (blockEl){
@@ -2574,28 +2570,21 @@ function toggleSectionFavorite(key, event, btnEl){
     if (arabicEl) arabic = arabicEl.innerHTML;
   }
   
-  // Översättning: använd aktuellt språk från TRANSLATIONS eller DOM
   let translation = '';
   if (meta.trKey){
     const langData = TRANSLATIONS[currentLang] || TRANSLATIONS.sv;
     translation = langData[meta.trKey] || TRANSLATIONS.sv[meta.trKey] || '';
   }
   
-  if (!arabic){
-    // Fallback om inget DOM-värde finns (t.ex. vid laddning)
-    arabic = '';
-  }
-  
   favorites.push({
     id: Date.now(),
     type: 'section',
     sectionKey: key,
-    sectionType: meta.type, // 'sura' eller 'dua'
+    sectionType: meta.type,
     label: meta.title,
     surahNum: meta.surah,
-    ayahStart: meta.ayah,
-    ayahEnd: meta.ayah,
-    isChapter: !!meta.chapter,
+    ayahStart: meta.ayahStart,
+    ayahEnd: meta.ayahEnd,
     arabic: arabic,
     translation: translation,
     savedAt: new Date().toISOString()
@@ -2607,7 +2596,6 @@ function toggleSectionFavorite(key, event, btnEl){
 }
 
 function updateAllSectionFavBtns(){
-  // Uppdatera .section-fav-btn (i rubriker)
   document.querySelectorAll('.section-fav-btn').forEach(btn => {
     const idParts = (btn.id || '').split('_');
     const key = idParts[1];
@@ -2616,7 +2604,6 @@ function updateAllSectionFavBtns(){
     btn.classList.toggle('saved', saved);
     btn.innerHTML = saved ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
   });
-  // Uppdatera .verse-tool favorit-knappar (i Qul-blocket och dua-blocket)
   document.querySelectorAll('.verse-block[data-section-key] .verse-tool').forEach(btn => {
     if (btn.getAttribute('title') !== 'Spara i favoriter') return;
     const block = btn.closest('.verse-block');
@@ -2634,12 +2621,11 @@ function updateAllSectionFavBtns(){
 let favorites = [];
 try{ favorites = JSON.parse(localStorage.getItem('quranFavorites')) || []; }catch(e){ favorites = []; }
 
-// Migrera gamla favoriter utan type
 favorites.forEach(f => {
   if (!f.type) f.type = 'aya';
 });
 
-function saveFavorites(){ try{ localStorage.setItem('quranFavorites', JSON.stringify(favorites)); }catch(e){} updateFavBadge(); }
+function saveFavorites(){ try{ localStorage.setItem('quranFavorites', JSON.stringify(favorites)); }catch(e){} updateFavBadge(); updateDailySuraFavBtn(); }
 function updateFavBadge(){
   const b = document.getElementById('favBdg');
   if(b){ b.textContent = favorites.length; b.classList.toggle('h', favorites.length === 0); }
@@ -2678,21 +2664,30 @@ async function saveCurrentAyaAsFavorite(){
   });
   saveFavorites(); updateSaveFavBtn(); toast('⭐ Sparad!');
 }
+
+function updateDailySuraFavBtn(){
+  const sel = document.getElementById('playSuraSelect');
+  const btn = document.getElementById('favSuraBtn');
+  if (!sel || !btn) return;
+  const s = parseInt(sel.value, 10) || 1;
+  const key = 'daily-sura-' + s;
+  const saved = favorites.some(f => f.type === 'full-sura' && f.sectionKey === key);
+  btn.classList.toggle('saved', saved);
+  btn.innerHTML = saved ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+}
+
 function toggleSuraFavorite(){
-  // Denna används av favSuraBtn i daily-aya — sparar hela vald sura
   const sel = document.getElementById('playSuraSelect');
   const s = sel ? (parseInt(sel.value, 10) || 1) : 1;
-  const btn = document.getElementById('favSuraBtn');
   const key = 'daily-sura-' + s;
-  const existingIdx = favorites.findIndex(f => f.type === 'section' && f.sectionKey === key);
+  const existingIdx = favorites.findIndex(f => f.type === 'full-sura' && f.sectionKey === key);
   if(existingIdx >= 0){
     favorites.splice(existingIdx, 1);
-    if(btn){ btn.classList.remove('saved'); btn.innerHTML = '<i class="far fa-star"></i>'; }
     saveFavorites();
+    updateDailySuraFavBtn();
     toast('🗑️ Sura borttagen');
     return;
   }
-  // Skapa favorit för hela suran (utan arabisk text — spelas upp när man trycker)
   favorites.push({
     id: Date.now(),
     type: 'full-sura',
@@ -2705,10 +2700,11 @@ function toggleSuraFavorite(){
     translation: '',
     savedAt: new Date().toISOString()
   });
-  if(btn){ btn.classList.add('saved'); btn.innerHTML = '<i class="fas fa-star"></i>'; }
   saveFavorites();
-  toast('⭐ Hela suran sparad i favoriter');
+  updateDailySuraFavBtn();
+  toast('⭐ Hela suran sparad: ' + SURAH_NAMES[s - 1] + ' (' + SURAH_AYAH_COUNTS[s - 1] + ' verser)');
 }
+
 function removeFavorite(id){ favorites = favorites.filter(f => f.id !== id); saveFavorites(); renderFavorites(); updateSaveFavBtn(); updateAllSectionFavBtns(); toast('🗑️ Borttagen'); }
 function openFavorites(){ renderFavorites(); document.getElementById('favModal').classList.remove('h'); updateFavFullscreenIcon(); }
 function closeFavorites(){ document.getElementById('favModal').classList.add('h'); }
@@ -2718,47 +2714,93 @@ function toggleSelectAllFavorites(checkbox){ document.querySelectorAll('.fav-che
 function updateSelectedCount(){ const count = document.querySelectorAll('.fav-checkbox:checked').length; const el = document.getElementById('favSelectedCount'); if(el) el.textContent = count + ' valda'; }
 function getCheckedFavoriteIds(){ return Array.from(document.querySelectorAll('.fav-checkbox:checked')).map(cb => parseInt(cb.dataset.favId, 10)); }
 
+/* ============================================================
+   FIXAD: playFavorite — bygger ALLA tracks för hela intervallet
+   ============================================================ */
 function playFavorite(id, btn){
   const f = favorites.find(x => x.id === id);
   if(!f) return;
   
-  if (f.type === 'section' || f.type === 'sura-range' || f.type === 'full-sura'){
-    // Bygg tracks för hela intervallet
-    const tracks = [];
+  let tracks = [];
+  let label = '';
+  let verseCount = 0;
+  
+  if (f.type === 'aya'){
+    tracks = withBismillah(f.surahNum, f.ayahNum, [track(f.surahNum, f.ayahNum)]);
+    label = (f.surahName || SURAH_NAMES[f.surahNum - 1]) + ' ' + f.surahNum + ':' + f.ayahNum;
+    verseCount = 1;
+  } else if (f.type === 'section' || f.type === 'sura-range' || f.type === 'full-sura'){
     const s = f.surahNum;
-    const start = f.ayahStart || 1;
-    const end = f.ayahEnd || SURAH_AYAH_COUNTS[s - 1];
+    if (!s){
+      toast('⚠️ Ingen sura angiven');
+      return;
+    }
+    const maxAyah = SURAH_AYAH_COUNTS[s - 1];
+    let start = f.ayahStart || 1;
+    let end = f.ayahEnd || maxAyah;
+    if (!end || end < start) end = maxAyah;
+    if (end > maxAyah) end = maxAyah;
+    if (start < 1) start = 1;
+    
+    verseCount = end - start + 1;
     if (shouldPlayBismillah(s, start)) tracks.push(bismillahTrack());
-    for (let a = start; a <= end; a++) tracks.push(track(s, a, end));
-    setLoopTracks(tracks);
-    savedSuraTracks = null;
-    suraPlaybackActive = false;
-    playAudioSequence(tracks, false, btn);
-    toast('▶ Spelar ' + (f.label || s + ':' + start + '–' + end));
-  } else {
-    // type === 'aya'
-    const tracks = withBismillah(f.surahNum, f.ayahNum, [track(f.surahNum, f.ayahNum)]);
-    setLoopTracks(tracks);
-    savedSuraTracks = null;
-    suraPlaybackActive = false;
-    playAudioSequence(tracks, false, btn);
+    for (let a = start; a <= end; a++){
+      tracks.push(track(s, a, end));
+    }
+    label = f.label || (SURAH_NAMES[s - 1] + ' ' + s + ':' + start + '–' + end);
   }
+  
+  if (!tracks.length){
+    toast('⚠️ Inga verser att spela');
+    return;
+  }
+  
+  setLoopTracks(tracks.slice());
+  savedSuraTracks = null;
+  suraPlaybackActive = false;
+  audioLoopTracks = tracks.slice();
+  playAudioSequence(tracks, false, btn);
+  toast('▶ Spelar ' + label + ' (' + verseCount + ' verser)');
 }
 
+/* ============================================================
+   FIXAD: playFavoritesSequence — bygger ALLA tracks för alla valda
+   ============================================================ */
 function playFavoritesSequence(){
   const ids = getCheckedFavoriteIds();
   const list = ids.length ? favorites.filter(f => ids.includes(f.id)) : favorites.slice().reverse();
   if(!list.length){ toast('❌ Inga favoriter att spela'); return; }
+  
   const tracks = [];
+  let totalVerses = 0;
+  
   list.forEach(f => {
-    if (f.type === 'aya' || f.type === 'sura-range' || f.type === 'section' || f.type === 'full-sura'){
+    if (f.type === 'aya'){
+      if (shouldPlayBismillah(f.surahNum, f.ayahNum)) tracks.push(bismillahTrack());
+      tracks.push(track(f.surahNum, f.ayahNum));
+      totalVerses += 1;
+    } else if (f.type === 'section' || f.type === 'sura-range' || f.type === 'full-sura'){
       const s = f.surahNum;
-      const start = f.ayahStart || f.ayahNum || 1;
-      const end = f.ayahEnd || f.ayahNum || start;
+      if (!s) return;
+      const maxAyah = SURAH_AYAH_COUNTS[s - 1];
+      let start = f.ayahStart || 1;
+      let end = f.ayahEnd || maxAyah;
+      if (!end || end < start) end = maxAyah;
+      if (end > maxAyah) end = maxAyah;
+      if (start < 1) start = 1;
+      
       if (shouldPlayBismillah(s, start)) tracks.push(bismillahTrack());
-      for (let a = start; a <= end; a++) tracks.push(track(s, a, end));
+      for (let a = start; a <= end; a++){
+        tracks.push(track(s, a, end));
+        totalVerses += 1;
+      }
     }
   });
+  
+  if (!tracks.length){
+    toast('❌ Inga verser att spela');
+    return;
+  }
   
   savedSuraTracks = null;
   suraPlaybackActive = false;
@@ -2768,9 +2810,11 @@ function playFavoritesSequence(){
   playAudioSequence(tracks, favLoopMode, null);
   
   const playText = document.getElementById('favPlayText');
-  if(playText) playText.textContent = favLoopMode ? 'Upprepar ' + list.length + '…' : 'Spelar ' + list.length + '…';
+  if(playText) playText.textContent = favLoopMode ? 'Upprepar ' + totalVerses + ' verser…' : 'Spelar ' + totalVerses + ' verser…';
   const loopBtn = document.getElementById('favLoopBtn');
   if(loopBtn) loopBtn.classList.toggle('active', favLoopMode);
+  
+  toast('▶ ' + list.length + ' favoriter · ' + totalVerses + ' verser totalt');
 }
 
 function stopFavoritesSequence(){
@@ -2817,6 +2861,7 @@ function renderFavorites(){
     let extraClass = '';
     let refLabel = '';
     let typeBadge = '';
+    let verseCount = 0;
     
     if (f.type === 'aya'){
       text = f[currentLang] || f.sv || f.en || '';
@@ -2827,13 +2872,15 @@ function renderFavorites(){
       refLabel = (f.surahName || SURAH_NAMES[f.surahNum - 1]) + ' ' + f.surahNum + ':' + f.ayahNum;
       typeBadge = '<span class="fav-type-badge aya"><i class="fas fa-bookmark"></i> Aya</span>';
       if(!text) text = '—';
+      verseCount = 1;
     } else if (f.type === 'sura-range'){
       text = f.translation || '';
       if(currentLang === 'ku') extraClass = ' ku';
       else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
       else if(currentLang === 'fa') extraClass = ' fa';
       refLabel = f.label || (f.surahName + ' ' + f.surahNum + ':' + f.ayahStart + '–' + f.ayahEnd);
-      typeBadge = '<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> Intervall</span>';
+      verseCount = (f.ayahEnd - f.ayahStart + 1);
+      typeBadge = `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> ${verseCount} verser</span>`;
       if(!text) text = '(Tryck på play för att lyssna)';
     } else if (f.type === 'section'){
       text = f.translation || '';
@@ -2841,14 +2888,18 @@ function renderFavorites(){
       else if(currentLang === 'ku-KM') extraClass = ' ku-KM';
       else if(currentLang === 'fa') extraClass = ' fa';
       refLabel = f.label || f.sectionKey;
+      if (f.surahNum){
+        verseCount = (f.ayahEnd && f.ayahStart) ? (f.ayahEnd - f.ayahStart + 1) : 0;
+      }
       typeBadge = f.sectionType === 'dua'
         ? '<span class="fav-type-badge dua"><i class="fas fa-hands-praying"></i> Duā</span>'
-        : '<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> Sura</span>';
+        : `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> ${verseCount} verser</span>`;
       if(!text) text = '—';
     } else if (f.type === 'full-sura'){
       text = '(Tryck på play för att lyssna hela suran)';
       refLabel = f.label;
-      typeBadge = '<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> Hel sura</span>';
+      verseCount = f.ayahEnd || SURAH_AYAH_COUNTS[f.surahNum - 1];
+      typeBadge = `<span class="fav-type-badge sura"><i class="fas fa-book-quran"></i> Hel sura · ${verseCount} verser</span>`;
     }
     
     const cls = f.type === 'section' && f.sectionType === 'dua' ? 'fav-item dua-fav'
@@ -3637,6 +3688,7 @@ populateQariSelect();
 updateFavBadge();
 updateTafsirFsIcon();
 updateAllSectionFavBtns();
+updateDailySuraFavBtn();
 fetchRandomAya();
 renderVkKeyboard();
 updateSuraLoopButton();
