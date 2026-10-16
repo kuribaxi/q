@@ -394,7 +394,6 @@
     .fav-text{font-size:30px;color:var(--text);line-height:1.7;border-left:3px solid var(--emerald);background:var(--translation-bg);padding:10px 14px;border-radius:0 8px 8px 0}
     .fav-text.ku,.fav-text.ku-KM,.fav-text.fa{font-family:var(--kurdish-font);font-size:32px;line-height:1.85;direction:rtl;text-align:right}
     .fav-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:30px;line-height:1.7;direction:ltr;text-align:left}
-    /* NY: för hel-sura favoriter med per-vers-rader */
     .fav-verse-list{margin-top:8px;display:flex;flex-direction:column;gap:10px;max-height:400px;overflow-y:auto;padding-right:4px}
     .fav-verse-row{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
     .fav-verse-num-badge{font-size:11px;font-weight:800;color:var(--primary);background:var(--primary-soft);display:inline-block;padding:2px 10px;border-radius:50px;margin-bottom:6px}
@@ -444,6 +443,24 @@
     .restore-chrome-btn{position:fixed;top:12px;right:12px;z-index:120;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);color:var(--primary);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 14px var(--primary-glow);transition:all .2s}
     .restore-chrome-btn:active{transform:scale(.92)}
     .restore-chrome-btn.show{display:flex}
+
+    /* ===== NY: TEXT-LÄGE (hel skärm, bara versens text) ===== */
+    #textModeOverlay{position:fixed;inset:0;z-index:9990;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px 40px;overflow-y:auto;text-align:center}
+    #textModeOverlay.active{display:flex}
+    #textModeOverlay .tm-ref{font-size:14px;font-weight:800;letter-spacing:.1em;opacity:.65;margin-bottom:20px;text-transform:uppercase;color:#fff}
+    #textModeOverlay .tm-arabic{font-family:var(--quran-font);font-size:54px;line-height:2.4;direction:rtl;color:#fff !important;max-width:1000px;margin:0 auto 24px;word-break:break-word;text-shadow:0 2px 8px rgba(0,0,0,.35);font-feature-settings:"liga" 1, "calt" 1}
+    #textModeOverlay .tm-text{font-size:34px;line-height:1.8;color:#fff !important;max-width:900px;margin:0 auto;font-style:italic;opacity:.96;text-shadow:0 1px 4px rgba(0,0,0,.3)}
+    #textModeOverlay .tm-text.ku,#textModeOverlay .tm-text.ku-KM,#textModeOverlay .tm-text.fa{font-family:var(--kurdish-font);font-style:normal;direction:rtl}
+    #textModeOverlay .tm-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;direction:ltr}
+    #textModeOverlay .tm-close{position:fixed;top:14px;right:14px;z-index:9991;width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:all .2s}
+    #textModeOverlay .tm-close:hover{background:rgba(255,255,255,.28)}
+    #textModeOverlay .tm-close:active{transform:scale(.92)}
+    #tmColorInput{position:fixed;left:-100px;top:-100px;width:0;height:0;opacity:0;pointer-events:none}
+    @media (max-width:768px){
+      #textModeOverlay .tm-arabic{font-size:36px;line-height:2.3}
+      #textModeOverlay .tm-text{font-size:26px;line-height:1.75}
+      #textModeOverlay{padding:56px 18px 30px}
+    }
 
     @media (max-width:1100px){
       .top-bar-title{order:-2;flex-basis:100%}
@@ -577,6 +594,8 @@
       .restore-chrome-btn{width:38px;height:38px;font-size:14px;top:8px;right:8px}
       .sr-fav-btn{width:30px;height:30px;font-size:12px;top:8px;right:8px}
       .sr-ref,.sr-arabic{padding-right:36px}
+      #textModeOverlay .tm-arabic{font-size:28px;line-height:2.2}
+      #textModeOverlay .tm-text{font-size:21px;line-height:1.7}
     }
   </style>
 </head>
@@ -585,6 +604,16 @@
 <button class="restore-chrome-btn" id="restoreChromeBtn" onclick="toggleChrome()" title="Visa toppbar & språkfält">
   <i class="fas fa-eye"></i>
 </button>
+
+<input type="color" id="tmColorInput" value="#000000" oninput="setTextModeBg(this.value)">
+
+<!-- NY: TEXT-LÄGE-OVERLAY (hel skärm) -->
+<div id="textModeOverlay">
+  <button class="tm-close" onclick="toggleTextMode()" title="Stäng text-läge"><i class="fas fa-times"></i></button>
+  <div class="tm-ref" id="tmRef"></div>
+  <div class="tm-arabic" id="tmArabic"></div>
+  <div class="tm-text" id="tmText"></div>
+</div>
 
 <div class="container">
 
@@ -622,6 +651,12 @@
         </button>
         <button class="icon-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
           <i class="fas fa-moon" id="nightIcon"></i>
+        </button>
+        <button class="icon-btn" onclick="toggleTextMode()" title="Text-läge: endast versens text i hel skärm" id="textModeBtn">
+          <i class="fas fa-tv" id="textModeIcon"></i>
+        </button>
+        <button class="icon-btn" onclick="document.getElementById('tmColorInput').click()" title="Välj bakgrundsfärg för text-läget" id="tmColorBtn">
+          <i class="fas fa-palette" id="tmColorIcon"></i>
         </button>
         <button class="icon-btn" onclick="eyeBtnClick(event)" title="Visa/göm toppbar & språkfält" id="toggleSectionsBtn">
           <i class="fas fa-eye" id="toggleSectionsIcon"></i>
@@ -1134,7 +1169,7 @@ const TRANSLATIONS = {
     kafirun: '«بڵێ: ئەی بێباوەڕان! ئەوەی ئێوە دەیپەرستن، من نایپەرستم. و ئێوە پەرستنی ئەوەی من دەیپەرستم ناکەن. من پەرستنی ئەوەی ئێوە پەرستوتانە ناکەم، و ئێوە پەرستنی ئەوەی من دەیپەرستم ناکەن. دینی ئێوە بۆ ئێوە و دینی من بۆ من.»',
     ikhlas: '«بڵێ: ئەو خوایە یەکتایە. خوای بێنیاز. نە زاوە و نە زێدی لێوە نەبووە. و هیچ کەس هاوتای ئەو نییە.»',
     falaq: '«بڵێ: پەنا دەبەم بە پەروەردگاری بەیان، لە شەڕی ئەوەی دروستی کردووە، و لە شەڕی تاریکی کاتێک دادێت، و لە شەڕی ئەوانەی بە گره‌کاندا فوو دەکەن، و لە شەڕی حەسوود کاتێک حەسوودی دەبات.»',
-    nas: '«بڵێ: پەنا دەبەم بە پەروەردگاری خەڵکی، پاشای خەڵکی، خوای خەڵکی، لە شەڕی وەسوەسەکەری خۆشاراوە، ئەوەی لە سنگى خەڵکی وەسوەسە دەکات، لە جنۆکە و خەڵکی.»',
+    nas: '«بڵێ: پەنا دەبەم بە پەروەردگاری خەڵقی، پاشای خەڵقی، خوای خەڵقی، لە شەڕی وەسوەسەکەری خۆشاراوە، ئەوەی لە سنگى خەڵقی وەسوەسە دەکات، لە جنۆکە و خەڵقی.»',
     nasr: '«کاتێک یارمەتی خودا و سەرکەوتن دێت، و دەبینیت خەڵکی بە کۆمەڵ دەچنە ناو ئایینی خودا، ئەوا ستایشی پەروەردگارت بکە و داوای لێخۆشبوونی لێ بکە، بێگومان ئەو زۆر تۆبەوەرگرە.»',
     qalam51: '«وە بێگومان ئەوانەی بێباوەڕ بوون، کاتێک قورئانیان بیست، خەریک بوو بە چاوەکانیان بتبەننەوە، و دەیگووت: بەڕاستی ئەمە شێتە.»',
     ruqya1: '«بە ناوی خوا ڕوقیەت بۆ دەکەم، لە هەموو شتێک کە ئازارت دەدات، لە شەڕی هەموو نەفسیک یان چاوی حەسوود. خوا شیفات بدات، بە ناوی خوا ڕوقیەت بۆ دەکەم.»',
@@ -1872,34 +1907,36 @@ function renderDailyAya(data){
   const content = document.getElementById('dailyAyaContent');
   let displayText, extraClass = '';
 
+  let missing = false;
   if(currentLang === 'phonetic'){
     displayText = data.phonetic || '';
     extraClass = ' phonetic';
-    if(!displayText) displayText = '⚠️ Translitteration ej tillgänglig för denna vers.';
+    if(!displayText){ missing = true; }
   }
   else if(currentLang === 'ku'){
     displayText = data.ku || '';
     extraClass = ' ku';
-    if(!displayText) displayText = '⚠️ Sorani-översättning ej tillgänglig för denna vers.';
+    if(!displayText){ missing = true; }
   }
   else if(currentLang === 'ku-KM'){
     displayText = data['ku-KM'] || '';
     extraClass = ' ku-KM';
-    if(!displayText) displayText = '⚠️ Kurmanji-översättning ej tillgänglig för denna vers. Försök igen om en stund.';
+    if(!displayText){ missing = true; }
   }
   else if(currentLang === 'fa'){
     displayText = data.fa || '';
     extraClass = ' fa';
-    if(!displayText) displayText = '⚠️ Persisk översättning ej tillgänglig för denna vers.';
+    if(!displayText){ missing = true; }
   }
   else if(currentLang === 'en'){
     displayText = data.en || '';
-    if(!displayText) displayText = '⚠️ Engelsk översättning ej tillgänglig för denna vers.';
+    if(!displayText){ displayText = data.sv || ''; missing = !displayText; }
   }
   else {
     displayText = data.sv || data.en || '';
-    if(!displayText) displayText = '⚠️ Svensk översättning ej tillgänglig för denna vers.';
+    if(!displayText){ missing = true; }
   }
+  if(missing) displayText = '⏳ Hämtar översättning…';
 
   content.innerHTML = `
     <div class="daily-aya-ref">${data.surahName} ${data.surahNum}:${data.ayahNum}</div>
@@ -1907,6 +1944,8 @@ function renderDailyAya(data){
     <div class="daily-aya-text${extraClass}">${displayText}</div>
   `;
   updateSaveFavBtn();
+  updateTextModeContent();
+  if(missing) backfillAyaTranslations(data);
 }
 const FALLBACK_AYAS = [
   { arabic: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا', sv: 'Sannerligen, med svårigheten kommer lättnad.', en: 'Indeed, with hardship comes ease.', fa: 'همانا با سختی آسانی است.', ku: 'بەڕاستی لەگەڵ ناڕەحەتیدا ئاسانی هەیە.', 'ku-KM': 'Bi rastî, bi zehmetiyê re hêsanî heye.', surahName: 'Ash-Sharh', surahNum: 94, ayahNum: 6, phonetic: 'Inna maʿal-ʿusri yusrā' },
@@ -2154,8 +2193,46 @@ async function getAyahTranslation(surah, ayah, lang){
   return result;
 }
 
+/* NY: Hämta översättning med fallback-kedja så "översättning ej tillgänglig" undviks */
+async function getAyahTranslationWithFallback(surah, ayah, lang){
+  const chain = [];
+  if (lang === 'sv'){ chain.push('sv','en'); }
+  else if (lang === 'en'){ chain.push('en','sv'); }
+  else { chain.push(lang,'sv','en'); }
+  for (const l of chain){
+    if (!l) continue;
+    const t = await getAyahTranslation(surah, ayah, l);
+    if (t && t.trim()) return { text: t, lang: l };
+  }
+  return null;
+}
+
+/* NY: Fyll på saknade översättningar i bakgrunden och uppdatera visningen */
+const ayaBackfillKeys = new Set();
+async function backfillAyaTranslations(data){
+  if (!data || !data.surahNum || !data.ayahNum) return;
+  const key = data.surahNum + ':' + data.ayahNum;
+  if (ayaBackfillKeys.has(key)) return;
+  ayaBackfillKeys.add(key);
+  try{
+    const fresh = await fetchAyaFromApi(data.surahNum, data.ayahNum);
+    if (fresh && fresh.arabic){
+      // Slå ihop: behåll gamla värden om de finns, fyll på saknade
+      const ref = getDisplayedAyaRef();
+      if (ref && ref.surahNum === fresh.surahNum && ref.ayahNum === fresh.ayahNum){
+        ['sv','en','fa','ku','ku-KM','phonetic','arabic'].forEach(f => {
+          const val = fresh[f] || (currentAyaData && currentAyaData[f]) || (data[f] || '');
+          fresh[f] = val;
+        });
+        renderDailyAya(fresh);
+      }
+    }
+  }catch(e){ /* tyst */ }
+  finally{ ayaBackfillKeys.delete(key); }
+}
+
 /* ============================================================
-   NY: HÄMTA ALLA VERSER FÖR EN SURA/INTERVALL SOM FAVORIT
+   HÄMTA ALLA VERSER FÖR EN SURA/INTERVALL SOM FAVORIT
    ============================================================ */
 async function fetchAyahsForRange(surah, startAyah, endAyah){
   const ayahs = [];
@@ -2311,6 +2388,7 @@ async function showPlayingAyah(surah, ayah, total){
     sv: '', en: '', fa: '', ku: '', 'ku-KM': '', phonetic: ''
   };
   updateSaveFavBtn();
+  updateTextModeContent();
 
   content.innerHTML = `
     <div class="daily-aya-ref">${SURAH_NAMES[surah - 1]} ${surah}:${ayah}</div>
@@ -2319,29 +2397,36 @@ async function showPlayingAyah(surah, ayah, total){
   `;
 
   try{
-    const translation = await getAyahTranslation(surah, ayah, currentLang);
+    const tr = await getAyahTranslationWithFallback(surah, ayah, currentLang);
     if (audioCurrentSurah !== surah || audioCurrentAyah !== ayah) return;
     const transEl = document.getElementById('playingAyahTranslation');
     if (!transEl) return;
-    if (translation && translation.trim()){
+    if (tr && tr.text && tr.text.trim()){
       let extraClass = '';
-      if (currentLang === 'ku') extraClass = ' ku';
-      else if (currentLang === 'ku-KM') extraClass = ' ku-KM';
-      else if (currentLang === 'fa') extraClass = ' fa';
-      else if (currentLang === 'phonetic') extraClass = ' phonetic';
+      if (tr.lang === 'ku') extraClass = ' ku';
+      else if (tr.lang === 'ku-KM') extraClass = ' ku-KM';
+      else if (tr.lang === 'fa') extraClass = ' fa';
+      else if (tr.lang === 'phonetic') extraClass = ' phonetic';
       transEl.className = 'daily-aya-text' + extraClass;
       transEl.style.opacity = '1';
-      transEl.textContent = translation;
-      if (currentAyaData) currentAyaData[currentLang] = translation;
+      transEl.textContent = tr.text;
+      if (currentAyaData){
+        currentAyaData[tr.lang] = tr.text;
+        if (tr.lang !== currentAyaData[currentLang]) currentAyaData[currentLang] = tr.text;
+      }
+      updateTextModeContent();
     } else {
+      // Saknas fortfarande: hämta alla upplagor i bakgrunden istället för att visa fel
       transEl.className = 'daily-aya-text';
       transEl.style.opacity = '1';
-      transEl.textContent = '⚠️ Översättning ej tillgänglig för denna vers.';
+      transEl.textContent = '…';
+      if (currentAyaData) backfillAyaTranslations(currentAyaData);
     }
   }catch(e){
     const transEl = document.getElementById('playingAyahTranslation');
     if (transEl){
-      transEl.textContent = '⚠️ Kunde inte hämta översättning.';
+      transEl.textContent = '…';
+      if (currentAyaData) backfillAyaTranslations(currentAyaData);
     }
   }
 }
@@ -2685,12 +2770,11 @@ async function toggleSectionFavorite(key, event, btnEl){
     translation = langData[meta.trKey] || TRANSLATIONS.sv[meta.trKey] || '';
   }
   
-  // NY: Hämta alla verser om det är en sura
+  // Hämta alla verser om det är en sura
   let ayahs = null;
   if (meta.type === 'sura' && meta.surah && meta.ayahStart && meta.ayahEnd){
     toast('⏳ Hämtar verser…');
     ayahs = await fetchAyahsForRange(meta.surah, meta.ayahStart, meta.ayahEnd);
-    // Om ayahs har innehåll, bygg ihop full arabisk + översättning
     if (ayahs && ayahs.length){
       arabic = ayahs.map(a => a.arabic).join(' ');
       translation = ayahs.map(a => a.translation).filter(Boolean).join(' ');
@@ -2832,7 +2916,6 @@ async function toggleSuraFavorite(){
     return;
   }
   
-  // NY: Hämta hela suran med text
   const end = SURAH_AYAH_COUNTS[s - 1];
   toast('⏳ Hämtar ' + SURAH_NAMES[s - 1] + ' (' + end + ' verser)…');
   const ayahs = await fetchAyahsForRange(s, 1, end);
@@ -2993,7 +3076,6 @@ function cycleFavLoopMode(){
   toast(favLoopMode ? '🔁 Favoriter upprepas' : '🔁 Upprepning av');
 }
 
-/* NY: Rendera favorit-item med per-vers-rader för suror */
 function renderFavVerseList(f){
   if (!f.ayahs || !f.ayahs.length) return '';
   
@@ -3045,7 +3127,6 @@ function renderFavorites(){
       if(!text) text = '—';
       verseCount = 1;
     } else if (f.type === 'sura-range' || f.type === 'full-sura' || f.type === 'section'){
-      // NY: Om vi har ayahs-array, visa per-vers-lista
       if (f.ayahs && f.ayahs.length > 1){
         showVerseList = true;
       } else {
@@ -3079,7 +3160,6 @@ function renderFavorites(){
     
     let contentHtml = '';
     if (showVerseList){
-      // Visa per-vers-lista
       contentHtml = renderFavVerseList(f);
     } else {
       contentHtml = `
@@ -3135,7 +3215,6 @@ function viewFavorite(id){
   } else {
     refLabel = f.label || '';
     
-    // NY: Visa per-vers-lista om vi har det
     if (f.ayahs && f.ayahs.length){
       let rows = f.ayahs.map(a => {
         let textClass = '';
@@ -3203,6 +3282,7 @@ function setLang(lang){
     renderDailyAya(currentAyaData);
   }
   renderFavorites();
+  updateTextModeContent();
   toast('🌐 ' + ({sv:'Svenska',en:'English',fa:'فارسی',ku:'کوردی','ku-KM':'Kurmancî',phonetic:'Uttal'}[lang]));
 }
 
@@ -3221,6 +3301,7 @@ function toggleTranslations(){
   translationsHidden = !translationsHidden;
   try{ localStorage.setItem('quranTranslationsHidden', translationsHidden); }catch(e){}
   applyTranslationsVisibility();
+  updateTextModeContent();
   toast(translationsHidden ? '🙈 Översättningar dolda' : '👁️ Översättningar synliga');
 }
 
@@ -3852,6 +3933,86 @@ function updateFsIcon(){
 }
 
 /* ============================================================
+   NY: TEXT-LÄGE (hel skärm, bara versens text, vit text)
+   ============================================================ */
+let textModeOn = false;
+let textModeBg = '#000000';
+try{ textModeBg = localStorage.getItem('quranTextModeBg') || '#000000'; }catch(e){ textModeBg = '#000000'; }
+
+function applyTextModeBg(){
+  const ov = document.getElementById('textModeOverlay');
+  if(ov) ov.style.background = textModeBg;
+  const inp = document.getElementById('tmColorInput');
+  if(inp && inp.value !== textModeBg) inp.value = textModeBg;
+}
+function setTextModeBg(color){
+  textModeBg = color;
+  try{ localStorage.setItem('quranTextModeBg', color); }catch(e){}
+  applyTextModeBg();
+  toast('🎨 Bakgrundsfärg sparad');
+}
+
+function updateTextModeContent(){
+  if(!textModeOn) return;
+  const refEl = document.getElementById('tmRef');
+  const arEl = document.getElementById('tmArabic');
+  const txEl = document.getElementById('tmText');
+  if(!refEl || !arEl || !txEl) return;
+
+  if(!currentAyaData){
+    refEl.textContent = '';
+    arEl.textContent = 'Ingen vers laddad ännu';
+    txEl.textContent = '';
+    txEl.style.display = 'none';
+    return;
+  }
+
+  refEl.textContent = (currentAyaData.surahName || SURAH_NAMES[currentAyaData.surahNum - 1]) + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum;
+  arEl.textContent = currentAyaData.arabic || '';
+
+  let text = '';
+  let cls = 'tm-text';
+  if(!translationsHidden){
+    if(currentLang === 'phonetic'){ text = currentAyaData.phonetic || ''; cls += ' phonetic'; }
+    else if(currentLang === 'ku'){ text = currentAyaData.ku || ''; cls += ' ku'; }
+    else if(currentLang === 'ku-KM'){ text = currentAyaData['ku-KM'] || ''; cls += ' ku-KM'; }
+    else if(currentLang === 'fa'){ text = currentAyaData.fa || ''; cls += ' fa'; }
+    else if(currentLang === 'en'){ text = currentAyaData.en || ''; }
+    else { text = currentAyaData.sv || currentAyaData.en || ''; }
+  }
+  txEl.className = cls;
+  txEl.textContent = text;
+  txEl.style.display = text ? '' : 'none';
+}
+
+function toggleTextMode(){
+  textModeOn = !textModeOn;
+  const ov = document.getElementById('textModeOverlay');
+  const btn = document.getElementById('textModeBtn');
+  if(!ov) return;
+  ov.classList.toggle('active', textModeOn);
+  if(btn) btn.classList.toggle('active', textModeOn);
+  if(textModeOn){
+    applyTextModeBg();
+    updateTextModeContent();
+    try{
+      const el = document.documentElement;
+      if(!(document.fullscreenElement || document.webkitFullscreenElement)){
+        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      }
+    }catch(e){}
+    toast('📺 Text-läge på — tryck ✕ för att stänga');
+  } else {
+    try{
+      if(document.fullscreenElement || document.webkitFullscreenElement){
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      }
+    }catch(e){}
+    toast('Text-läge av');
+  }
+}
+
+/* ============================================================
    TOAST
    ============================================================ */
 let toastT;
@@ -3860,7 +4021,7 @@ function toast(msg){
   if(!el){
     el = document.createElement('div');
     el.id = 'qToast';
-    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:#1E1535;color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:999;box-shadow:0 8px 30px rgba(0,0,0,.35);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
+    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:#1E1535;color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.35);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
     document.body.appendChild(el);
   }
   el.textContent = msg;
@@ -3882,6 +4043,7 @@ applyNight();
 applySectionsVisibility();
 applyChromeVisibility();
 applyTranslationsVisibility();
+applyTextModeBg();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
