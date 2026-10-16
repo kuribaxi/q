@@ -161,6 +161,7 @@
     .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3}
     .tafsir-close{width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;flex-shrink:0;transition:all .2s}
     .tafsir-close:active{transform:scale(.92)}
+    .tafsir-ayah-ref{font-size:13px;font-weight:900;color:var(--primary);background:var(--primary-soft);padding:9px 13px;border-radius:11px;min-width:52px;text-align:center;flex-shrink:0}
     .tafsir-translate-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:12px 24px;background:var(--surface2);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);flex-shrink:0}
     .tafsir-translate-bar .label{font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-right:4px;display:flex;align-items:center;gap:6px}
     .tafsir-translate-bar button{padding:6px 12px;border-radius:50px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
@@ -197,7 +198,7 @@
     .tafsir-verse-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
     .tafsir-verse-num{font-size:12px;font-weight:800;color:var(--primary);background:var(--primary-soft);display:inline-block;padding:4px 12px;border-radius:50px;margin-bottom:10px}
 
-    .tafsir-body { color: var(--text) !important; }
+    .tafsir-body { color: #fff !important; }
     .tafsir-body p,
     .tafsir-body div:not(.tafsir-verse-num),
     .tafsir-body span:not(.tafsir-aya-green),
@@ -207,9 +208,9 @@
     .tafsir-body b,
     .tafsir-body i,
     .tafsir-body u {
-      color: var(--text);
+      color: #fff;
     }
-    .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: var(--text); }
+    .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: #fff; }
 
     .tafsir-body .tafsir-aya-green {
       background: none !important;
@@ -981,6 +982,9 @@
     <div class="tafsir-topbar">
       <div class="tafsir-title" id="tafsirTitle"><i class="fas fa-book-open"></i> Tafsir</div>
       <div style="display:flex;gap:8px;flex-shrink:0">
+        <button class="tafsir-close" id="tafsirPrevAyah" onclick="tafsirGoRelative(-1)" title="Föregående vers (←)" style="display:none"><i class="fas fa-chevron-left"></i></button>
+        <span class="tafsir-ayah-ref" id="tafsirAyahRef" style="display:none"></span>
+        <button class="tafsir-close" id="tafsirNextAyah" onclick="tafsirGoRelative(1)" title="Nästa vers (→)" style="display:none"><i class="fas fa-chevron-right"></i></button>
         <button class="tafsir-close" id="tafsirFsBtn" onclick="toggleTafsirFullscreen()" title="Helskärm"><i class="fas fa-expand" id="tafsirFsIcon"></i></button>
         <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
       </div>
@@ -988,7 +992,9 @@
     <div class="tafsir-translate-bar" id="tafsirTranslateBar">
       <span class="label"><i class="fas fa-language"></i> Tafsir:</span>
       <button data-tl="original" class="active" onclick="translateTafsirTo('original')">📄 Original (EN)</button>
-      <button data-tl="ar" onclick="translateTafsirTo('ar')">🇸🇦 العربية</button>
+      <button data-tl="ar" onclick="translateTafsirTo('ar')">🇸🇦 ابن كثير</button>
+      <button data-tl="arMuyassar" onclick="translateTafsirTo('arMuyassar')">🇸🇦 الميسر</button>
+      <button data-tl="arSadi" onclick="translateTafsirTo('arSadi')">🇸🇦 السعدي</button>
       <button data-tl="fa" onclick="translateTafsirTo('fa')">🇮🇷 فارسی</button>
       <button data-tl="ku" onclick="translateTafsirTo('ku')">🏳️ کوردی سۆرانی</button>
     </div>
@@ -1016,6 +1022,7 @@
       <select id="gtTargetLang">
         <option value="fa">🇮🇷 Persiska (فارسی)</option>
         <option value="ckb">🏳️ Sorani kurdiska (کوردی)</option>
+        <option value="sv">🇸🇪 Svenska</option>
       </select>
       <button onclick="runGoogleTranslate()"><i class="fas fa-arrow-right"></i> Översätt</button>
       <button onclick="closeGtPanel()" style="background:var(--surface2);color:var(--text2);border:1.5px solid var(--border)"><i class="fas fa-times"></i> Stäng</button>
@@ -1266,6 +1273,23 @@ function stripHtmlForTranslation(html){
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
   return (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
+}
+/* NY: Behåll styckeindelningen (\n\n mellan block) vid översättning */
+function stripHtmlKeepBreaks(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  tmp.querySelectorAll('br').forEach(br => { try{ br.replaceWith('\n'); }catch(e){} });
+  function nodeToText(node){
+    if(node.nodeType === 3) return node.nodeValue || '';
+    if(node.nodeType !== 1) return '';
+    const tag = node.tagName;
+    const inner = Array.from(node.childNodes).map(nodeToText).join('');
+    if(/^(P|DIV|LI|H[1-4]|BLOCKQUOTE|TABLE)$/i.test(tag)) return '\n\n' + inner + '\n\n';
+    return inner;
+  }
+  let text = nodeToText(tmp);
+  text = text.split('\n').map(l => l.replace(/[ \t]+/g, ' ').trim()).join('\n');
+  return text.replace(/\n{3,}/g, '\n\n').trim();
 }
 function splitIntoChunks(text, maxLen){
   const words = text.split(/\s+/);
@@ -3331,9 +3355,11 @@ function copyVerse(btn){
 const TAFSIR_SOURCES = {
   en: { quranComId: 169, label: 'Ibn Kathir (English)' },
   ar: { quranComId: 14,  label: 'تفسير ابن كثير (العربية)' },
+  arMuyassar: { quranComId: 16, label: 'التفسير الميسر (العربية)' },
+  arSadi: { quranComId: 91, label: 'تفسير السعدي (العربية)' },
   ku: { quranComId: 804, label: 'ڕەبەر · تەفسیری کوردی (سۆرانی)' }
 };
-const NATIVE_TAFSIR_LANGS = ['ar', 'fa', 'ku'];
+const NATIVE_TAFSIR_LANGS = ['ar', 'arMuyassar', 'arSadi', 'fa', 'ku'];
 
 let tafsirState = {
   surah: null, ayah: null, chapterLabel: '',
@@ -3351,67 +3377,125 @@ function applyTafsirFontStyles(bodyEl){
   bodyEl.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
 }
 
-function highlightArabicInTafsir(container){
+/* NY: Normalisera arabisk text (ta bort diakritiker, normalisera bokstavsvarianter) och behåll indexmappning */
+function normalizeArabicWithMap(str){
+  const map = [];
+  let out = '';
+  for(let i = 0; i < str.length; i++){
+    const code = str.charCodeAt(i);
+    if((code >= 0x064B && code <= 0x065F) || code === 0x0670 || (code >= 0x06D6 && code <= 0x06ED) || code === 0x0640 || code === 0x200C || code === 0x200D) continue;
+    let ch = str[i];
+    if(ch === 'أ' || ch === 'إ' || ch === 'آ' || ch === 'ٱ') ch = 'ا';
+    else if(ch === 'ى') ch = 'ي';
+    else if(ch === 'ة') ch = 'ه';
+    out += ch;
+    map.push(i);
+  }
+  return { text: out, map: map };
+}
+
+/* NY: Hämta surans verser (arabiska) en gång, cache:at */
+const tafsirVerseCache = {};
+async function getSurahVersesForHighlight(surah){
+  if(!surah) return [];
+  if(tafsirVerseCache[surah]) return tafsirVerseCache[surah];
+  try{
+    const res = await fetch('https://api.alquran.cloud/v1/surah/' + surah + '/quran-uthmani');
+    if(res.ok){
+      const data = await res.json();
+      const list = ((data && data.data && data.data.ayahs) || []).map(a => a.text || '').filter(Boolean);
+      tafsirVerseCache[surah] = list;
+      return list;
+    }
+  }catch(e){ console.warn('verse fetch failed:', e); }
+  tafsirVerseCache[surah] = [];
+  return [];
+}
+
+/* Markerar ENDAST exakta Koran-citat (verser ur aktuell sura samt ﴿…﴾/«…»-citat) i grönt */
+async function highlightArabicInTafsir(container){
   if(!container) return;
   try{
-    const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
-    const arabicSeq = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF\u0660-\u0669\u06F0-\u06F9\u060C\u061B\u061F\u0640\u064B-\u065F\u0670\u06D6-\u06ED\uFD3E\uFD3F\u0600-\u0605\u06DD\u06DE\u200C\u200D]+/g;
+    const verses = await getSurahVersesForHighlight(tafsirState.surah);
+    const nVerses = verses
+      .map(v => normalizeArabicWithMap(v).text)
+      .filter(t => t.length >= 10)
+      .sort((a, b) => b.length - a.length);
+    highlightQuranRanges(container, nVerses);
+  }catch(e){ console.warn('highlightArabicInTafsir error:', e); }
+}
 
-    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
-      acceptNode: function(node){
-        if(!node.nodeValue) return NodeFilter.FILTER_REJECT;
-        const parent = node.parentElement;
-        if(!parent) return NodeFilter.FILTER_REJECT;
-        if(parent.classList && parent.classList.contains('tafsir-aya-green')) return NodeFilter.FILTER_REJECT;
-        if(parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return NodeFilter.FILTER_REJECT;
-        if(parent.tagName === 'H1' || parent.tagName === 'H2' || parent.tagName === 'H3') return NodeFilter.FILTER_REJECT;
-        if(!arabicRegex.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
-        return NodeFilter.FILTER_ACCEPT;
+function highlightQuranRanges(container, nVerses){
+  if(!container) return;
+  if(container.querySelector('.tafsir-aya-green')) return;
+  const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+    acceptNode: function(node){
+      if(!node.nodeValue) return NodeFilter.FILTER_REJECT;
+      const parent = node.parentElement;
+      if(!parent) return NodeFilter.FILTER_REJECT;
+      if(parent.classList && parent.classList.contains('tafsir-aya-green')) return NodeFilter.FILTER_REJECT;
+      if(parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return NodeFilter.FILTER_REJECT;
+      if(parent.tagName === 'H1' || parent.tagName === 'H2' || parent.tagName === 'H3') return NodeFilter.FILTER_REJECT;
+      if(!arabicRegex.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const textNodes = [];
+  let n;
+  while((n = walker.nextNode())) textNodes.push(n);
+  textNodes.forEach(node => {
+    const text = node.nodeValue;
+    const ranges = [];
+    /* Exakta verscitat: normaliserad jämförelse mot surans verser */
+    const norm = normalizeArabicWithMap(text);
+    nVerses.forEach(v => {
+      let idx = norm.text.indexOf(v);
+      while(idx !== -1){
+        const s = norm.map[idx];
+        const e = norm.map[idx + v.length - 1] + 1;
+        if(!ranges.some(r => s < r.end && e > r.start)) ranges.push({ start: s, end: e });
+        idx = norm.text.indexOf(v, idx + 1);
       }
     });
-    const textNodes = [];
-    let n;
-    while((n = walker.nextNode())) textNodes.push(n);
-    textNodes.forEach(node => {
-      const text = node.nodeValue;
-      let lastIndex = 0;
-      const frag = document.createDocumentFragment();
-      let m;
-      arabicSeq.lastIndex = 0;
-      while((m = arabicSeq.exec(text)) !== null){
-        const match = m[0];
-        const arabicLetters = (match.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/g) || []).length;
-        if(arabicLetters < 4){
-          if(m.index > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
-          frag.appendChild(document.createTextNode(match));
-          lastIndex = m.index + match.length;
-          continue;
-        }
-        if(m.index > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, m.index)));
+    /* Citat inom ﴿…﴾ eller «…» */
+    const br = /[﴿«]([^﴿»]{3,})[﴿»]/g;
+    let m;
+    while((m = br.exec(text)) !== null){
+      const s = m.index + 1, e = m.index + m[0].length - 1;
+      if(!ranges.some(r => s < r.end && e > r.start)) ranges.push({ start: s, end: e });
+    }
+    if(!ranges.length) return;
+    ranges.sort((a, b) => a.start - b.start);
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    ranges.forEach(r => {
+      if(r.start > last) frag.appendChild(document.createTextNode(text.slice(last, r.start)));
+      const piece = text.slice(r.start, r.end);
+      if(arabicRegex.test(piece)){
         const span = document.createElement('span');
         span.className = 'tafsir-aya-green';
         span.setAttribute('dir', 'rtl');
         span.setAttribute('lang', 'ar');
-        span.style.cssText = 'direction:rtl !important;unicode-bidi:plaintext !important;text-align:right !important;display:inline-block;font-family:var(--quran-font);color:var(--emerald);font-weight:700;line-height:2;font-size:1.05em;';
-        span.textContent = match;
+        span.textContent = piece;
         frag.appendChild(span);
-        lastIndex = m.index + match.length;
+      } else {
+        frag.appendChild(document.createTextNode(piece));
       }
-      if(lastIndex < text.length) frag.appendChild(document.createTextNode(text.slice(lastIndex)));
-      if(frag.childNodes.length > 0 && lastIndex > 0){
-        try{ node.parentNode.replaceChild(frag, node); }catch(e){}
-      }
+      last = r.end;
     });
+    if(last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    try{ node.parentNode.replaceChild(frag, node); }catch(e){}
+  });
 
-    container.querySelectorAll('.tafsir-aya-green').forEach(el => {
-      el.setAttribute('dir', 'rtl');
-      el.setAttribute('lang', 'ar');
-      el.style.setProperty('direction', 'rtl', 'important');
-      el.style.setProperty('unicode-bidi', 'plaintext', 'important');
-      el.style.setProperty('text-align', 'right', 'important');
-      el.style.setProperty('display', 'inline-block', 'important');
-    });
-  }catch(e){ console.warn('highlightArabicInTafsir error:', e); }
+  container.querySelectorAll('.tafsir-aya-green').forEach(el => {
+    el.setAttribute('dir', 'rtl');
+    el.setAttribute('lang', 'ar');
+    el.style.setProperty('direction', 'rtl', 'important');
+    el.style.setProperty('unicode-bidi', 'plaintext', 'important');
+    el.style.setProperty('text-align', 'right', 'important');
+    el.style.setProperty('display', 'inline-block', 'important');
+  });
 }
 function resetArabicHighlight(container){
   if(!container) return;
@@ -3427,10 +3511,11 @@ function resetArabicHighlight(container){
 function applyTafsirContentStyles(bodyEl, lang){
   if(!bodyEl) return;
   applyTafsirFontStyles(bodyEl);
+  const eff = (lang === 'arMuyassar' || lang === 'arSadi') ? 'ar' : lang;
   bodyEl.classList.remove('tafsir-fa','tafsir-ku','tafsir-ar','tafsir-en');
-  if(lang === 'fa') bodyEl.classList.add('tafsir-fa');
-  else if(lang === 'ku') bodyEl.classList.add('tafsir-ku');
-  else if(lang === 'ar') bodyEl.classList.add('tafsir-ar');
+  if(eff === 'fa') bodyEl.classList.add('tafsir-fa');
+  else if(eff === 'ku') bodyEl.classList.add('tafsir-ku');
+  else if(eff === 'ar') bodyEl.classList.add('tafsir-ar');
   else bodyEl.classList.add('tafsir-en');
   resetArabicHighlight(bodyEl);
   highlightArabicInTafsir(bodyEl);
@@ -3505,21 +3590,24 @@ async function translateChunkMyMemory(chunk, sourceLang, targetLang){
   return null;
 }
 
+/* NY: Översätt stycke för stycke så indelningen bevaras; fallback för alla målspråk */
 async function translateFullText(text, sourceLang, targetLang){
-  const chunks = splitIntoChunks(text, 450);
-  const results = [];
-  for(let i = 0; i < chunks.length; i++){
-    const chunk = chunks[i];
-    let translated = await translateChunkGoogle(chunk, sourceLang, targetLang);
-    if(!translated && targetLang === 'fa'){
-      translated = await translateChunkMyMemory(chunk, sourceLang, targetLang);
+  const paragraphs = text.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+  const outParas = [];
+  let failed = 0, total = 0;
+  for(const para of paragraphs){
+    const chunks = splitIntoChunks(para, 450);
+    const parts = [];
+    for(const chunk of chunks){
+      total++;
+      let translated = await translateChunkGoogle(chunk, sourceLang, targetLang);
+      if(!translated) translated = await translateChunkMyMemory(chunk, sourceLang, targetLang);
+      if(!translated){ failed++; translated = chunk; }
+      parts.push(translated);
     }
-    if(!translated){
-      translated = chunk;
-    }
-    results.push(translated);
+    outParas.push(parts.join(' '));
   }
-  return results.join('\n\n');
+  return { text: outParas.join('\n\n'), failed: failed, total: total };
 }
 
 async function runGoogleTranslate(){
@@ -3528,30 +3616,56 @@ async function runGoogleTranslate(){
   const source = document.getElementById('tafsirSource');
   if(!body) return;
 
-  const plainText = stripHtmlForTranslation(tafsirState.originalBody || body.innerHTML);
+  /* NY: Översätt den tafsir som faktiskt visas just nu (vald i språkraden) */
+  let srcHtml = null;
+  let sourceLangCode = 'en';
+  const tl = tafsirState.translatedTo;
+  if(tl && tl !== 'original' && tafsirState.nativeCache[tl] && tafsirState.nativeCache[tl].body){
+    srcHtml = tafsirState.nativeCache[tl].body;
+    sourceLangCode = (tl === 'ar' || tl === 'arMuyassar' || tl === 'arSadi') ? 'ar'
+                   : (tl === 'fa' ? 'fa' : 'ckb');
+  } else if(tafsirState.originalBody){
+    srcHtml = tafsirState.originalBody;
+    sourceLangCode = 'en';
+  } else {
+    const cur = body.innerHTML || '';
+    if(cur.includes('daily-aya-loading') || cur.includes('Kunde inte') || cur.length < 20){
+      toast('❌ Ingen tafsir-text att översätta'); return;
+    }
+    srcHtml = cur;
+    sourceLangCode = (tl === 'ar' || tl === 'arMuyassar' || tl === 'arSadi') ? 'ar' : 'en';
+  }
+
+  const plainText = stripHtmlKeepBreaks(srcHtml);
   if(!plainText || plainText.length < 5){
     toast('❌ Ingen text att översätta');
     return;
   }
 
-  const targetLabel = targetLang === 'fa' ? 'persiska' : 'sorani-kurdiska';
-  body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter till ' + targetLabel + '…<br><span style="font-size:12px">Detta kan ta en stund.</span></div>';
-  source.textContent = 'Översätter med Google Translate (' + (targetLang === 'fa' ? 'Persiska' : 'Sorani') + ')…';
-  body.classList.add('rtl');
+  const TARGETS = {
+    fa:  { code: 'fa',  label: 'persiska',        css: 'fa' },
+    ckb: { code: 'ckb', label: 'sorani-kurdiska', css: 'ku' },
+    sv:  { code: 'sv',  label: 'svenska',         css: 'en' }
+  };
+  const t = TARGETS[targetLang] || TARGETS.fa;
+
+  body.innerHTML = '<div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Översätter till ' + t.label + '…<br><span style="font-size:12px">Detta kan ta en stund.</span></div>';
+  source.textContent = 'Översätter med Google Translate (' + t.label + ', från ' + sourceLangCode + ')…';
+  if(t.css !== 'en') body.classList.add('rtl'); else body.classList.remove('rtl');
   body.classList.remove('original');
 
-  const sourceLangCode = 'en';
-  const targetLangCode = targetLang === 'fa' ? 'fa' : 'ckb';
-
   let translated = '';
+  let stats = { failed: 0, total: 0 };
   try{
-    translated = await translateFullText(plainText, sourceLangCode, targetLangCode);
+    const res = await translateFullText(plainText, sourceLangCode, t.code);
+    translated = res.text;
+    stats = { failed: res.failed, total: res.total };
   }catch(e){
     console.error('Translation error:', e);
     translated = '';
   }
 
-  if(!translated || translated === plainText){
+  if(!translated){
     body.innerHTML = '<p style="color:var(--rose);font-weight:800">⚠️ Översättningen misslyckades. Kontrollera internetanslutningen och försök igen.<br><br>Tips: Tjänsten kan vara tillfälligt otillgänglig. Vänta några sekunder och försök igen.</p>';
     source.textContent = 'Översättning misslyckades';
     return;
@@ -3559,10 +3673,14 @@ async function runGoogleTranslate(){
 
   const paragraphs = translated.split(/\n{2,}/).filter(p => p.trim()).map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
   body.innerHTML = paragraphs || '<p>Ingen översättning tillgänglig.</p>';
-  source.textContent = 'Maskinöversatt till ' + (targetLang === 'fa' ? 'persiska' : 'sorani-kurdiska') + ' (Google Translate) · ' + (tafsirState.originalSource || '');
-  applyTafsirContentStyles(body, targetLang === 'fa' ? 'fa' : 'ku');
-  body.classList.add('rtl');
-  toast('✅ Översättning klar!');
+  if(stats.failed > 0){
+    toast('⚠️ ' + stats.failed + ' av ' + stats.total + ' delar kunde inte översättas');
+  } else {
+    toast('✅ Översättning klar!');
+  }
+  source.textContent = 'Maskinöversatt till ' + t.label + ' (Google Translate) · ' + (tafsirState.originalSource || '');
+  applyTafsirContentStyles(body, t.css);
+  if(t.css !== 'en') body.classList.add('rtl');
 }
 
 async function fetchTafsirForAyah(surah, ayah, lang){
@@ -3691,6 +3809,7 @@ async function openTafsirAyah(surah, ayah, label){
   closeGtPanel();
   modal.classList.remove('h');
   updateTafsirTranslateBar();
+  updateTafsirNavButtons();
 
   const result = await fetchTafsirForAyah(surah, ayah, 'en');
 
@@ -3733,6 +3852,7 @@ async function openTafsirChapter(surah, chapterName){
   closeGtPanel();
   modal.classList.remove('h');
   updateTafsirTranslateBar();
+  updateTafsirNavButtons();
   const result = await fetchTafsirForChapter(surah, 'en');
   if(reqId !== tafsirRequestId) return;
   if(!result || !result.tafsirs || !result.tafsirs.length){
@@ -3767,10 +3887,43 @@ async function openTafsirDaily(){
 }
 function closeTafsir(){
   document.getElementById('tafsirModal').classList.add('h');
+  tafsirState.ayah = null;
+  updateTafsirNavButtons();
   if(document.fullscreenElement || document.webkitFullscreenElement){
     (document.exitFullscreen || document.webkitExitFullscreen).call(document);
   }
 }
+/* NY: Navigera till föregående/nästa vers i tafsir-fönstret */
+function tafsirGoRelative(delta){
+  if(!tafsirState.surah || !tafsirState.ayah) return;
+  let s = tafsirState.surah;
+  let a = tafsirState.ayah + delta;
+  if(a < 1){
+    s = (s === 1) ? 114 : s - 1;
+    a = SURAH_AYAH_COUNTS[s - 1];
+  } else if(a > SURAH_AYAH_COUNTS[s - 1]){
+    s = (s === 114) ? 1 : s + 1;
+    a = 1;
+  }
+  openTafsirAyah(s, a, SURAH_NAMES[s - 1] + ' ' + s + ':' + a);
+}
+function updateTafsirNavButtons(){
+  const prev = document.getElementById('tafsirPrevAyah');
+  const next = document.getElementById('tafsirNextAyah');
+  const ref = document.getElementById('tafsirAyahRef');
+  const show = !!(tafsirState.surah && tafsirState.ayah);
+  if(prev) prev.style.display = show ? '' : 'none';
+  if(next) next.style.display = show ? '' : 'none';
+  if(ref){
+    ref.style.display = show ? '' : 'none';
+    if(show) ref.textContent = tafsirState.surah + ':' + tafsirState.ayah;
+  }
+}
+document.addEventListener('keydown', e => {
+  if(!document.getElementById('tafsirModal').classList.contains('h')) return;
+  if(e.key === 'ArrowLeft') tafsirGoRelative(-1);
+  else if(e.key === 'ArrowRight') tafsirGoRelative(1);
+});
 function toggleTafsirFullscreen(){
   const el = document.querySelector('#tafsirModal .tafsir-card');
   if(!el) return;
