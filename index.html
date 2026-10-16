@@ -45,6 +45,8 @@
       --arabic-glow:rgba(14,156,116,0.30);
       --tafsir-font-size: 19px;
       --tafsir-font-family: 'Times New Roman', Times, serif;
+      --tafsir-text-color: #ffffff;
+      --tafsir-bg-color: transparent;
     }
     body.night {
       --bg:#1A1733; --surface:#2C2761; --surface2:#373072; --border:#4B4392;
@@ -179,6 +181,8 @@
     .tafsir-tools-bar .gt-btn{padding:5px 12px;border-radius:8px;border:1.5px solid var(--emerald);background:var(--emerald-soft);color:#1a7a58;font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px;margin-left:auto}
     .tafsir-tools-bar .gt-btn:hover{background:var(--emerald);color:#fff}
     .tafsir-tools-bar .gt-btn:active{transform:scale(.95)}
+    .tafsir-tools-bar .color-pick{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:900;color:var(--text2);cursor:pointer}
+    .tafsir-tools-bar .color-pick input[type="color"]{width:32px;height:26px;padding:0;border:1.5px solid var(--border);border-radius:6px;background:var(--surface2);cursor:pointer}
 
     .gt-panel{display:none;padding:12px 24px;background:linear-gradient(135deg, rgba(34,192,138,.12), rgba(34,192,138,.05));border-bottom:1.5px solid var(--border);flex-shrink:0;gap:8px;flex-wrap:wrap;align-items:center}
     .gt-panel.open{display:flex}
@@ -187,8 +191,9 @@
     .gt-panel button{padding:6px 14px;border-radius:8px;border:none;background:var(--emerald);color:#fff;font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
     .gt-panel button:active{transform:scale(.95)}
 
-    .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px}
+    .tafsir-scroll{flex:1;overflow-y:auto;padding:18px 24px 28px;background:var(--tafsir-bg-color)}
     .tafsir-source{font-size:12px;font-weight:800;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
+    .tafsir-card:fullscreen .tafsir-scroll,.tafsir-card:-webkit-full-screen .tafsir-scroll{background:var(--tafsir-bg-color)}
     .tafsir-body{font-size:var(--tafsir-font-size);line-height:1.9;color:var(--text);transition:font-size .2s;font-family:var(--tafsir-font-family)}
     .tafsir-body.rtl{direction:rtl;text-align:right}
     .tafsir-body p{margin-bottom:14px}
@@ -198,7 +203,7 @@
     .tafsir-verse-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
     .tafsir-verse-num{font-size:12px;font-weight:800;color:var(--primary);background:var(--primary-soft);display:inline-block;padding:4px 12px;border-radius:50px;margin-bottom:10px}
 
-    .tafsir-body { color: #fff !important; }
+    .tafsir-body { color: var(--tafsir-text-color) !important; }
     .tafsir-body p,
     .tafsir-body div:not(.tafsir-verse-num),
     .tafsir-body span:not(.tafsir-aya-green),
@@ -208,9 +213,9 @@
     .tafsir-body b,
     .tafsir-body i,
     .tafsir-body u {
-      color: #fff;
+      color: var(--tafsir-text-color);
     }
-    .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: #fff; }
+    .tafsir-body h1,.tafsir-body h3,.tafsir-body h4{ color: var(--tafsir-text-color); }
 
     .tafsir-body .tafsir-aya-green {
       background: none !important;
@@ -1016,6 +1021,10 @@
       <button class="size-btn" onclick="changeTafsirFontSize(1)">A+</button>
       <button class="size-btn" onclick="resetTafsirFontSize()" title="Återställ"><i class="fas fa-rotate-left" style="font-size:12px"></i></button>
       <button class="gt-btn" onclick="toggleGtPanel()" title="Översätt"><i class="fas fa-globe"></i> Översätt</button>
+      <span class="tool-label" style="margin-left:8px"><i class="fas fa-palette"></i> Färg:</span>
+      <label class="color-pick" title="Textfärg">A<input type="color" id="tafsirTextColor" oninput="setTafsirColors()" onchange="setTafsirColors()"></label>
+      <label class="color-pick" title="Bakgrundsfärg"><i class="fas fa-fill-drip"></i><input type="color" id="tafsirBgColor" oninput="setTafsirColors()" onchange="setTafsirColors()"></label>
+      <button class="size-btn" onclick="resetTafsirColors()" title="Återställ färger"><i class="fas fa-rotate-left" style="font-size:12px"></i></button>
     </div>
     <div class="gt-panel" id="gtPanel">
       <span class="gt-label"><i class="fas fa-language"></i> Översätt tafsir till:</span>
@@ -3942,6 +3951,47 @@ function updateTafsirFsIcon(){
 document.addEventListener('fullscreenchange', updateTafsirFsIcon);
 document.addEventListener('webkitfullscreenchange', updateTafsirFsIcon);
 
+/* NY: Välj text- och bakgrundsfärg i tafsir-fönstret (sparas i localStorage) */
+function setTafsirColors(){
+  const tc = document.getElementById('tafsirTextColor');
+  const bc = document.getElementById('tafsirBgColor');
+  if(!tc || !bc) return;
+  document.documentElement.style.setProperty('--tafsir-text-color', tc.value);
+  document.documentElement.style.setProperty('--tafsir-bg-color', bc.value);
+  try{
+    localStorage.setItem('quranTafsirTextColor', tc.value);
+    localStorage.setItem('quranTafsirBgColor', bc.value);
+  }catch(e){}
+}
+function resetTafsirColors(){
+  const tc = document.getElementById('tafsirTextColor');
+  const bc = document.getElementById('tafsirBgColor');
+  document.documentElement.style.setProperty('--tafsir-text-color', '#ffffff');
+  document.documentElement.style.setProperty('--tafsir-bg-color', 'transparent');
+  if(tc) tc.value = '#ffffff';
+  if(bc) bc.value = '#2c2761';
+  try{
+    localStorage.removeItem('quranTafsirTextColor');
+    localStorage.removeItem('quranTafsirBgColor');
+  }catch(e){}
+}
+function loadTafsirColors(){
+  try{
+    const tc = localStorage.getItem('quranTafsirTextColor');
+    const bc = localStorage.getItem('quranTafsirBgColor');
+    if(tc){
+      document.documentElement.style.setProperty('--tafsir-text-color', tc);
+      const el = document.getElementById('tafsirTextColor');
+      if(el) el.value = tc;
+    }
+    if(bc){
+      document.documentElement.style.setProperty('--tafsir-bg-color', bc);
+      const el = document.getElementById('tafsirBgColor');
+      if(el) el.value = bc;
+    }
+  }catch(e){}
+}
+
 function updateTafsirTranslateBar(){
   const bar = document.getElementById('tafsirTranslateBar');
   if(!bar) return;
@@ -4229,6 +4279,7 @@ try{
     const display = document.getElementById('tafsirSizeDisplay');
     if(display) display.textContent = tafsirFontSize + 'px';
   }
+  loadTafsirColors();
 }catch(e){}
 </script>
 
