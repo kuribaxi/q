@@ -1023,6 +1023,7 @@
         <option value="fa">🇮🇷 Persiska (فارسی)</option>
         <option value="ckb">🏳️ Sorani kurdiska (کوردی)</option>
         <option value="sv">🇸🇪 Svenska</option>
+        <option value="en">🇬🇧 Engelska</option>
       </select>
       <button onclick="runGoogleTranslate()"><i class="fas fa-arrow-right"></i> Översätt</button>
       <button onclick="closeGtPanel()" style="background:var(--surface2);color:var(--text2);border:1.5px solid var(--border)"><i class="fas fa-times"></i> Stäng</button>
@@ -3645,7 +3646,8 @@ async function runGoogleTranslate(){
   const TARGETS = {
     fa:  { code: 'fa',  label: 'persiska',        css: 'fa' },
     ckb: { code: 'ckb', label: 'sorani-kurdiska', css: 'ku' },
-    sv:  { code: 'sv',  label: 'svenska',         css: 'en' }
+    sv:  { code: 'sv',  label: 'svenska',         css: 'en' },
+    en:  { code: 'en',  label: 'engelska',        css: 'en' }
   };
   const t = TARGETS[targetLang] || TARGETS.fa;
 
