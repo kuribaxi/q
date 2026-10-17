@@ -363,6 +363,7 @@
     .daily-aya-qari-row select option{color:#1E1535;background:#fff;font-weight:700;padding:8px}
     .daily-aya-ref{font-size:13px;font-weight:800;opacity:.95;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:50px;display:inline-block;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.02em}
     .daily-aya-arabic{font-family:var(--quran-font);font-size:42px;line-height:2.4;direction:rtl;text-align:right;margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);position:relative;z-index:1;word-break:break-word;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased}
+    .daily-aya-arabic .word-god{color:#e5484d !important;font-weight:700}
     .daily-aya-text{font-size:36px;line-height:1.8;border-top:1.5px solid rgba(255,255,255,.3);padding-top:16px;position:relative;z-index:1;font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,.1)}
     .daily-aya-text.ku,.daily-aya-text.ku-KM,.daily-aya-text.fa{font-family:var(--kurdish-font);font-style:normal;font-size:38px;line-height:1.9}
     .daily-aya-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:34px;line-height:1.75;direction:ltr;text-align:left;color:rgba(255,255,255,.97)}
@@ -2010,7 +2011,7 @@ function renderDailyAya(data){
 
   content.innerHTML = `
     <div class="daily-aya-ref">${data.surahName} ${data.surahNum}:${data.ayahNum}</div>
-    <div class="daily-aya-arabic">${data.arabic}</div>
+    <div class="daily-aya-arabic">${highlightGodWords(data.arabic)}</div>
     <div class="daily-aya-text${extraClass}">${displayText}</div>
   `;
   updateSaveFavBtn();
@@ -2318,6 +2319,21 @@ async function backfillAyaTranslations(data){
   finally{ ayaBackfillKeys.delete(key); }
 }
 
+/* NY: Markera Guds namn (الله, رب m.m.) med röd färg i arabisk text */
+function highlightGodWords(text){
+  if(!text) return '';
+  const D = '[\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u0640\\u06E1]*';
+  const patterns = [
+    D + 'ٱ?' + D + 'ال' + D + 'لل?' + D + 'ه' + D + 'م?',
+    '(?<![\\u0623\\u0625\\u0622\\u0621\\u0645\\u0648\\u062D])ر' + D + 'ب(?![\\u0627\\u0648\\u0629\\u0623])' + D + '(?:[\\u064A\\u0643\\u0645\\u0646\\u0647\\u0646\\u062A]' + D + ')?' + D + '(?:[\\u0645\\u0646]' + D + ')?'
+  ];
+  let out = escapeHtml(text);
+  patterns.forEach(p => {
+    try{ out = out.replace(new RegExp(p, 'g'), m => '<span class="word-god">' + m + '</span>'); }catch(e){}
+  });
+  return out;
+}
+
 /* ============================================================
    HÄMTA ALLA VERSER FÖR EN SURA/INTERVALL SOM FAVORIT
    ============================================================ */
@@ -2479,7 +2495,7 @@ async function showPlayingAyah(surah, ayah, total){
 
   content.innerHTML = `
     <div class="daily-aya-ref">${SURAH_NAMES[surah - 1]} ${surah}:${ayah}</div>
-    <div class="daily-aya-arabic">${text}</div>
+    <div class="daily-aya-arabic">${highlightGodWords(text)}</div>
     <div class="daily-aya-text" id="playingAyahTranslation" style="opacity:.6">Laddar översättning…</div>
   `;
 
@@ -4248,6 +4264,31 @@ function resetTextModeSize(){
 }
 applyTextModeScale();
 
+/* NY: Wake Lock — förhindrar skärmsläckare/strömsparläge under uppspelning eller i helskärm */
+let wakeLock = null;
+async function requestWakeLock(){
+  try{
+    if('wakeLock' in navigator && !wakeLock){
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    }
+  }catch(e){ wakeLock = null; }
+}
+function releaseWakeLock(){
+  if(wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
+}
+function wakeLockTick(){
+  const playing = (typeof audio !== 'undefined') && audio && !audio.paused && !audio.ended;
+  const fs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if(playing || fs) requestWakeLock();
+  else releaseWakeLock();
+}
+setInterval(wakeLockTick, 10000);
+document.addEventListener('visibilitychange', wakeLockTick);
+document.addEventListener('fullscreenchange', () => { wakeLockTick(); updateTafsirFsIcon(); });
+document.addEventListener('webkitfullscreenchange', () => { wakeLockTick(); updateTafsirFsIcon(); });
+wakeLockTick();
+
 function applyTextModeBg(){
   const ov = document.getElementById('textModeOverlay');
   if(ov) ov.style.background = textModeBg;
@@ -4277,7 +4318,7 @@ function updateTextModeContent(){
   }
 
   refEl.textContent = (currentAyaData.surahName || SURAH_NAMES[currentAyaData.surahNum - 1]) + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum;
-  arEl.textContent = currentAyaData.arabic || '';
+  arEl.innerHTML = highlightGodWords(currentAyaData.arabic || '');
 
   let text = '';
   let cls = 'tm-text';
