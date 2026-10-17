@@ -461,17 +461,22 @@
     .restore-chrome-btn.show{display:flex}
 
     /* ===== NY: TEXT-LÄGE (hel skärm, bara versens text) ===== */
-    #textModeOverlay{position:fixed;inset:0;z-index:9990;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px 40px;overflow-y:auto;text-align:center}
+    #textModeOverlay{position:fixed;inset:0;z-index:9990;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px 80px;overflow-y:auto;text-align:center}
     #textModeOverlay.active{display:flex}
     #textModeOverlay .tm-ref{font-size:14px;font-weight:800;letter-spacing:.1em;opacity:.65;margin-bottom:20px;text-transform:uppercase;color:#fff}
-    #textModeOverlay .tm-arabic{font-family:var(--quran-font);font-size:54px;line-height:2.4;direction:rtl;color:#fff !important;max-width:1000px;margin:0 auto 24px;word-break:break-word;text-shadow:0 2px 8px rgba(0,0,0,.35);font-feature-settings:"liga" 1, "calt" 1}
-    #textModeOverlay .tm-text{font-size:34px;line-height:1.8;color:#fff !important;max-width:900px;margin:0 auto;font-style:italic;opacity:.96;text-shadow:0 1px 4px rgba(0,0,0,.3)}
+    #textModeOverlay .tm-arabic{font-family:var(--quran-font);font-size:calc(54px * var(--tm-scale, 1));line-height:2.4;direction:rtl;color:#fff !important;max-width:1000px;margin:0 auto 24px;word-break:break-word;text-shadow:0 2px 8px rgba(0,0,0,.35);font-feature-settings:"liga" 1, "calt" 1}
+    #textModeOverlay .tm-text{font-size:calc(34px * var(--tm-scale, 1));line-height:1.8;color:#fff !important;max-width:900px;margin:0 auto;font-style:italic;opacity:.96;text-shadow:0 1px 4px rgba(0,0,0,.3)}
     #textModeOverlay .tm-text.ku,#textModeOverlay .tm-text.ku-KM,#textModeOverlay .tm-text.fa{font-family:var(--kurdish-font);font-style:normal;direction:rtl}
     #textModeOverlay .tm-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;direction:ltr}
     #textModeOverlay .tm-close{position:fixed;top:14px;right:14px;z-index:9991;width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:all .2s}
     #textModeOverlay .tm-close:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-close:active{transform:scale(.92)}
     #tmColorInput{position:fixed;left:-100px;top:-100px;width:0;height:0;opacity:0;pointer-events:none}
+    #textModeOverlay .tm-size-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:9992;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:50px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px)}
+    #textModeOverlay .tm-size-bar button{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    #textModeOverlay .tm-size-bar button:hover{background:rgba(255,255,255,.28)}
+    #textModeOverlay .tm-size-bar button:active{transform:scale(.92)}
+    #textModeOverlay .tm-size-display{min-width:52px;text-align:center;font-size:14px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
     @media (max-width:768px){
       #textModeOverlay .tm-arabic{font-size:36px;line-height:2.3}
       #textModeOverlay .tm-text{font-size:26px;line-height:1.75}
@@ -627,6 +632,12 @@
 <!-- NY: TEXT-LÄGE-OVERLAY (hel skärm) -->
 <div id="textModeOverlay">
   <button class="tm-close" onclick="toggleTextMode()" title="Stäng text-läge"><i class="fas fa-times"></i></button>
+  <div class="tm-size-bar">
+    <button onclick="changeTextModeSize(-0.1)" title="Minskа textstorlek (−)"><i class="fas fa-minus"></i></button>
+    <span class="tm-size-display" id="tmSizeDisplay">100%</span>
+    <button onclick="changeTextModeSize(0.1)" title="Öka textstorlek (+)"><i class="fas fa-plus"></i></button>
+    <button onclick="resetTextModeSize()" title="Återställ"><i class="fas fa-rotate-left" style="font-size:12px"></i></button>
+  </div>
   <div class="tm-ref" id="tmRef"></div>
   <div class="tm-arabic" id="tmArabic"></div>
   <div class="tm-text" id="tmText"></div>
@@ -4178,6 +4189,29 @@ function updateFsIcon(){
 let textModeOn = false;
 let textModeBg = '#000000';
 try{ textModeBg = localStorage.getItem('quranTextModeBg') || '#000000'; }catch(e){ textModeBg = '#000000'; }
+/* NY: Textstorlek i text-läge (helskärm) */
+let textModeScale = 1;
+try{
+  const savedScale = parseFloat(localStorage.getItem('quranTextModeScale'));
+  if(!isNaN(savedScale) && savedScale >= 0.4 && savedScale <= 3){ textModeScale = savedScale; }
+}catch(e){}
+function applyTextModeScale(){
+  const ov = document.getElementById('textModeOverlay');
+  if(ov) ov.style.setProperty('--tm-scale', textModeScale);
+  const disp = document.getElementById('tmSizeDisplay');
+  if(disp) disp.textContent = Math.round(textModeScale * 100) + '%';
+}
+function changeTextModeSize(delta){
+  textModeScale = Math.min(3, Math.max(0.4, +(textModeScale + delta).toFixed(2)));
+  applyTextModeScale();
+  try{ localStorage.setItem('quranTextModeScale', textModeScale); }catch(e){}
+}
+function resetTextModeSize(){
+  textModeScale = 1;
+  applyTextModeScale();
+  try{ localStorage.removeItem('quranTextModeScale'); }catch(e){}
+}
+applyTextModeScale();
 
 function applyTextModeBg(){
   const ov = document.getElementById('textModeOverlay');
@@ -4320,4 +4354,3 @@ try{
 
 </body>
 </html>
-    
