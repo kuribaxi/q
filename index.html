@@ -496,6 +496,22 @@
     #textModeOverlay .tm-text.ku,#textModeOverlay .tm-text.ku-KM,#textModeOverlay .tm-text.fa{font-family:var(--kurdish-font);font-style:normal;direction:rtl}
     #textModeOverlay .tm-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;direction:ltr}
     #textModeOverlay .tm-arabic .word-god{color:#e5484d !important;font-weight:700}
+    /* Tazhib-paneldesign i helskärm — samma som vanlig vy (pergament + guld) */
+    #textModeOverlay .tm-arabic.tj{background:radial-gradient(ellipse at 50% 28%, #fffdf4 0%, #f9f0da 68%, #f3e7c6 100%);border:1.5px solid #c9a54a;border-radius:18px;padding:34px 44px 30px;box-shadow:inset 0 0 0 5px rgba(201,165,74,.20), inset 0 0 0 6.5px rgba(201,165,74,.55), inset 0 2px 24px rgba(150,110,30,.18), 0 10px 34px rgba(0,0,0,.45);color:#2b2410 !important;text-shadow:none;max-width:1060px;position:relative}
+    #textModeOverlay .tm-arabic.tj .aw{color:#2b2410}
+    #textModeOverlay .tm-arabic.tj .tw-h,#textModeOverlay .tm-arabic.tj .tw-l,#textModeOverlay .tm-arabic.tj .tw-s{color:#8d8468 !important}
+    #textModeOverlay .tm-arabic.tj .tw-n{color:#177d43 !important}
+    #textModeOverlay .tm-arabic.tj .tw-p{color:#e07b00 !important}
+    #textModeOverlay .tm-arabic.tj .tw-o,#textModeOverlay .tm-arabic.tj .tw-m{color:#c62828 !important}
+    #textModeOverlay .tm-arabic.tj .tw-q{color:#1d4fb0 !important}
+    #textModeOverlay .tm-arabic.tj .tw-g,#textModeOverlay .tm-arabic.tj .tw-f,#textModeOverlay .tm-arabic.tj .tw-a,#textModeOverlay .tm-arabic.tj .tw-i{color:#128a4c !important}
+    #textModeOverlay .tm-arabic.tj .tw-u{color:#7b2ea8 !important}
+    #textModeOverlay .tm-arabic.tj .tw-w{color:#00756a !important}
+    #textModeOverlay .tm-arabic.tj .word-god{color:#e5484d !important;font-weight:700}
+    #textModeOverlay .tm-arabic.tj .aw.aw-active{background:rgba(201,165,74,.32);box-shadow:0 0 14px rgba(180,140,50,.5);text-shadow:none}
+    #textModeOverlay .tm-arabic.tj::before,#textModeOverlay .tm-arabic.tj::after{content:'';position:absolute;width:66px;height:66px;pointer-events:none;opacity:.95;background-repeat:no-repeat;background-size:contain;z-index:2}
+    #textModeOverlay .tm-arabic.tj::before{top:6px;left:6px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 70'%3E%3Cpath d='M68 3 H24 Q3 3 3 24 V68' fill='none' stroke='%23b8912f' stroke-width='2.4'/%3E%3Cpath d='M68 11 H30 Q11 11 11 30 V68' fill='none' stroke='%23d9b45a' stroke-width='1.3'/%3E%3Cpath d='M20 20 q10 10 0 20 q-10 -10 0 -20Z' fill='%23d9b45a'/%3E%3Ccircle cx='38' cy='12' r='2.5' fill='%23b8912f'/%3E%3Ccircle cx='12' cy='38' r='2.5' fill='%23b8912f'/%3E%3Cpath d='M3 48 q9 -3 10 6 q-9 6 -10 -6Z' fill='%23c9a54a'/%3E%3Cpath d='M48 3 q-3 9 6 10 q6 -9 -6 -10Z' fill='%23c9a54a'/%3E%3C/svg%3E")}
+    #textModeOverlay .tm-arabic.tj::after{bottom:6px;right:6px;transform:rotate(180deg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 70'%3E%3Cpath d='M68 3 H24 Q3 3 3 24 V68' fill='none' stroke='%23b8912f' stroke-width='2.4'/%3E%3Cpath d='M68 11 H30 Q11 11 11 30 V68' fill='none' stroke='%23d9b45a' stroke-width='1.3'/%3E%3Cpath d='M20 20 q10 10 0 20 q-10 -10 0 -20Z' fill='%23d9b45a'/%3E%3Ccircle cx='38' cy='12' r='2.5' fill='%23b8912f'/%3E%3Ccircle cx='12' cy='38' r='2.5' fill='%23b8912f'/%3E%3Cpath d='M3 48 q9 -3 10 6 q-9 6 -10 -6Z' fill='%23c9a54a'/%3E%3Cpath d='M48 3 q-3 9 6 10 q6 -9 -6 -10Z' fill='%23c9a54a'/%3E%3C/svg%3E")}
     #textModeOverlay .tm-close{position:fixed;top:14px;right:14px;z-index:9991;width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:all .2s}
     #textModeOverlay .tm-close:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-close:active{transform:scale(.92)}
@@ -2345,21 +2361,40 @@ async function enhanceWithTajweed(surah, ayah){
   const ref = getDisplayedAyaRef();
   if(!ref || ref.surahNum !== surah || ref.ayahNum !== ayah) return;
   const el = document.querySelector('#dailyAyaContent .daily-aya-arabic');
-  if(!el || el.classList.contains('tj')) return;
-  el.innerHTML = buildAyahWordHtml(t);
-  el.classList.add('tj');
+  if(el && !el.classList.contains('tj')){
+    el.innerHTML = buildAyahWordHtml(t);
+    el.classList.add('tj');
+  }
+  if(textModeOn) updateTextModeContent();
 }
 
 /* NY: Dela vers i ord-tokens (respekterar tajweed-hakparenteser som kan spänna över mellanslag) */
 function splitAyahTokens(str){
   if(!str) return [];
+  /* Tajweed-markup: varje regel är [x:text] — dvs tv\u00e5 '[' men bara ett ']' per regel.
+     Regler kan \u00e4ven inneh\u00e5lla mellanslag (idgham \u00f6ver tv\u00e5 ord, t.ex. [u:2596[\u064f\u0646 \u0644]).
+     D\u00e4rf\u00f6r: l\u00e4s varje regel atomiskt, och dela ENDAST p\u00e5 mellanslag UTANF\u00f6R regler. */
   const tokens = [];
-  let cur = '', depth = 0;
-  for(const ch of str){
-    if(ch === '[') depth++;
-    else if(ch === ']') depth = Math.max(0, depth - 1);
-    if(/\s/.test(ch) && depth === 0){ if(cur.trim()) tokens.push(cur.trim()); cur = ''; }
-    else cur += ch;
+  let cur = '';
+  let i = 0;
+  const ruleStart = /\[[a-z](?::\d+)?$/;
+  while(i < str.length){
+    const ch = str[i];
+    if(ch === '[' && ruleStart.test(cur)){
+      /* slutparentes f\u00f6r p\u00e5g\u00e5ende regel: konsumera till och med ']' */
+      let j = i;
+      while(j < str.length && str[j] !== ']') j++;
+      cur += str.slice(i, j + 1);
+      i = j + 1;
+      continue;
+    }
+    if(/\s/.test(ch)){
+      if(cur.trim()) tokens.push(cur.trim());
+      cur = '';
+    } else {
+      cur += ch;
+    }
+    i++;
   }
   if(cur.trim()) tokens.push(cur.trim());
   return tokens;
@@ -4481,6 +4516,7 @@ function updateTextModeContent(){
   refEl.textContent = (currentAyaData.surahName || SURAH_NAMES[currentAyaData.surahNum - 1]) + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum;
   const tmTj = getTajweedWordHtml(currentAyaData.surahNum, currentAyaData.ayahNum);
   arEl.innerHTML = tmTj || buildPlainWordHtml(currentAyaData.arabic || '');
+  arEl.classList.toggle('tj', !!tmTj);
 
   let text = '';
   let cls = 'tm-text';
