@@ -364,6 +364,15 @@
     .daily-aya-ref{font-size:13px;font-weight:800;opacity:.95;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:50px;display:inline-block;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.02em}
     .daily-aya-arabic{font-family:var(--quran-font);font-size:42px;line-height:2.4;direction:rtl;text-align:right;margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);position:relative;z-index:1;word-break:break-word;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased}
     .daily-aya-arabic .word-god{color:#e5484d !important;font-weight:700}
+/* Versstil: tazhib-panel eller enkel (vita/gulgröna versen på vald bakgrund) */
+.verse-style-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
+.verse-style-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
+.verse-style-btn.active{background:var(--amber);border-color:var(--amber)}
+.wake-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
+.wake-btn:hover{background:rgba(255,255,255,.32)}
+.wake-btn.active{background:#e07b00;border-color:#e07b00;box-shadow:0 0 12px rgba(224,123,0,.5)}
+#textModeOverlay .wake-btn{width:44px;height:44px;font-size:17px}
+#textModeOverlay .verse-style-btn{width:44px;height:44px;font-size:17px}
     /* Ord-synkning: versens ord markeras i takt med ljudet */
     .daily-aya-arabic .aw{transition:background .22s,box-shadow .22s;border-radius:9px;padding:0 5px;margin:0 -1px}
     .daily-aya-arabic .aw.aw-active{background:rgba(255,255,255,.30);box-shadow:0 0 16px rgba(255,255,255,.28)}
@@ -677,6 +686,8 @@
 <div id="textModeOverlay">
   <button class="tm-close" onclick="toggleTextMode()" title="Stäng text-läge"><i class="fas fa-times"></i></button>
   <div class="tm-size-bar">
+    <button class="wake-btn" onclick="toggleWakeLockManual()" title="Håll skärmen vaken (avaktivera skärmsläckare)"><i class="fas fa-mug-hot"></i></button>
+    <button class="verse-style-btn" id="verseStyleBtnTm" onclick="toggleVerseStyle()" title="Växla versstil: tazhib/enkel"><i class="fas fa-gem"></i></button>
     <button onclick="changeTextModeSize(-0.1)" title="Minskа textstorlek (−)"><i class="fas fa-minus"></i></button>
     <span class="tm-size-display" id="tmSizeDisplay">100%</span>
     <button onclick="changeTextModeSize(0.1)" title="Öka textstorlek (+)"><i class="fas fa-plus"></i></button>
@@ -782,6 +793,8 @@
     </div>
 
     <div class="daily-aya-qari-row" style="justify-content:center;gap:8px;flex-wrap:wrap">
+      <button class="verse-style-btn" id="verseStyleBtn" onclick="toggleVerseStyle()" title="Växla versstil: tazhib/enkel"><i class="fas fa-gem"></i></button>
+      <button class="verse-style-btn wake-btn" onclick="toggleWakeLockManual()" title="Håll skärmen vaken (avaktivera skärmsläckare)"><i class="fas fa-mug-hot"></i></button>
       <button class="day-action-btn" onclick="suraPlayerBack()" title="Föregående vers"><i class="fas fa-backward-step"></i></button>
       <button class="day-action-btn" id="playSuraBtn" onclick="playSelectedSura(this)" title="Spela sura"><i class="fas fa-play"></i></button>
       <button class="day-action-btn" onclick="stopSuraPlayback()" title="Stoppa"><i class="fas fa-stop"></i></button>
@@ -2046,7 +2059,8 @@ function renderDailyAya(data){
   }
   if(missing) displayText = '⏳ Hämtar översättning…';
 
-  const tjHtml = getTajweedWordHtml(data.surahNum, data.ayahNum);
+  const tjHtml0 = getTajweedWordHtml(data.surahNum, data.ayahNum);
+  const tjHtml = (verseStyle !== 'enkel') ? tjHtml0 : null;
   content.innerHTML = `
     <div class="daily-aya-ref">${data.surahName} ${data.surahNum}:${data.ayahNum}</div>
     <div class="daily-aya-arabic${tjHtml ? ' tj' : ''}">${tjHtml || buildPlainWordHtml(data.arabic)}</div>
@@ -2361,7 +2375,7 @@ async function enhanceWithTajweed(surah, ayah){
   const ref = getDisplayedAyaRef();
   if(!ref || ref.surahNum !== surah || ref.ayahNum !== ayah) return;
   const el = document.querySelector('#dailyAyaContent .daily-aya-arabic');
-  if(el && !el.classList.contains('tj')){
+  if(el && verseStyle !== 'enkel' && !el.classList.contains('tj')){
     el.innerHTML = buildAyahWordHtml(t);
     el.classList.add('tj');
   }
@@ -2436,6 +2450,33 @@ function updateWordSync(audioEl){
 }
 function clearWordSync(){
   document.querySelectorAll('.aw.aw-active').forEach(s => s.classList.remove('aw-active'));
+}
+
+/* NY: Versstil — tazhib-panel (pergament+guld) eller enkel stil (vit/grön text) */
+let verseStyle = localStorage.getItem('quranVerseStyle') || 'tazhib'; /* 'tazhib' | 'enkel' */
+function updateVerseStyleBtns(){
+  const tazhib = verseStyle !== 'enkel';
+  document.querySelectorAll('.verse-style-btn').forEach(b => b.classList.toggle('active', !tazhib));
+  document.querySelectorAll('.verse-style-btn i').forEach(i => i.className = tazhib ? 'fas fa-gem' : 'fas fa-feather');
+}
+function toggleVerseStyle(){
+  verseStyle = (verseStyle === 'enkel') ? 'tazhib' : 'enkel';
+  try{ localStorage.setItem('quranVerseStyle', verseStyle); }catch(e){}
+  updateVerseStyleBtns();
+  /* Rendera om versen med aktuell stil */
+  const ref = getDisplayedAyaRef();
+  if(ref){
+    const tjHtml = getTajweedWordHtml(ref.surahNum, ref.ayahNum);
+    const useTj = tjHtml && verseStyle !== 'enkel';
+    const el = document.querySelector('#dailyAyaContent .daily-aya-arabic');
+    if(el){
+      el.classList.toggle('tj', !!useTj);
+      el.innerHTML = useTj ? tjHtml : buildPlainWordHtml(currentAyaData && currentAyaData.arabic || '');
+      if(!tjHtml) enhanceWithTajweed(ref.surahNum, ref.ayahNum);
+    }
+    if(textModeOn) updateTextModeContent();
+  }
+  toast(verseStyle === 'enkel' ? '🪶 Enkel versstil' : '💠 Tazhib-stil');
 }
 
 /* NY: Hämta översättning med fallback-kedja så "översättning ej tillgänglig" undviks */
@@ -2687,7 +2728,8 @@ async function showPlayingAyah(surah, ayah, total){
   updateSaveFavBtn();
   updateTextModeContent();
 
-  const tjHtml = getTajweedWordHtml(surah, ayah);
+  const tjHtml0 = getTajweedWordHtml(surah, ayah);
+  const tjHtml = (verseStyle !== 'enkel') ? tjHtml0 : null;
   content.innerHTML = `
     <div class="daily-aya-ref">${SURAH_NAMES[surah - 1]} ${surah}:${ayah}</div>
     <div class="daily-aya-arabic${tjHtml ? ' tj' : ''}">${tjHtml || buildPlainWordHtml(text)}</div>
@@ -4462,6 +4504,7 @@ applyTextModeScale();
 
 /* NY: Wake Lock — förhindrar skärmsläckare/strömsparläge under uppspelning eller i helskärm */
 let wakeLock = null;
+let wakeLockManual = false;
 async function requestWakeLock(){
   try{
     if('wakeLock' in navigator && !wakeLock){
@@ -4471,13 +4514,31 @@ async function requestWakeLock(){
   }catch(e){ wakeLock = null; }
 }
 function releaseWakeLock(){
+  if(wakeLockManual) return; /* manuell l\u00e5sning: sl\u00e4pp inte */
   if(wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
 }
+function toggleWakeLockManual(){
+  wakeLockManual = !wakeLockManual;
+  try{ localStorage.setItem('quranWakeLockManual', wakeLockManual ? '1' : '0'); }catch(e){}
+  if(wakeLockManual) requestWakeLock();
+  else {
+    const playing = currentAudio && !currentAudio.paused && !currentAudio.ended;
+    const fs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    if(!playing && !fs && wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
+  }
+  updateWakeLockBtns();
+  toast(wakeLockManual ? '🔒 Sk\u00e4rmen h\u00e5lls vaken' : '🔓 Sk\u00e4rmsl\u00e4ckare till\u00e5ten');
+}
+function updateWakeLockBtns(){
+  document.querySelectorAll('.wake-btn').forEach(b => b.classList.toggle('active', wakeLockManual));
+}
 function wakeLockTick(){
-  const playing = (typeof audio !== 'undefined') && audio && !audio.paused && !audio.ended;
+  const playing = (typeof currentAudio !== 'undefined') && currentAudio && !currentAudio.paused && !currentAudio.ended;
   const fs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  if(playing || fs) requestWakeLock();
-  else releaseWakeLock();
+  /* text-l\u00e4ge \u00e4r en overlay (inte browser-fullscreen) \u2014 r\u00e4kna den ocks\u00e5 */
+  const tm = typeof textModeOn !== 'undefined' && textModeOn;
+  if(playing || fs || tm || wakeLockManual) requestWakeLock();
+  else if(!wakeLockManual) releaseWakeLock();
 }
 setInterval(wakeLockTick, 10000);
 document.addEventListener('visibilitychange', wakeLockTick);
@@ -4514,7 +4575,8 @@ function updateTextModeContent(){
   }
 
   refEl.textContent = (currentAyaData.surahName || SURAH_NAMES[currentAyaData.surahNum - 1]) + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum;
-  const tmTj = getTajweedWordHtml(currentAyaData.surahNum, currentAyaData.ayahNum);
+  const tmTj0 = getTajweedWordHtml(currentAyaData.surahNum, currentAyaData.ayahNum);
+  const tmTj = (verseStyle !== 'enkel') ? tmTj0 : null;
   arEl.innerHTML = tmTj || buildPlainWordHtml(currentAyaData.arabic || '');
   arEl.classList.toggle('tj', !!tmTj);
 
@@ -4624,6 +4686,8 @@ try{
   }
   loadTafsirColors();
 }catch(e){}
+updateVerseStyleBtns();
+try{ if(localStorage.getItem('quranWakeLockManual') === '1'){ wakeLockManual = true; updateWakeLockBtns(); requestWakeLock(); } }catch(e){}
 </script>
 
 </body>
