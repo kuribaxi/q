@@ -371,6 +371,13 @@
 .wake-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
 .wake-btn:hover{background:rgba(255,255,255,.32)}
 .wake-btn.active{background:#e07b00;border-color:#e07b00;box-shadow:0 0 12px rgba(224,123,0,.5)}
+/* Ljud/ord-synk-knapp */
+.sync-toggle-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.18);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;backdrop-filter:blur(4px)}
+.sync-toggle-btn:hover{background:rgba(255,255,255,.32);transform:scale(1.05)}
+.sync-toggle-btn:active{transform:scale(.9)}
+.sync-toggle-btn.active{background:var(--emerald);border-color:var(--emerald);box-shadow:0 0 12px rgba(34,192,138,.5)}
+.sync-toggle-btn.off{background:var(--rose);border-color:var(--rose);box-shadow:0 0 12px rgba(240,94,122,.45)}
+#textModeOverlay .sync-toggle-btn{width:44px;height:44px;font-size:17px}
 #textModeOverlay .wake-btn{width:44px;height:44px;font-size:17px}
 #textModeOverlay .verse-style-btn{width:44px;height:44px;font-size:17px}
     /* Ord-synkning: versens ord markeras i takt med ljudet */
@@ -687,8 +694,9 @@
   <button class="tm-close" onclick="toggleTextMode()" title="Stäng text-läge"><i class="fas fa-times"></i></button>
   <div class="tm-size-bar">
     <button class="wake-btn" onclick="toggleWakeLockManual()" title="Håll skärmen vaken (avaktivera skärmsläckare)"><i class="fas fa-mug-hot"></i></button>
+    <button class="sync-toggle-btn" id="syncToggleBtnTm" onclick="toggleWordSync()" title="Ljud/ord-synkning av/på"><i class="fas fa-wave-square"></i></button>
     <button class="verse-style-btn" id="verseStyleBtnTm" onclick="toggleVerseStyle()" title="Växla versstil: tazhib/enkel"><i class="fas fa-gem"></i></button>
-    <button onclick="changeTextModeSize(-0.1)" title="Minskа textstorlek (−)"><i class="fas fa-minus"></i></button>
+    <button onclick="changeTextModeSize(-0.1)" title="Minska textstorlek (−)"><i class="fas fa-minus"></i></button>
     <span class="tm-size-display" id="tmSizeDisplay">100%</span>
     <button onclick="changeTextModeSize(0.1)" title="Öka textstorlek (+)"><i class="fas fa-plus"></i></button>
     <button onclick="resetTextModeSize()" title="Återställ"><i class="fas fa-rotate-left" style="font-size:12px"></i></button>
@@ -795,6 +803,7 @@
     <div class="daily-aya-qari-row" style="justify-content:center;gap:8px;flex-wrap:wrap">
       <button class="verse-style-btn" id="verseStyleBtn" onclick="toggleVerseStyle()" title="Växla versstil: tazhib/enkel"><i class="fas fa-gem"></i></button>
       <button class="verse-style-btn wake-btn" onclick="toggleWakeLockManual()" title="Håll skärmen vaken (avaktivera skärmsläckare)"><i class="fas fa-mug-hot"></i></button>
+      <button class="sync-toggle-btn" id="syncToggleBtn" onclick="toggleWordSync()" title="Ljud/ord-synkning av/på"><i class="fas fa-wave-square"></i></button>
       <button class="day-action-btn" onclick="suraPlayerBack()" title="Föregående vers"><i class="fas fa-backward-step"></i></button>
       <button class="day-action-btn" id="playSuraBtn" onclick="playSelectedSura(this)" title="Spela sura"><i class="fas fa-play"></i></button>
       <button class="day-action-btn" onclick="stopSuraPlayback()" title="Stoppa"><i class="fas fa-stop"></i></button>
@@ -2429,8 +2438,36 @@ function getTajweedWordHtml(surah, ayah){
   return raw ? buildAyahWordHtml(raw) : null;
 }
 
+/* NY: Ljud/ord-synk av/på */
+let wordSyncEnabled = true;
+try{
+  const s = localStorage.getItem('quranWordSync');
+  if(s === '0') wordSyncEnabled = false;
+}catch(e){}
+
+function applyWordSyncState(){
+  document.querySelectorAll('.sync-toggle-btn').forEach(b => {
+    b.classList.toggle('active', wordSyncEnabled);
+    b.classList.toggle('off', !wordSyncEnabled);
+    const icon = b.querySelector('i');
+    if(icon){
+      icon.className = wordSyncEnabled ? 'fas fa-wave-square' : 'fas fa-ban';
+    }
+    b.title = wordSyncEnabled ? 'Ljud/ord-synkning PÅ — klicka för av' : 'Ljud/ord-synkning AV — klicka för på';
+  });
+  if(!wordSyncEnabled) clearWordSync();
+}
+
+function toggleWordSync(){
+  wordSyncEnabled = !wordSyncEnabled;
+  try{ localStorage.setItem('quranWordSync', wordSyncEnabled ? '1' : '0'); }catch(e){}
+  applyWordSyncState();
+  toast(wordSyncEnabled ? '🔊 Ljud/ord-synkning PÅ' : '🔇 Ljud/ord-synkning AV');
+}
+
 /* NY: Ord-synkning med ljudet — aktiverar markering i takt med uppspelning */
 function updateWordSync(audioEl){
+  if(!wordSyncEnabled) return;
   if(!audioEl || !audioEl.duration || !isFinite(audioEl.duration) || audioEl.paused) return;
   const groups = [
     document.querySelectorAll('#dailyAyaContent .daily-aya-arabic .aw'),
@@ -4654,6 +4691,7 @@ applySectionsVisibility();
 applyChromeVisibility();
 applyTranslationsVisibility();
 applyTextModeBg();
+applyWordSyncState();
 updateFsIcon();
 setLang(currentLang);
 populateSuraSelect();
