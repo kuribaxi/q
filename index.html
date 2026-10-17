@@ -364,6 +364,26 @@
     .daily-aya-ref{font-size:13px;font-weight:800;opacity:.95;background:rgba(255,255,255,.22);padding:5px 14px;border-radius:50px;display:inline-block;margin-bottom:16px;position:relative;z-index:1;letter-spacing:.02em}
     .daily-aya-arabic{font-family:var(--quran-font);font-size:42px;line-height:2.4;direction:rtl;text-align:right;margin-bottom:20px;text-shadow:0 2px 4px rgba(0,0,0,.18);position:relative;z-index:1;word-break:break-word;font-feature-settings:"liga" 1, "calt" 1;-webkit-font-smoothing:antialiased}
     .daily-aya-arabic .word-god{color:#e5484d !important;font-weight:700}
+    /* Ord-synkning: versens ord markeras i takt med ljudet */
+    .daily-aya-arabic .aw{transition:background .22s,box-shadow .22s;border-radius:9px;padding:0 5px;margin:0 -1px}
+    .daily-aya-arabic .aw.aw-active{background:rgba(255,255,255,.30);box-shadow:0 0 16px rgba(255,255,255,.28)}
+    .daily-aya-arabic.tj .aw.aw-active{background:rgba(201,165,74,.30);box-shadow:0 0 12px rgba(180,140,50,.45)}
+    #textModeOverlay .tm-arabic .aw{transition:background .22s,box-shadow .22s;border-radius:10px;padding:0 7px;margin:0 -1px}
+    #textModeOverlay .tm-arabic .aw.aw-active{background:rgba(255,255,255,.20);box-shadow:0 0 20px rgba(255,255,255,.35);text-shadow:0 0 14px rgba(255,255,255,.6)}
+    /* Tazhib-panel: pergament-ram med guldornament för tajweed-versen */
+    .daily-aya-arabic.tj{background:radial-gradient(ellipse at 50% 28%, #fffdf4 0%, #f9f0da 68%, #f3e7c6 100%);border:1.5px solid #c9a54a;border-radius:16px;padding:28px 32px 24px;color:#2b2410;text-shadow:none;box-shadow:inset 0 0 0 5px rgba(201,165,74,.20), inset 0 0 0 6.5px rgba(201,165,74,.55), inset 0 2px 20px rgba(150,110,30,.15), 0 6px 20px rgba(0,0,0,.22)}
+    .daily-aya-arabic.tj::before,.daily-aya-arabic.tj::after{content:'';position:absolute;width:62px;height:62px;pointer-events:none;opacity:.95;background-repeat:no-repeat;background-size:contain;z-index:2}
+    .daily-aya-arabic.tj::before{top:5px;left:5px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 70'%3E%3Cpath d='M68 3 H24 Q3 3 3 24 V68' fill='none' stroke='%23b8912f' stroke-width='2.4'/%3E%3Cpath d='M68 11 H30 Q11 11 11 30 V68' fill='none' stroke='%23d9b45a' stroke-width='1.3'/%3E%3Cpath d='M20 20 q10 10 0 20 q-10 -10 0 -20Z' fill='%23d9b45a'/%3E%3Ccircle cx='38' cy='12' r='2.5' fill='%23b8912f'/%3E%3Ccircle cx='12' cy='38' r='2.5' fill='%23b8912f'/%3E%3Cpath d='M3 48 q9 -3 10 6 q-9 6 -10 -6Z' fill='%23c9a54a'/%3E%3Cpath d='M48 3 q-3 9 6 10 q6 -9 -6 -10Z' fill='%23c9a54a'/%3E%3C/svg%3E")}
+    .daily-aya-arabic.tj::after{bottom:5px;right:5px;transform:rotate(180deg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 70'%3E%3Cpath d='M68 3 H24 Q3 3 3 24 V68' fill='none' stroke='%23b8912f' stroke-width='2.4'/%3E%3Cpath d='M68 11 H30 Q11 11 11 30 V68' fill='none' stroke='%23d9b45a' stroke-width='1.3'/%3E%3Cpath d='M20 20 q10 10 0 20 q-10 -10 0 -20Z' fill='%23d9b45a'/%3E%3Ccircle cx='38' cy='12' r='2.5' fill='%23b8912f'/%3E%3Ccircle cx='12' cy='38' r='2.5' fill='%23b8912f'/%3E%3Cpath d='M3 48 q9 -3 10 6 q-9 6 -10 -6Z' fill='%23c9a54a'/%3E%3Cpath d='M48 3 q-3 9 6 10 q6 -9 -6 -10Z' fill='%23c9a54a'/%3E%3C/svg%3E")}
+    /* Tajweed-regelfärger (Dar Al-Marifa-mushafens färgkod) */
+    .daily-aya-arabic .tw-h,.daily-aya-arabic .tw-l,.daily-aya-arabic .tw-s{color:#8d8468}      /* tysta bokstäver: grått */
+    .daily-aya-arabic .tw-n{color:#177d43}                                                      /* madd normal (2): grönt */
+    .daily-aya-arabic .tw-p{color:#e07b00}                                                      /* madd tillåten (2–4): orange */
+    .daily-aya-arabic .tw-o,.daily-aya-arabic .tw-m{color:#c62828}                              /* madd nödvändig (6): rött */
+    .daily-aya-arabic .tw-q{color:#1d4fb0}                                                      /* qalqalah: blått */
+    .daily-aya-arabic .tw-g,.daily-aya-arabic .tw-f,.daily-aya-arabic .tw-a,.daily-aya-arabic .tw-i{color:#128a4c} /* ghunnah/ikhfa/iqlab/idgham m. ghunnah: grönt */
+    .daily-aya-arabic .tw-u{color:#7b2ea8}                                                      /* idgham utan ghunnah: lila */
+    .daily-aya-arabic .tw-w{color:#00756a}                                                      /* idgham shafawi: teal */
     .daily-aya-text{font-size:36px;line-height:1.8;border-top:1.5px solid rgba(255,255,255,.3);padding-top:16px;position:relative;z-index:1;font-style:italic;text-shadow:0 1px 2px rgba(0,0,0,.1)}
     .daily-aya-text.ku,.daily-aya-text.ku-KM,.daily-aya-text.fa{font-family:var(--kurdish-font);font-style:normal;font-size:38px;line-height:1.9}
     .daily-aya-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;font-size:34px;line-height:1.75;direction:ltr;text-align:left;color:rgba(255,255,255,.97)}
@@ -475,6 +495,7 @@
     #textModeOverlay .tm-text{font-size:calc(34px * var(--tm-scale, 1));line-height:1.8;color:#fff !important;max-width:900px;margin:0 auto;font-style:italic;opacity:.96;text-shadow:0 1px 4px rgba(0,0,0,.3)}
     #textModeOverlay .tm-text.ku,#textModeOverlay .tm-text.ku-KM,#textModeOverlay .tm-text.fa{font-family:var(--kurdish-font);font-style:normal;direction:rtl}
     #textModeOverlay .tm-text.phonetic{font-family:'Times New Roman',Times,serif;font-style:italic;direction:ltr}
+    #textModeOverlay .tm-arabic .word-god{color:#e5484d !important;font-weight:700}
     #textModeOverlay .tm-close{position:fixed;top:14px;right:14px;z-index:9991;width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);transition:all .2s}
     #textModeOverlay .tm-close:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-close:active{transform:scale(.92)}
@@ -2009,13 +2030,15 @@ function renderDailyAya(data){
   }
   if(missing) displayText = '⏳ Hämtar översättning…';
 
+  const tjHtml = getTajweedWordHtml(data.surahNum, data.ayahNum);
   content.innerHTML = `
     <div class="daily-aya-ref">${data.surahName} ${data.surahNum}:${data.ayahNum}</div>
-    <div class="daily-aya-arabic">${highlightGodWords(data.arabic)}</div>
+    <div class="daily-aya-arabic${tjHtml ? ' tj' : ''}">${tjHtml || buildPlainWordHtml(data.arabic)}</div>
     <div class="daily-aya-text${extraClass}">${displayText}</div>
   `;
   updateSaveFavBtn();
   updateTextModeContent();
+  if(!tjHtml) enhanceWithTajweed(data.surahNum, data.ayahNum);
   if(missing) backfillAyaTranslations(data);
 }
 const FALLBACK_AYAS = [
@@ -2281,6 +2304,105 @@ async function getAyahTranslation(surah, ayah, lang){
   return result;
 }
 
+/* ============================================================
+   TAJWEED-FÄRGNING (alquran.cloud quran-tajweed-upplagan)
+   ============================================================ */
+const tajweedCache = new Map();
+const tajweedPending = new Map();
+async function fetchAyahTajweed(surah, ayah){
+  const key = surah + ':' + ayah;
+  if (tajweedCache.has(key)) return tajweedCache.get(key);
+  if (tajweedPending.has(key)) return tajweedPending.get(key);
+  const p = (async () => {
+    try{
+      const res = await fetch('https://api.alquran.cloud/v1/ayah/' + surah + ':' + ayah + '/quran-tajweed');
+      if(!res.ok) return null;
+      const data = await res.json();
+      const t = (data && data.data && data.data.text) ? data.data.text : null;
+      tajweedCache.set(key, t);
+      return t;
+    }catch(e){ return null; }
+    finally{ tajweedPending.delete(key); }
+  })();
+  tajweedPending.set(key, p);
+  return p;
+}
+/* Konvertera tajweed-markup [h:1[ٱ]... till färgade HTML-spans */
+function parseTajweedHtml(markup){
+  if(!markup) return '';
+  return escapeHtml(markup)
+    .replace(/\[([a-z])(?::\d+)?\[([^\]]*)\]/g, (m, rule, txt) => '<span class="tw-' + rule + '">' + txt + '</span>');
+}
+/* Synkron hämtning ur cache (annars null) */
+function tajweedSync(surah, ayah){
+  const t = tajweedCache.get(surah + ':' + ayah);
+  return t ? parseTajweedHtml(t) : null;
+}
+/* Hämta tajweed i bakgrunden och uppdatera visad vers om den fortfarande visas */
+async function enhanceWithTajweed(surah, ayah){
+  const t = await fetchAyahTajweed(surah, ayah);
+  if(!t) return;
+  const ref = getDisplayedAyaRef();
+  if(!ref || ref.surahNum !== surah || ref.ayahNum !== ayah) return;
+  const el = document.querySelector('#dailyAyaContent .daily-aya-arabic');
+  if(!el || el.classList.contains('tj')) return;
+  el.innerHTML = buildAyahWordHtml(t);
+  el.classList.add('tj');
+}
+
+/* NY: Dela vers i ord-tokens (respekterar tajweed-hakparenteser som kan spänna över mellanslag) */
+function splitAyahTokens(str){
+  if(!str) return [];
+  const tokens = [];
+  let cur = '', depth = 0;
+  for(const ch of str){
+    if(ch === '[') depth++;
+    else if(ch === ']') depth = Math.max(0, depth - 1);
+    if(/\s/.test(ch) && depth === 0){ if(cur.trim()) tokens.push(cur.trim()); cur = ''; }
+    else cur += ch;
+  }
+  if(cur.trim()) tokens.push(cur.trim());
+  return tokens;
+}
+/* Bygg vers-HTML med ett span per ord — behåller tajweed-färger inom orden */
+function buildAyahWordHtml(markup){
+  const tokens = splitAyahTokens(markup);
+  if(!tokens.length) return '';
+  return tokens.map(t => '<span class="aw">' + parseTajweedHtml(t) + '</span>').join(' ');
+}
+/* Utan tajweed: vanlig text ord för ord, med röd markering av Guds namn */
+function buildPlainWordHtml(text){
+  const tokens = (text || '').trim().split(/\s+/).filter(Boolean);
+  return tokens.map(t => '<span class="aw">' + highlightGodWords(t) + '</span>').join(' ');
+}
+function getTajweedWordHtml(surah, ayah){
+  const raw = tajweedCache.get(surah + ':' + ayah);
+  return raw ? buildAyahWordHtml(raw) : null;
+}
+
+/* NY: Ord-synkning med ljudet — aktiverar markering i takt med uppspelning */
+function updateWordSync(audioEl){
+  if(!audioEl || !audioEl.duration || !isFinite(audioEl.duration) || audioEl.paused) return;
+  const groups = [
+    document.querySelectorAll('#dailyAyaContent .daily-aya-arabic .aw'),
+    document.querySelectorAll('#textModeOverlay .tm-arabic .aw')
+  ].filter(g => g.length);
+  if(!groups.length) return;
+  const weights = [];
+  let total = 0;
+  groups[0].forEach(s => { const w = (s.textContent || '').trim().length + 1; weights.push(w); total += w; });
+  const target = (audioEl.currentTime / audioEl.duration) * total;
+  let acc = 0, activeIdx = weights.length - 1;
+  for(let i = 0; i < weights.length; i++){
+    acc += weights[i];
+    if(target < acc){ activeIdx = i; break; }
+  }
+  groups.forEach(spans => spans.forEach((s, i) => s.classList.toggle('aw-active', i === activeIdx)));
+}
+function clearWordSync(){
+  document.querySelectorAll('.aw.aw-active').forEach(s => s.classList.remove('aw-active'));
+}
+
 /* NY: Hämta översättning med fallback-kedja så "översättning ej tillgänglig" undviks */
 async function getAyahTranslationWithFallback(surah, ayah, lang){
   const chain = [];
@@ -2323,14 +2445,46 @@ async function backfillAyaTranslations(data){
 function highlightGodWords(text){
   if(!text) return '';
   const D = '[\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u0640\\u06E1]*';
-  const patterns = [
-    D + 'ٱ?' + D + 'ال' + D + 'لل?' + D + 'ه' + D + 'م?',
-    '(?<![\\u0623\\u0625\\u0622\\u0621\\u0645\\u0648\\u062D])ر' + D + 'ب(?![\\u0627\\u0648\\u0629\\u0623])' + D + '(?:[\\u064A\\u0643\\u0645\\u0646\\u0647\\u0646\\u062A]' + D + ')?' + D + '(?:[\\u0645\\u0646]' + D + ')?'
-  ];
-  let out = escapeHtml(text);
-  patterns.forEach(p => {
-    try{ out = out.replace(new RegExp(p, 'g'), m => '<span class="word-god">' + m + '</span>'); }catch(e){}
+  /* Normalisera: ta bort diakritiker för analys men behåll original via indexmappning */
+  const norm = [];
+  const map = [];
+  for(let i = 0; i < text.length; i++){
+    const c = text.charCodeAt(i);
+    if((c >= 0x064B && c <= 0x065F) || c === 0x0670 || (c >= 0x06D6 && c <= 0x06ED) || c === 0x0640 || c === 0x06E1) continue;
+    norm.push(text[i]);
+    map.push(i);
+  }
+  const n = norm.join('');
+  const ranges = [];
+  const wordRe = /[\u0621-\u064A\u0671-\u06D3]+/g;
+  let wm;
+  while((wm = wordRe.exec(n)) !== null){
+    const w = wm[0];
+    /* رب som Gud/Herren — tillåt prefix و/ال (وَرَبُّكَ, الرَّبُّ) och suffix: رب, ربي, ربك, ربنا, ربكم, ربهم... */
+    /* inte أربعين, أرباب, حرب, ربا (ränta), مربعة */
+    const stripped = w.replace(/^و?(?:ال)?/, '');
+    if(/^رب(ي|ك|نا|كم|هم|هن|ها|ه)?$/.test(stripped)){
+      ranges.push({ start: map[wm.index], end: map[wm.index + w.length - 1] + 1 });
+      continue;
+    }
+    /* الله, لله, اللهم, والله — tillåt prefix و */
+    const stripped2 = w.replace(/^و/, '');
+    if(stripped2 === 'الله' || /^لله[مي]?$/.test(stripped2) || stripped2 === 'اللهم'){
+      ranges.push({ start: map[wm.index], end: map[wm.index + w.length - 1] + 1 });
+    }
+  }
+  if(!ranges.length) return escapeHtml(text);
+  ranges.sort((a,b) => a.start - b.start);
+  let out = '';
+  let last = 0;
+  ranges.forEach(r => {
+    if(r.start >= last){
+      out += escapeHtml(text.slice(last, r.start));
+      out += '<span class="word-god">' + escapeHtml(text.slice(r.start, r.end)) + '</span>';
+      last = r.end;
+    }
   });
+  out += escapeHtml(text.slice(last));
   return out;
 }
 
@@ -2370,12 +2524,14 @@ let dailyLoop = false;
 let favLoopMode = false;
 
 function resetAudioEngine(){
-  if (currentAudio){ 
-    currentAudio.pause(); 
+  if (currentAudio){
+    currentAudio.pause();
     currentAudio.onended = null;
     currentAudio.onerror = null;
-    currentAudio = null; 
+    currentAudio.ontimeupdate = null;
+    currentAudio = null;
   }
+  clearWordSync();
   audioQueue = []; 
   audioDoneCb = null; 
   if (activePlayBtn){ resetPlayBtn(activePlayBtn); activePlayBtn = null; }
@@ -2427,16 +2583,19 @@ function playNextInQueue(){
   }
   const t = audioQueue.shift();
   currentAudio = new Audio(t.url);
-  
-  currentAudio.onended = () => { 
-    if (t.bismillah) showBismillahBanner(false); 
+
+  currentAudio.ontimeupdate = () => updateWordSync(currentAudio);
+  currentAudio.onended = () => {
+    if (t.bismillah) showBismillahBanner(false);
+    clearWordSync();
     currentAudio = null;
-    playNextInQueue(); 
+    playNextInQueue();
   };
-  currentAudio.onerror = () => { 
-    if (t.bismillah) showBismillahBanner(false); 
+  currentAudio.onerror = () => {
+    if (t.bismillah) showBismillahBanner(false);
+    clearWordSync();
     currentAudio = null;
-    playNextInQueue(); 
+    playNextInQueue();
   };
   
   if (t.bismillah) showBismillahBanner(true);
@@ -2493,11 +2652,13 @@ async function showPlayingAyah(surah, ayah, total){
   updateSaveFavBtn();
   updateTextModeContent();
 
+  const tjHtml = getTajweedWordHtml(surah, ayah);
   content.innerHTML = `
     <div class="daily-aya-ref">${SURAH_NAMES[surah - 1]} ${surah}:${ayah}</div>
-    <div class="daily-aya-arabic">${highlightGodWords(text)}</div>
+    <div class="daily-aya-arabic${tjHtml ? ' tj' : ''}">${tjHtml || buildPlainWordHtml(text)}</div>
     <div class="daily-aya-text" id="playingAyahTranslation" style="opacity:.6">Laddar översättning…</div>
   `;
+  if(!tjHtml) enhanceWithTajweed(surah, ayah);
 
   try{
     const tr = await getAyahTranslationWithFallback(surah, ayah, currentLang);
@@ -4318,7 +4479,8 @@ function updateTextModeContent(){
   }
 
   refEl.textContent = (currentAyaData.surahName || SURAH_NAMES[currentAyaData.surahNum - 1]) + ' ' + currentAyaData.surahNum + ':' + currentAyaData.ayahNum;
-  arEl.innerHTML = highlightGodWords(currentAyaData.arabic || '');
+  const tmTj = getTajweedWordHtml(currentAyaData.surahNum, currentAyaData.ayahNum);
+  arEl.innerHTML = tmTj || buildPlainWordHtml(currentAyaData.arabic || '');
 
   let text = '';
   let cls = 'tm-text';
