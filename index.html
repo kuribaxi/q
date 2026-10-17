@@ -2172,22 +2172,26 @@ function playSelectedSura(btn){ openAyaPicker(parseInt(document.getElementById('
 /* ============================================================
    QARI
    ============================================================ */
+/* NY: Bitrate per upplaga — vissa qari:er finns ENDAST i 64 eller 192 kbps, inte 128 */
 const QARIS = [
-  { id:'ar.alafasy', name:'Mishary Rashid Alafasy' },
-  { id:'ar.husary', name:'Mahmoud Khalil Al-Husary' },
-  { id:'ar.husarymujawwad', name:'Mahmoud Khalil Al-Husary (Mujawwad)' },
-  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi (Murattal)' },
-  { id:'ar.minshawimujawwad', name:'Mohamed Siddiq Al-Minshawi (Mujawwad)' },
-  { id:'ar.abdulbasitmurattal', name:'Abdul Basit (Murattal)' },
-  { id:'ar.abdulbasitmujawwad', name:'Abdul Basit (Mujawwad)' },
-  { id:'ar.abdurrahmaansudais', name:'Abdurrahman As-Sudais' },
-  { id:'ar.saoodshuraym', name:'Saood Ash-Shuraym' },
-  { id:'ar.hanirifai', name:'Hani Ar-Rifai' },
-  { id:'ar.hudhaify', name:'Ali Al-Hudhaify' },
-  { id:'ar.ahmedajamy', name:'Ahmed Al-Ajamy' },
-  { id:'ar.shaatree', name:'Abu Bakr Ash-Shaatree' },
-  { id:'ar.aymanswoaid', name:'Ayman Swoaid' },
-  { id:'ar.leary', name:'Ibrahim Leary (eng. recitation)' }
+  { id:'ar.alafasy', name:'Mishary Rashid Alafasy', br:128 },
+  { id:'ar.husary', name:'Mahmoud Khalil Al-Husary', br:128 },
+  { id:'ar.husarymujawwad', name:'Mahmoud Khalil Al-Husary (Mujawwad)', br:128 },
+  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi (Murattal)', br:128 },
+  { id:'ar.minshawimujawwad', name:'Mohamed Siddiq Al-Minshawi (Mujawwad)', br:64 },
+  { id:'ar.abdulbasitmurattal', name:'Abdul Basit (Murattal)', br:192 },
+  { id:'ar.abdulsamad', name:'Abdul Basit Abdus-Samad', br:64 },
+  { id:'ar.abdurrahmaansudais', name:'Abdurrahman As-Sudais', br:192 },
+  { id:'ar.saoodshuraym', name:'Saood Ash-Shuraym', br:64 },
+  { id:'ar.hanirifai', name:'Hani Ar-Rifai', br:192 },
+  { id:'ar.hudhaify', name:'Ali Al-Hudhaify', br:128 },
+  { id:'ar.ahmedajamy', name:'Ahmed Al-Ajamy', br:128 },
+  { id:'ar.shaatree', name:'Abu Bakr Ash-Shaatree', br:128 },
+  { id:'ar.mahermuaiqly', name:'Maher Al-Muaiqly', br:128 },
+  { id:'ar.muhammadayyoub', name:'Muhammad Ayyoub', br:128 },
+  { id:'ar.muhammadjibreel', name:'Muhammad Jibreel', br:128 },
+  { id:'ar.abdullahbasfar', name:'Abdullah Basfar', br:192 },
+  { id:'ar.aymanswoaid', name:'Ayman Swoaid', br:64 }
 ];
 let currentQari = localStorage.getItem('quranQari') || QARIS[0].id;
 function populateQariSelect(){
@@ -2212,7 +2216,9 @@ const AYAH_OFFSETS = [];
 (() => { let acc = 0; for (const c of SURAH_AYAH_COUNTS) { AYAH_OFFSETS.push(acc); acc += c; } })();
 function globalAyah(surah, ayah){ return AYAH_OFFSETS[surah - 1] + ayah; }
 function ayahAudioUrl(surah, ayah){
-  return `https://cdn.islamic.network/quran/audio/128/${currentQari}/${globalAyah(surah, ayah)}.mp3`;
+  const q = QARIS.find(x => x.id === currentQari);
+  const br = (q && q.br) || 128;
+  return `https://cdn.islamic.network/quran/audio/${br}/${currentQari}/${globalAyah(surah, ayah)}.mp3`;
 }
 const bismillahAudioUrl = () => ayahAudioUrl(1, 1);
 
