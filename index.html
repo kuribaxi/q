@@ -2175,7 +2175,19 @@ function playSelectedSura(btn){ openAyaPicker(parseInt(document.getElementById('
 const QARIS = [
   { id:'ar.alafasy', name:'Mishary Rashid Alafasy' },
   { id:'ar.husary', name:'Mahmoud Khalil Al-Husary' },
-  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi (Murattal)' }
+  { id:'ar.husarymujawwad', name:'Mahmoud Khalil Al-Husary (Mujawwad)' },
+  { id:'ar.minshawi', name:'Mohamed Siddiq Al-Minshawi (Murattal)' },
+  { id:'ar.minshawimujawwad', name:'Mohamed Siddiq Al-Minshawi (Mujawwad)' },
+  { id:'ar.abdulbasitmurattal', name:'Abdul Basit (Murattal)' },
+  { id:'ar.abdulbasitmujawwad', name:'Abdul Basit (Mujawwad)' },
+  { id:'ar.abdurrahmaansudais', name:'Abdurrahman As-Sudais' },
+  { id:'ar.saoodshuraym', name:'Saood Ash-Shuraym' },
+  { id:'ar.hanirifai', name:'Hani Ar-Rifai' },
+  { id:'ar.hudhaify', name:'Ali Al-Hudhaify' },
+  { id:'ar.ahmedajamy', name:'Ahmed Al-Ajamy' },
+  { id:'ar.shaatree', name:'Abu Bakr Ash-Shaatree' },
+  { id:'ar.aymanswoaid', name:'Ayman Swoaid' },
+  { id:'ar.leary', name:'Ibrahim Leary (eng. recitation)' }
 ];
 let currentQari = localStorage.getItem('quranQari') || QARIS[0].id;
 function populateQariSelect(){
