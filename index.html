@@ -2809,10 +2809,12 @@ async function showPlayingAyah(surah, ayah, total){
   }
 }
 
-function track(surah, ayah, total){
+/* NY: track() har nu bismillahDone-flagga så Bismillah aldrig upprepas i loop */
+function track(surah, ayah, total, opts){
   return {
     url: ayahAudioUrl(surah, ayah),
     surah, ayah, bismillah: false,
+    bismillahDone: !!(opts && opts.bismillahDone),
     onPlay(){
       audioCurrentSurah = surah; audioCurrentAyah = ayah; audioTotalVerses = total || null;
       currentSuraPlaybackAyah = ayah;
@@ -2821,7 +2823,7 @@ function track(surah, ayah, total){
   };
 }
 function bismillahTrack(){
-  return { url: bismillahAudioUrl(), bismillah: true, onPlay(){ showBismillahBanner(true); } };
+  return { url: bismillahAudioUrl(), bismillah: true, bismillahDone: true, onPlay(){ showBismillahBanner(true); } };
 }
 function withBismillah(surah, ayah, tracks){
   if (shouldPlayBismillah(surah, ayah)) tracks.unshift(bismillahTrack());
@@ -2837,7 +2839,8 @@ function playSurah(surah, btn){
   const shouldLoop = (suraLoopMode === 'sura');
   
   savedSuraTracks = tracks.slice();
-  audioLoopTracks = tracks.slice();
+  /* NY: loop-tracks utan Bismillah — den ska bara spelas en gång i början */
+  audioLoopTracks = tracks.filter(t => !t.bismillah);
   suraPlaybackActive = true;
   if (!shouldLoop) suraLoopMode = 'sura-once';
   
@@ -2865,7 +2868,8 @@ function playDailyAya(btn){
   if (!currentAyaData) return;
   const s = currentAyaData.surahNum, a = currentAyaData.ayahNum;
   const tracks = withBismillah(s, a, [track(s, a)]);
-  setLoopTracks(tracks);
+  /* NY: loop-tracks utan Bismillah — den ska bara spelas en gång i början */
+  setLoopTracks(tracks.filter(t => !t.bismillah));
   savedSuraTracks = null;
   suraPlaybackActive = false;
   playAudioSequence(tracks, dailyLoop, btn);
@@ -2874,8 +2878,12 @@ function playDailyAya(btn){
 function toggleDailyLoop(){
   dailyLoop = !dailyLoop;
   audioLoop = dailyLoop;
+  /* NY: när loop slås på — ta bort Bismillah ur loop-listan */
+  if (dailyLoop && audioLoopTracks){
+    audioLoopTracks = audioLoopTracks.filter(t => !t.bismillah);
+  }
   updateDailyLoopButton();
-  toast(dailyLoop ? '🔁 Ayan upprepas' : '🔁 Upprepning av');
+  toast(dailyLoop ? '🔁 Ayan upprepas (Bismillah endast i början)' : '🔁 Upprepning av');
 }
 function updateDailyLoopButton(){
   const btn = document.getElementById('loopDailyBtn');
@@ -2883,11 +2891,12 @@ function updateDailyLoopButton(){
 }
 function toggleVerseLoop(btn){
   const tracks = withBismillah(2, 255, [track(2, 255)]);
-  setLoopTracks(tracks);
+  /* NY: loop-tracks utan Bismillah */
+  setLoopTracks(tracks.filter(t => !t.bismillah));
   savedSuraTracks = null;
   suraPlaybackActive = false;
   playAudioSequence(tracks, true, btn);
-  toast('🔁 Versen upprepas');
+  toast('🔁 Versen upprepas (Bismillah endast i början)');
 }
 
 function cycleSuraLoopMode(){
@@ -2923,11 +2932,12 @@ function cycleSuraLoopMode(){
 function applySuraLoopMode(){
   if (suraLoopMode === 'sura'){
     if (savedSuraTracks && savedSuraTracks.length){
-      audioLoopTracks = savedSuraTracks.slice();
+      /* NY: loop-tracks utan Bismillah — den ska bara spelas en gång i början */
+      audioLoopTracks = savedSuraTracks.filter(t => !t.bismillah);
       audioLoop = true;
       
       if (!currentAudio && audioQueue.length === 0){
-        audioQueue = savedSuraTracks.slice();
+        audioQueue = savedSuraTracks.slice();   /* första varvet MED Bismillah */
         suraPlaybackActive = true;
         playNextInQueue();
       }
@@ -2946,7 +2956,7 @@ function applySuraLoopMode(){
     }
   } else {
     audioLoop = false;
-    if (savedSuraTracks) audioLoopTracks = savedSuraTracks.slice();
+    if (savedSuraTracks) audioLoopTracks = savedSuraTracks.filter(t => !t.bismillah);
   }
   updateSuraLoopButton();
 }
@@ -2980,7 +2990,8 @@ function playAyaFromSelected(){
   const shouldLoop = (suraLoopMode === 'sura');
   
   savedSuraTracks = tracks.slice();
-  audioLoopTracks = tracks.slice();
+  /* NY: loop-tracks utan Bismillah */
+  audioLoopTracks = tracks.filter(t => !t.bismillah);
   suraPlaybackActive = true;
   if (!shouldLoop) suraLoopMode = 'sura-once';
   
@@ -3366,10 +3377,11 @@ function playFavorite(id, btn){
     return;
   }
   
-  setLoopTracks(tracks.slice());
+  /* NY: loop-tracks utan Bismillah */
+  setLoopTracks(tracks.filter(t => !t.bismillah));
   savedSuraTracks = null;
   suraPlaybackActive = false;
-  audioLoopTracks = tracks.slice();
+  audioLoopTracks = tracks.filter(t => !t.bismillah);
   playAudioSequence(tracks, false, btn);
   toast('▶ Spelar ' + label + ' (' + verseCount + ' verser)');
 }
@@ -3412,7 +3424,8 @@ function playFavoritesSequence(){
   
   savedSuraTracks = null;
   suraPlaybackActive = false;
-  audioLoopTracks = tracks.slice();
+  /* NY: loop-tracks utan Bismillah */
+  audioLoopTracks = tracks.filter(t => !t.bismillah);
   suraLoopMode = 'off';
   
   playAudioSequence(tracks, favLoopMode, null);
