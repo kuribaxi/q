@@ -169,6 +169,12 @@
     .tafsir-card.tafsir-textmode .tafsir-body{font-size:calc(var(--tafsir-font-size) * 1.05) !important;line-height:2 !important}
     .tafsir-exit-hint{display:none;position:fixed;top:14px;right:16px;z-index:99999;padding:8px 14px;border-radius:10px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;font-weight:800;font-family:var(--font);cursor:pointer;backdrop-filter:blur(4px)}
     .tafsir-card.tafsir-textmode .tafsir-exit-hint{display:block}
+    .tafsir-size-bar{display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:99999;padding:8px 14px;border-radius:50px;background:rgba(0,0,0,.45);border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);gap:10px;align-items:center}
+    .tafsir-card.tafsir-textmode .tafsir-size-bar{display:flex}
+    .tafsir-size-bar button{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .tafsir-size-bar button:hover{background:rgba(255,255,255,.28)}
+    .tafsir-size-bar button:active{transform:scale(.92)}
+    .tafsir-size-bar .ts-size-display{min-width:52px;text-align:center;font-size:14px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
     .tafsir-topbar{display:flex;justify-content:space-between;align-items:center;padding:22px 24px 14px;flex-shrink:0}
     .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3}
     .tafsir-close{width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;flex-shrink:0;transition:all .2s}
@@ -1065,6 +1071,12 @@
       <div class="tafsir-body" id="tafsirBody"><div class="daily-aya-loading">Laddar…</div></div>
     </div>
     <div class="tafsir-exit-hint" onclick="toggleTafsirTextMode(false)">✕ Stäng textläge (Esc)</div>
+    <div class="tafsir-size-bar">
+      <button onclick="changeTafsirFontSize(-1)" title="Minska textstorlek"><i class="fas fa-minus"></i></button>
+      <span class="ts-size-display" id="tafsirTextModeSizeDisplay">19px</span>
+      <button onclick="changeTafsirFontSize(1)" title="Öka textstorlek"><i class="fas fa-plus"></i></button>
+      <button onclick="resetTafsirFontSize()" title="Återställ"><i class="fas fa-rotate-left" style="font-size:12px"></i></button>
+    </div>
   </div>
 </div>
 
@@ -3979,6 +3991,8 @@ function toggleTafsirTextMode(on){
   if(want){
     card.classList.add('tafsir-textmode');
     closeGtPanel();
+    const tmDisplay = document.getElementById('tafsirTextModeSizeDisplay');
+    if(tmDisplay) tmDisplay.textContent = tafsirFontSize + 'px';
     const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
     if(!isFs){ try{ (card.requestFullscreen || card.webkitRequestFullscreen).call(card); }catch(e){} }
   } else {
