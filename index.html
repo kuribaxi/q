@@ -3585,6 +3585,8 @@ function changeTafsirFontSize(delta){
   if(body) body.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
   const display = document.getElementById('tafsirSizeDisplay');
   if(display) display.textContent = tafsirFontSize + 'px';
+  const tmDisplay = document.getElementById('tafsirTextModeSizeDisplay');
+  if(tmDisplay) tmDisplay.textContent = tafsirFontSize + 'px';
   try{ localStorage.setItem('quranTafsirFontSize', tafsirFontSize); }catch(e){}
 }
 function resetTafsirFontSize(){
@@ -3594,6 +3596,8 @@ function resetTafsirFontSize(){
   if(body) body.style.setProperty('font-size', '19px', 'important');
   const display = document.getElementById('tafsirSizeDisplay');
   if(display) display.textContent = '19px';
+  const tmDisplay = document.getElementById('tafsirTextModeSizeDisplay');
+  if(tmDisplay) tmDisplay.textContent = '19px';
 }
 
 function toggleGtPanel(){
