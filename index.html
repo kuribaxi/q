@@ -1380,7 +1380,6 @@ function stripHtmlForTranslation(html){
   tmp.innerHTML = html;
   return (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
 }
-/* NY: Behåll styckeindelningen (\n\n mellan block) vid översättning */
 function stripHtmlKeepBreaks(html){
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
@@ -2079,6 +2078,8 @@ function renderDailyAya(data){
   updateTextModeContent();
   if(!tjHtml) enhanceWithTajweed(data.surahNum, data.ayahNum);
   if(missing) backfillAyaTranslations(data);
+  /* NY: Förbered ord-tider för denna vers */
+  prepareWordSync(data.surahNum, data.ayahNum);
 }
 const FALLBACK_AYAS = [
   { arabic: 'إِنَّ مَعَ الْعُسْرِ يُسْرًا', sv: 'Sannerligen, med svårigheten kommer lättnad.', en: 'Indeed, with hardship comes ease.', fa: 'همانا با سختی آسانی است.', ku: 'بەڕاستی لەگەڵ ناڕەحەتیدا ئاسانی هەیە.', 'ku-KM': 'Bi rastî, bi zehmetiyê re hêsanî heye.', surahName: 'Ash-Sharh', surahNum: 94, ayahNum: 6, phonetic: 'Inna maʿal-ʿusri yusrā' },
@@ -2394,9 +2395,6 @@ async function enhanceWithTajweed(surah, ayah){
 /* NY: Dela vers i ord-tokens (respekterar tajweed-hakparenteser som kan spänna över mellanslag) */
 function splitAyahTokens(str){
   if(!str) return [];
-  /* Tajweed-markup: varje regel är [x:text] — dvs tv\u00e5 '[' men bara ett ']' per regel.
-     Regler kan \u00e4ven inneh\u00e5lla mellanslag (idgham \u00f6ver tv\u00e5 ord, t.ex. [u:2596[\u064f\u0646 \u0644]).
-     D\u00e4rf\u00f6r: l\u00e4s varje regel atomiskt, och dela ENDAST p\u00e5 mellanslag UTANF\u00f6R regler. */
   const tokens = [];
   let cur = '';
   let i = 0;
@@ -2404,7 +2402,6 @@ function splitAyahTokens(str){
   while(i < str.length){
     const ch = str[i];
     if(ch === '[' && ruleStart.test(cur)){
-      /* slutparentes f\u00f6r p\u00e5g\u00e5ende regel: konsumera till och med ']' */
       let j = i;
       while(j < str.length && str[j] !== ']') j++;
       cur += str.slice(i, j + 1);
@@ -2438,7 +2435,9 @@ function getTajweedWordHtml(surah, ayah){
   return raw ? buildAyahWordHtml(raw) : null;
 }
 
-/* NY: Ljud/ord-synk av/på */
+/* ============================================================
+   NY: FÖRBÄTTRAD ORD-SYNK
+   ============================================================ */
 let wordSyncEnabled = true;
 try{
   const s = localStorage.getItem('quranWordSync');
@@ -2465,28 +2464,86 @@ function toggleWordSync(){
   toast(wordSyncEnabled ? '🔊 Ljud/ord-synkning PÅ' : '🔇 Ljud/ord-synkning AV');
 }
 
-/* NY: Ord-synkning med ljudet — aktiverar markering i takt med uppspelning */
+/* NY: Förbättrad ord-synk — requestAnimationFrame, viktad fördelning, start-offset */
+let syncAnimationId = null;
+let currentWordWeights = null;
+let currentWordTotalWeight = 0;
+let currentAyahKey = null;
+let syncStartOffset = 0.15; /* sekunder - justera om orden släpar */
+
+function prepareWordSync(surah, ayah){
+  const key = surah + ':' + ayah;
+  if(currentAyahKey === key) return;
+  currentAyahKey = key;
+  currentWordWeights = null;
+
+  /* Beräkna vikter baserat på ordlängd (längre ord tar längre tid) */
+  const arEl = document.querySelector('#dailyAyaContent .daily-aya-arabic');
+  if(!arEl) return;
+  const spans = arEl.querySelectorAll('.aw');
+  if(!spans.length) return;
+
+  const weights = [];
+  let total = 0;
+  spans.forEach(span => {
+    const text = (span.textContent || '').trim();
+    /* Vikt = antal tecken + 1 (för att undvika nollvikt för korta ord) */
+    const w = Math.max(1, text.length) + 1;
+    weights.push(w);
+    total += w;
+  });
+  currentWordWeights = weights;
+  currentWordTotalWeight = total;
+}
+
 function updateWordSync(audioEl){
   if(!wordSyncEnabled) return;
   if(!audioEl || !audioEl.duration || !isFinite(audioEl.duration) || audioEl.paused) return;
+  if(!currentWordWeights) return;
+
   const groups = [
     document.querySelectorAll('#dailyAyaContent .daily-aya-arabic .aw'),
     document.querySelectorAll('#textModeOverlay .tm-arabic .aw')
   ].filter(g => g.length);
   if(!groups.length) return;
-  const weights = [];
-  let total = 0;
-  groups[0].forEach(s => { const w = (s.textContent || '').trim().length + 1; weights.push(w); total += w; });
-  const target = (audioEl.currentTime / audioEl.duration) * total;
-  let acc = 0, activeIdx = weights.length - 1;
-  for(let i = 0; i < weights.length; i++){
-    acc += weights[i];
+
+  /* Använd justerad tid: subtrahera start-offset (recitatören andas ofta in) */
+  const adjustedTime = Math.max(0, audioEl.currentTime - syncStartOffset);
+  const effectiveDuration = Math.max(0.1, audioEl.duration - syncStartOffset);
+  const progress = Math.min(1, adjustedTime / effectiveDuration);
+  const target = progress * currentWordTotalWeight;
+
+  let acc = 0, activeIdx = currentWordWeights.length - 1;
+  for(let i = 0; i < currentWordWeights.length; i++){
+    acc += currentWordWeights[i];
     if(target < acc){ activeIdx = i; break; }
   }
+
   groups.forEach(spans => spans.forEach((s, i) => s.classList.toggle('aw-active', i === activeIdx)));
 }
+
 function clearWordSync(){
   document.querySelectorAll('.aw.aw-active').forEach(s => s.classList.remove('aw-active'));
+}
+
+function startSyncLoop(audioEl){
+  stopSyncLoop();
+  function loop(){
+    if(audioEl && !audioEl.paused && !audioEl.ended){
+      updateWordSync(audioEl);
+      syncAnimationId = requestAnimationFrame(loop);
+    } else {
+      syncAnimationId = null;
+    }
+  }
+  syncAnimationId = requestAnimationFrame(loop);
+}
+
+function stopSyncLoop(){
+  if(syncAnimationId){
+    cancelAnimationFrame(syncAnimationId);
+    syncAnimationId = null;
+  }
 }
 
 /* NY: Versstil — tazhib-panel (pergament+guld) eller enkel stil (vit/grön text) */
@@ -2500,7 +2557,6 @@ function toggleVerseStyle(){
   verseStyle = (verseStyle === 'enkel') ? 'tazhib' : 'enkel';
   try{ localStorage.setItem('quranVerseStyle', verseStyle); }catch(e){}
   updateVerseStyleBtns();
-  /* Rendera om versen med aktuell stil */
   const ref = getDisplayedAyaRef();
   if(ref){
     const tjHtml = getTajweedWordHtml(ref.surahNum, ref.ayahNum);
@@ -2512,6 +2568,7 @@ function toggleVerseStyle(){
       if(!tjHtml) enhanceWithTajweed(ref.surahNum, ref.ayahNum);
     }
     if(textModeOn) updateTextModeContent();
+    prepareWordSync(ref.surahNum, ref.ayahNum);
   }
   toast(verseStyle === 'enkel' ? '🪶 Enkel versstil' : '💠 Tazhib-stil');
 }
@@ -2540,7 +2597,6 @@ async function backfillAyaTranslations(data){
   try{
     const fresh = await fetchAyaFromApi(data.surahNum, data.ayahNum);
     if (fresh && fresh.arabic){
-      // Slå ihop: behåll gamla värden om de finns, fyll på saknade
       const ref = getDisplayedAyaRef();
       if (ref && ref.surahNum === fresh.surahNum && ref.ayahNum === fresh.ayahNum){
         ['sv','en','fa','ku','ku-KM','phonetic','arabic'].forEach(f => {
@@ -2558,7 +2614,6 @@ async function backfillAyaTranslations(data){
 function highlightGodWords(text){
   if(!text) return '';
   const D = '[\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u0640\\u06E1]*';
-  /* Normalisera: ta bort diakritiker för analys men behåll original via indexmappning */
   const norm = [];
   const map = [];
   for(let i = 0; i < text.length; i++){
@@ -2573,14 +2628,11 @@ function highlightGodWords(text){
   let wm;
   while((wm = wordRe.exec(n)) !== null){
     const w = wm[0];
-    /* رب som Gud/Herren — tillåt prefix و/ال (وَرَبُّكَ, الرَّبُّ) och suffix: رب, ربي, ربك, ربنا, ربكم, ربهم... */
-    /* inte أربعين, أرباب, حرب, ربا (ränta), مربعة */
     const stripped = w.replace(/^و?(?:ال)?/, '');
     if(/^رب(ي|ك|نا|كم|هم|هن|ها|ه)?$/.test(stripped)){
       ranges.push({ start: map[wm.index], end: map[wm.index + w.length - 1] + 1 });
       continue;
     }
-    /* الله, لله, اللهم, والله — tillåt prefix و */
     const stripped2 = w.replace(/^و/, '');
     if(stripped2 === 'الله' || /^لله[مي]?$/.test(stripped2) || stripped2 === 'اللهم'){
       ranges.push({ start: map[wm.index], end: map[wm.index + w.length - 1] + 1 });
@@ -2637,6 +2689,7 @@ let dailyLoop = false;
 let favLoopMode = false;
 
 function resetAudioEngine(){
+  stopSyncLoop();
   if (currentAudio){
     currentAudio.pause();
     currentAudio.onended = null;
@@ -2697,14 +2750,15 @@ function playNextInQueue(){
   const t = audioQueue.shift();
   currentAudio = new Audio(t.url);
 
-  currentAudio.ontimeupdate = () => updateWordSync(currentAudio);
   currentAudio.onended = () => {
+    stopSyncLoop();
     if (t.bismillah) showBismillahBanner(false);
     clearWordSync();
     currentAudio = null;
     playNextInQueue();
   };
   currentAudio.onerror = () => {
+    stopSyncLoop();
     if (t.bismillah) showBismillahBanner(false);
     clearWordSync();
     currentAudio = null;
@@ -2713,7 +2767,9 @@ function playNextInQueue(){
   
   if (t.bismillah) showBismillahBanner(true);
   if (t.onPlay) t.onPlay();
-  currentAudio.play().catch(() => { 
+  currentAudio.play().then(() => {
+    startSyncLoop(currentAudio);
+  }).catch(() => { 
     toast('⚠️ Kunde inte spela ljud');
     currentAudio = null;
     playNextInQueue();
@@ -2774,6 +2830,10 @@ async function showPlayingAyah(surah, ayah, total){
   `;
   if(!tjHtml) enhanceWithTajweed(surah, ayah);
 
+  /* NY: Förbered ord-tider för denna vers */
+  currentAyahKey = null;
+  prepareWordSync(surah, ayah);
+
   try{
     const tr = await getAyahTranslationWithFallback(surah, ayah, currentLang);
     if (audioCurrentSurah !== surah || audioCurrentAyah !== ayah) return;
@@ -2794,7 +2854,6 @@ async function showPlayingAyah(surah, ayah, total){
       }
       updateTextModeContent();
     } else {
-      // Saknas fortfarande: hämta alla upplagor i bakgrunden istället för att visa fel
       transEl.className = 'daily-aya-text';
       transEl.style.opacity = '1';
       transEl.textContent = '…';
@@ -2809,7 +2868,6 @@ async function showPlayingAyah(surah, ayah, total){
   }
 }
 
-/* NY: track() har nu bismillahDone-flagga så Bismillah aldrig upprepas i loop */
 function track(surah, ayah, total, opts){
   return {
     url: ayahAudioUrl(surah, ayah),
@@ -2839,7 +2897,6 @@ function playSurah(surah, btn){
   const shouldLoop = (suraLoopMode === 'sura');
   
   savedSuraTracks = tracks.slice();
-  /* NY: loop-tracks utan Bismillah — den ska bara spelas en gång i början */
   audioLoopTracks = tracks.filter(t => !t.bismillah);
   suraPlaybackActive = true;
   if (!shouldLoop) suraLoopMode = 'sura-once';
@@ -2868,7 +2925,6 @@ function playDailyAya(btn){
   if (!currentAyaData) return;
   const s = currentAyaData.surahNum, a = currentAyaData.ayahNum;
   const tracks = withBismillah(s, a, [track(s, a)]);
-  /* NY: loop-tracks utan Bismillah — den ska bara spelas en gång i början */
   setLoopTracks(tracks.filter(t => !t.bismillah));
   savedSuraTracks = null;
   suraPlaybackActive = false;
@@ -2878,7 +2934,6 @@ function playDailyAya(btn){
 function toggleDailyLoop(){
   dailyLoop = !dailyLoop;
   audioLoop = dailyLoop;
-  /* NY: när loop slås på — ta bort Bismillah ur loop-listan */
   if (dailyLoop && audioLoopTracks){
     audioLoopTracks = audioLoopTracks.filter(t => !t.bismillah);
   }
@@ -2891,7 +2946,6 @@ function updateDailyLoopButton(){
 }
 function toggleVerseLoop(btn){
   const tracks = withBismillah(2, 255, [track(2, 255)]);
-  /* NY: loop-tracks utan Bismillah */
   setLoopTracks(tracks.filter(t => !t.bismillah));
   savedSuraTracks = null;
   suraPlaybackActive = false;
@@ -2932,12 +2986,11 @@ function cycleSuraLoopMode(){
 function applySuraLoopMode(){
   if (suraLoopMode === 'sura'){
     if (savedSuraTracks && savedSuraTracks.length){
-      /* NY: loop-tracks utan Bismillah — den ska bara spelas en gång i början */
       audioLoopTracks = savedSuraTracks.filter(t => !t.bismillah);
       audioLoop = true;
       
       if (!currentAudio && audioQueue.length === 0){
-        audioQueue = savedSuraTracks.slice();   /* första varvet MED Bismillah */
+        audioQueue = savedSuraTracks.slice();
         suraPlaybackActive = true;
         playNextInQueue();
       }
@@ -2990,7 +3043,6 @@ function playAyaFromSelected(){
   const shouldLoop = (suraLoopMode === 'sura');
   
   savedSuraTracks = tracks.slice();
-  /* NY: loop-tracks utan Bismillah */
   audioLoopTracks = tracks.filter(t => !t.bismillah);
   suraPlaybackActive = true;
   if (!shouldLoop) suraLoopMode = 'sura-once';
@@ -3159,7 +3211,6 @@ async function toggleSectionFavorite(key, event, btnEl){
     translation = langData[meta.trKey] || TRANSLATIONS.sv[meta.trKey] || '';
   }
   
-  // Hämta alla verser om det är en sura
   let ayahs = null;
   if (meta.type === 'sura' && meta.surah && meta.ayahStart && meta.ayahEnd){
     toast('⏳ Hämtar verser…');
@@ -3377,7 +3428,6 @@ function playFavorite(id, btn){
     return;
   }
   
-  /* NY: loop-tracks utan Bismillah */
   setLoopTracks(tracks.filter(t => !t.bismillah));
   savedSuraTracks = null;
   suraPlaybackActive = false;
@@ -3424,7 +3474,6 @@ function playFavoritesSequence(){
   
   savedSuraTracks = null;
   suraPlaybackActive = false;
-  /* NY: loop-tracks utan Bismillah */
   audioLoopTracks = tracks.filter(t => !t.bismillah);
   suraLoopMode = 'off';
   
@@ -3744,7 +3793,6 @@ function applyTafsirFontStyles(bodyEl){
   bodyEl.style.setProperty('font-size', tafsirFontSize + 'px', 'important');
 }
 
-/* NY: Normalisera arabisk text (ta bort diakritiker, normalisera bokstavsvarianter) och behåll indexmappning */
 function normalizeArabicWithMap(str){
   const map = [];
   let out = '';
@@ -3761,7 +3809,6 @@ function normalizeArabicWithMap(str){
   return { text: out, map: map };
 }
 
-/* NY: Hämta surans verser (arabiska) en gång, cache:at */
 const tafsirVerseCache = {};
 async function getSurahVersesForHighlight(surah){
   if(!surah) return [];
@@ -3779,7 +3826,6 @@ async function getSurahVersesForHighlight(surah){
   return [];
 }
 
-/* Markerar ENDAST exakta Koran-citat (verser ur aktuell sura samt ﴿…﴾/«…»-citat) i grönt */
 async function highlightArabicInTafsir(container){
   if(!container) return;
   try{
@@ -3814,7 +3860,6 @@ function highlightQuranRanges(container, nVerses){
   textNodes.forEach(node => {
     const text = node.nodeValue;
     const ranges = [];
-    /* Exakta verscitat: normaliserad jämförelse mot surans verser */
     const norm = normalizeArabicWithMap(text);
     nVerses.forEach(v => {
       let idx = norm.text.indexOf(v);
@@ -3825,7 +3870,6 @@ function highlightQuranRanges(container, nVerses){
         idx = norm.text.indexOf(v, idx + 1);
       }
     });
-    /* Citat inom ﴿…﴾ eller «…» */
     const br = /[﴿«]([^﴿»]{3,})[﴿»]/g;
     let m;
     while((m = br.exec(text)) !== null){
@@ -3961,7 +4005,6 @@ async function translateChunkMyMemory(chunk, sourceLang, targetLang){
   return null;
 }
 
-/* NY: Översätt stycke för stycke så indelningen bevaras; fallback för alla målspråk */
 async function translateFullText(text, sourceLang, targetLang){
   const paragraphs = text.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
   const outParas = [];
@@ -3987,7 +4030,6 @@ async function runGoogleTranslate(){
   const source = document.getElementById('tafsirSource');
   if(!body) return;
 
-  /* NY: Översätt den tafsir som faktiskt visas just nu (vald i språkraden) */
   let srcHtml = null;
   let sourceLangCode = 'en';
   const tl = tafsirState.translatedTo;
@@ -4266,7 +4308,6 @@ function closeTafsir(){
     (document.exitFullscreen || document.webkitExitFullscreen).call(document);
   }
 }
-/* NY: Navigera till föregående/nästa vers i tafsir-fönstret */
 function tafsirGoRelative(delta){
   if(!tafsirState.surah || !tafsirState.ayah) return;
   let s = tafsirState.surah;
@@ -4308,7 +4349,6 @@ function toggleTafsirFullscreen(){
   if(!isFs) (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
   else (document.exitFullscreen || document.webkitExitFullscreen).call(document);
 }
-/* NY: Helskärm med ENDAST text — döljer alla verktygsrader */
 function toggleTafsirTextMode(on){
   const card = document.querySelector('#tafsirModal .tafsir-card');
   if(!card) return;
@@ -4336,7 +4376,6 @@ function updateTafsirFsIcon(){
 document.addEventListener('fullscreenchange', updateTafsirFsIcon);
 document.addEventListener('webkitfullscreenchange', updateTafsirFsIcon);
 
-/* NY: Välj text- och bakgrundsfärg i tafsir-fönstret (sparas i localStorage) */
 function setTafsirColors(){
   const tc = document.getElementById('tafsirTextColor');
   const bc = document.getElementById('tafsirBgColor');
@@ -4528,7 +4567,6 @@ function updateFsIcon(){
 let textModeOn = false;
 let textModeBg = '#000000';
 try{ textModeBg = localStorage.getItem('quranTextModeBg') || '#000000'; }catch(e){ textModeBg = '#000000'; }
-/* NY: Textstorlek i text-läge (helskärm) */
 let textModeScale = 1;
 try{
   const savedScale = parseFloat(localStorage.getItem('quranTextModeScale'));
@@ -4552,7 +4590,6 @@ function resetTextModeSize(){
 }
 applyTextModeScale();
 
-/* NY: Wake Lock — förhindrar skärmsläckare/strömsparläge under uppspelning eller i helskärm */
 let wakeLock = null;
 let wakeLockManual = false;
 async function requestWakeLock(){
@@ -4564,7 +4601,7 @@ async function requestWakeLock(){
   }catch(e){ wakeLock = null; }
 }
 function releaseWakeLock(){
-  if(wakeLockManual) return; /* manuell l\u00e5sning: sl\u00e4pp inte */
+  if(wakeLockManual) return;
   if(wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
 }
 function toggleWakeLockManual(){
@@ -4585,7 +4622,6 @@ function updateWakeLockBtns(){
 function wakeLockTick(){
   const playing = (typeof currentAudio !== 'undefined') && currentAudio && !currentAudio.paused && !currentAudio.ended;
   const fs = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  /* text-l\u00e4ge \u00e4r en overlay (inte browser-fullscreen) \u2014 r\u00e4kna den ocks\u00e5 */
   const tm = typeof textModeOn !== 'undefined' && textModeOn;
   if(playing || fs || tm || wakeLockManual) requestWakeLock();
   else if(!wakeLockManual) releaseWakeLock();
@@ -4655,6 +4691,7 @@ function toggleTextMode(){
   if(textModeOn){
     applyTextModeBg();
     updateTextModeContent();
+    prepareWordSync(currentAyaData?.surahNum, currentAyaData?.ayahNum);
     try{
       const el = document.documentElement;
       if(!(document.fullscreenElement || document.webkitFullscreenElement)){
