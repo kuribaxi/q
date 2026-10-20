@@ -1352,6 +1352,7 @@
         <span class="fav-count" id="favSelectedCount">0 valda</span>
       </div>
       <div class="fav-toolbar-right">
+        <button class="fav-control-btn" id="favFsViewBtn" onclick="openFavFullscreenView()" title="Helskärm — versen följer uppspelningen (med/utan tazhib)"><i class="fas fa-expand" id="favFsViewIcon"></i></button>
         <button class="fav-control-btn primary" id="favPlayBtn" onclick="playFavoritesSequence()"><i class="fas fa-play"></i><span id="favPlayText">Spela</span></button>
         <button class="fav-control-btn" id="favLoopBtn" onclick="cycleFavLoopMode()"><i class="fas fa-repeat" id="favLoopIcon"></i><span id="favLoopText">Av</span></button>
         <button class="fav-control-btn danger" id="favStopBtn" onclick="stopFavoritesSequence()"><i class="fas fa-stop"></i></button>
@@ -3612,6 +3613,22 @@ function removeFavorite(id){ favorites = favorites.filter(f => f.id !== id); sav
 function openFavorites(){ renderFavorites(); document.getElementById('favModal').classList.remove('h'); updateFavFullscreenIcon(); }
 function closeFavorites(){ document.getElementById('favModal').classList.add('h'); }
 function toggleFavFullscreen(){ const el = document.getElementById('favModalCard'); if(!el) return; const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement); if(!isFs){ (el.requestFullscreen || el.webkitRequestFullscreen).call(el); } else { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } }
+
+/* NY: helskärm-visning under favorit-uppspelning — samma text-läge som vid sura/aya, med och utan tazhib */
+function openFavFullscreenView(){
+  if(!textModeOn){
+    toggleTextMode();
+  } else {
+    showTmChrome();
+    scheduleTmIdleHide();
+    toast('📺 Helskärm visas redan');
+  }
+  updateFavFsViewIcon();
+}
+function updateFavFsViewIcon(){
+  const icon = document.getElementById('favFsViewIcon');
+  if(icon) icon.className = textModeOn ? 'fas fa-compress' : 'fas fa-expand';
+}
 function updateFavFullscreenIcon(){ const icon = document.getElementById('favFsIcon'); if(!icon) return; const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement); icon.className = isFs ? 'fas fa-compress' : 'fas fa-expand'; }
 function toggleSelectAllFavorites(checkbox){ document.querySelectorAll('.fav-checkbox').forEach(cb => { cb.checked = checkbox.checked; }); updateSelectedCount(); }
 function updateSelectedCount(){ const count = document.querySelectorAll('.fav-checkbox:checked').length; const el = document.getElementById('favSelectedCount'); if(el) el.textContent = count + ' valda'; }
@@ -5006,6 +5023,7 @@ function toggleTextMode(){
       }
     }catch(e){}
     toast('📺 Text-läge på — tryck ✕ för att stänga');
+    updateFavFsViewIcon();
   } else {
     try{
       if(document.fullscreenElement || document.webkitFullscreenElement){
@@ -5013,6 +5031,7 @@ function toggleTextMode(){
       }
     }catch(e){}
     toast('Text-läge av');
+    updateFavFsViewIcon();
   }
 }
 
