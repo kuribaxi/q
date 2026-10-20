@@ -2509,7 +2509,7 @@ async function fetchAyahTajweed(surah, ayah){
 function parseTajweedHtml(markup){
   if(!markup) return '';
   return escapeHtml(markup)
-    .replace(/\[([a-z]+)(?::\d+)?\[([^\]]*)\]\]/g, (m, rule, txt) => '<span class="tw-' + rule + '">' + txt + '</span>');
+    .replace(/\[([a-z]+)(?::\d+)?\[([^\]]*)\]/g, (m, rule, txt) => '<span class="tw-' + rule + '">' + txt + '</span>');
 }
 function tajweedSync(surah, ayah){
   const t = tajweedCache.get(surah + ':' + ayah);
