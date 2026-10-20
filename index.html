@@ -618,7 +618,10 @@
     #textModeOverlay .tm-close:active{transform:scale(.92)}
     #tmColorInput{position:fixed;left:-100px;top:-100px;width:0;height:0;opacity:0;pointer-events:none}
     /* FIX: mobilanpassat verktygsfält i text-läge — radbryter istället för att hamna utanför skärmen */
-    #textModeOverlay .tm-size-bar{position:fixed;bottom:max(16px, env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:9992;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:50px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 20px);box-sizing:border-box}
+    #textModeOverlay .tm-size-bar{position:fixed;bottom:max(16px, env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:9992;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:50px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 20px);box-sizing:border-box;transition:opacity .45s ease, transform .45s ease}
+    #textModeOverlay .tm-size-bar.tm-idle{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(14px)}
+    #textModeOverlay .tm-close{transition:opacity .45s ease, transform .45s ease}
+    #textModeOverlay .tm-close.tm-idle{opacity:0;pointer-events:none;transform:translateY(-14px)}
     #textModeOverlay .tm-size-bar button{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
     #textModeOverlay .tm-size-bar button:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-size-bar button:active{transform:scale(.92)}
@@ -1100,6 +1103,28 @@
       <div class="arabic arabic-small">اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا</div>
     </div>
     <div class="translation" data-tr="ruqya4"></div>
+
+    <hr class="divider">
+
+    <div class="verse-block" data-section-key="audhu1">
+      <div class="verse-tools">
+        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" onclick="toggleSectionFavorite('audhu1', event, this)" title="Spara i favoriter"><i class="far fa-star"></i></button>
+      </div>
+      <div class="arabic arabic-small">أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ</div>
+    </div>
+    <div class="translation" data-tr="audhu1"></div>
+
+    <hr class="divider">
+
+    <div class="verse-block" data-section-key="audhu2">
+      <div class="verse-tools">
+        <button class="verse-tool" onclick="copyVerse(this)" title="Kopiera"><i class="fas fa-copy"></i></button>
+        <button class="verse-tool" onclick="toggleSectionFavorite('audhu2', event, this)" title="Spara i favoriter"><i class="far fa-star"></i></button>
+      </div>
+      <div class="arabic arabic-small">أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ</div>
+    </div>
+    <div class="translation" data-tr="audhu2"></div>
   </div>
 
   <div class="section">
@@ -1380,6 +1405,8 @@ const TRANSLATIONS = {
     ruqya2: '”O Allah, människornas Herre, ta bort lidandet. Bota honom, för Du är den som botar. Det finns ingen bot utom Din bot – en bot som inte lämnar någon sjukdom kvar.”',
     ruqya3: '”I Guds namn, vid vars namn inget på jorden eller i himlen kan skada, och Han är den Hörande, den Vetande.”',
     ruqya4: '”O Allah, inget är lätt utom det Du gör lätt, och Du gör sorgen lätt när Du vill.”',
+    audhu1: '”Jag söker skydd hos Allahs fullkomliga ord från det onda i allt Han har skapat.” (Läsas tre gånger morgon och kväll)',
+    audhu2: '”Jag söker skydd hos Allahs fullkomliga ord från varje djävul och giftig varelse, och från varje ont, avundsjukt öga.” (Profeten ﷺ reciterade den för Hasan och Husayn)',
     tasbihcombo: '”Prisad vare Allah och allt lov tillhör Allah. Det finns ingen gud utom Allah, och Allah är större. Det finns ingen makt och ingen kraft utom genom Allah. Jag ber den Väldige Allah om förlåtelse och vänder mig till Honom i ånger. Prisad vare Allah och allt lov tillhör Allah, prisad vare den Väldige Allah. Allah är oss nog, och Han är den bäste beskyddaren och den bäste hjälparen.”',
     kifayah: '”O Allah, låt det Du gjort tillåtet vara nog för mig så att jag slipper det förbjudna, och gör mig genom Din nåd oberoende av alla andra än Dig.”',
     qunut: '”O Allah, led oss bland dem som Du har lett, och skydda oss bland dem som Du har skyddat, och ta oss till Dig bland dem som Du har tagit till Dig, och välsigna det Du har gett oss, och skydda oss från det onda i det Du har förutbestämt. Ty Du förutbestämmer och ingen förutbestämmer över Dig. Och den Du har tagit till Din vän blir aldrig förnedrad, och den Du har motsatt Dig blir aldrig upphöjd. Välsignad är Du, vår Herre, och upphöjd. Dig tillhör all lov för det Du har förutbestämt, och vi ber Dig om förlåtelse och vänder oss till Dig i ånger. Och må Allah välsigna vår herre Muhammad, den obokstavlige profeten, och hans familj, hans följeslagare och skänka dem frid.”',
@@ -1398,6 +1425,8 @@ const TRANSLATIONS = {
     ruqya2: '"O Allah, Lord of mankind, remove the affliction. Heal, for You are the Healer. There is no healing except Your healing – a healing that leaves no illness behind."',
     ruqya3: '"In the name of Allah, with whose name nothing on earth or in heaven can cause harm, and He is the All-Hearing, the All-Knowing."',
     ruqya4: '"O Allah, nothing is easy except what You make easy, and You make sorrow easy when You will."',
+    audhu1: '"I seek refuge in the perfect words of Allah from the evil of what He has created." (To be recited three times morning and evening)',
+    audhu2: '"I seek refuge in the perfect words of Allah from every devil and poisonous creature, and from every evil, envious eye." (The Prophet ﷺ used to recite it over Hasan and Husayn)',
     tasbihcombo: '"Glory be to Allah and praise be to Allah. There is no deity but Allah, and Allah is the Greatest. There is no power and no strength except through Allah. I seek forgiveness from Allah the Mighty and turn to Him in repentance. Glory be to Allah and praise be to Allah, glory be to Allah the Mighty. Allah is sufficient for us, and He is the best Disposer of affairs and the best Helper."',
     kifayah: '"O Allah, suffice me with what You have made lawful instead of what You have made unlawful, and make me independent of all others besides You by Your grace."',
     qunut: '"O Allah, guide us among those whom You have guided, and protect us among those whom You have protected, and take us to Yourself among those whom You have taken to Yourself, and bless us in what You have given, and shield us from the evil of what You have decreed. For indeed You decree and none decrees against You. And he whom You have taken as a friend is never humiliated, and he whom You have opposed is never honored. Blessed are You, our Lord, and Exalted. To You belongs all praise for what You have decreed, and we seek Your forgiveness and turn to You in repentance. And may Allah bless our master Muhammad, the unlettered Prophet, and his family and companions, and grant them peace."',
@@ -1416,6 +1445,8 @@ const TRANSLATIONS = {
     ruqya2: '«خدایا، پروردگار مردمان! رنج را ببر. شفا ده، که تو شفا دهنده‌ای. هیچ شفایی جز شفای تو نیست – شفایی که هیچ بیماری را باقی نگذارد.»',
     ruqya3: '«به نام خدایی که با نام او هیچ چیز در زمین و آسمان آسیب نمی‌رساند، و او شنوا و داناست.»',
     ruqya4: '«خدایا! هیچ چیز آسان نیست مگر آنچه تو آسان کنی، و تو غم را هنگامی که بخواهی آسان می‌کنی.»',
+    audhu1: '«به کلمات کامل خدا از شر هر آنچه که آفریده پناه می‌برم.» (سه بار صبح و شام خوانده شود)',
+    audhu2: '«به کلمات کامل خدا از هر شیطان و موجود زهری، و از هر چشم بد پناه می‌برم.» (پیامبر ﷺ آن را برای حسن و حسین می‌خواند)',
     tasbihcombo: '«پاک و منزه است خدا و ستایش او راست. هیچ معبودی جز خدا نیست و خدا بزرگ‌تر است. هیچ نیرو و توانی جز به خدا نیست. از خدای بزرگ آمرزش می‌خواهم و به سوی او بازمی‌گردم. پاک و منزه است خدا و ستایش او راست، پاک و منزه است خدای بزرگ. خدا ما را کافی است و او بهترین کارساز و بهترین یاور است.»',
     kifayah: '«خدایا، مرا با حلالت از حرامت بی‌نیاز کن، و با فضل خودت از غیر خودت بی‌نیازم گردان.»',
     qunut: '«خدایا! ما را در زمره هدایت‌یافتگان قرار ده، و ما را در زمره عافیت‌یافتگان سلامت دار، و ما را در زمره دوستانت بپذیر، و در آنچه به ما عطا کرده‌ای برکت ده، و ما را از شر آنچه مقدر کرده‌ای حفظ کن. همانا تو حکم می‌کنی و بر تو حکم نمی‌کنند، و کسی که با او دوستی کنی هرگز خوار نمی‌شود، و کسی که با او دشمنی کنی هرگز عزیز نمی‌شود. خجسته و برتری، ای پروردگار ما! تو را بر آنچه مقدر کرده‌ای سپاس می‌گوییم، و از تو آمرزش می‌خواهیم و به تو بازمی‌گردیم. و درود خدا بر آقای ما محمد، پیامبر امی، و بر خاندان و یارانش باد.»',
@@ -1434,6 +1465,8 @@ const TRANSLATIONS = {
     ruqya2: '«خوایە، پەروەردگاری خەڵقی! ناخۆشی بەرەوە. شیفای بدە، چونکە تۆ شیفادەری. هیچ شیفایەک نییە جگە لە شیفای تۆ – شیفایەک کە هیچ نەخۆشییەک بەجێ نەهێڵێت.»',
     ruqya3: '«بە ناوی ئەو خوایەی کە بە ناوی ئەو هیچ شتێک لە زەوی و ئاسمان زیانی پێ ناگات، و ئەو بیسەر و زانایە.»',
     ruqya4: '«خوایە! هیچ شتێک ئاسان نییە جگە لەوەی تۆ ئاسانی دەکەیت، و تۆ خەفەت ئاسان دەکەیت کاتێک بیەوێت.»',
+    audhu1: '«پەنا دەکەم بە وشە تەواوەکانی خوا لە شەری هەموو ئەوەی دروستی کردووە.» (سێ جار بەیانیان و ئێواران)',
+    audhu2: '«پەنا دەکەم بە وشە تەواوەکانی خوا لە هەموو شەیتانێک و بوونەوەرێکی ژەهراوی، و لە هەموو چاوێکی خراپ.» (پێغەمبەر ﷺ بۆ حەسەن و حوسەینی دەخوێند)',
     tasbihcombo: '«پاکی بۆ خوایە و سوپاس بۆ خوایە. هیچ خوایەک نییە جگە لە خوا، و خوا گەورەترە. هیچ هێز و تواناییەک نییە جگە بە خوا. داوای لێخۆشبوون لە خوای مەزن دەکەم و بۆ لای دەگەڕێمەوە. پاکی بۆ خوایە و سوپاس بۆ خوایە، پاکی بۆ خوای مەزن. خوا بەسمانە، باشترین یارمەتیدەر و باشترین سەرکەوتووکەر.»',
     kifayah: '«خوایە، بە حەڵاڵی خۆت بێنیازم بکە لە حەرامی خۆت، و بە فەزڵی خۆت بێنیازم بکە لە کەسانی تر جگە لە خۆت.»',
     qunut: '«خوایە! ڕێنماییمان بکە لەگەڵ ئەوانەی ڕێنماییت کردوون، و پارێزگاریمان بکە لەگەڵ ئەوانەی پارێزگاریت کردوون، و خۆشەویستیمان بکە لەگەڵ ئەوانەی خۆشەویستت کردوون، و بورکان بکە بۆمان لەوەی پێت داوین، و لە شەڕی ئەوەی بڕیارت داوە بمپارێزە. بێگومان تۆ بڕیار دەدەیت و بڕیار نادرێت بەسەرت. بەڕاستی ئەوەی تۆ دۆستی خۆت بێت زەلیل نابێت، و ئەوەی تۆ دوژمنی خۆت بێت عیززەت نابێت. پیرۆز و بەرزیت ئەی پەروەردگارمان! سوپاس بۆ تۆ لەسەر ئەوەی بڕیارت داوە، و داوای لێخۆشبوونت لێ دەکەین و بۆ لای تۆ دەگەڕێینەوە. و سەلاتی خوا لەسەر گەورەمان محەمەد پێغەمبەری ئوممی و لەسەر خێزان و هاوەڵانی بێت.»',
@@ -1452,6 +1485,8 @@ const TRANSLATIONS = {
     ruqya2: '«Ya Allah, xwedanê mirovan! Nexweşiyê rake. Şifayê bide, ji ber ku tu şîfakar î. Tu şifayek tune ji bilî şifaya te – şifayek ku tu nexweşiyê li pey xwe nehêle.»',
     ruqya3: '«Bi navê wî Xwedayê ku bi navê wî tiştek li ser zemîn û ezmanan zerarê nagihîne, û ew guhdar û zana ye.»',
     ruqya4: '«Ya Allah! Tiştek hêsan nîne ji bilî tiştê ku te hêsan kir, û tu xemgînî hêsan dikî dema ku bixwazî.»',
+    audhu1: '«Ez bal xwe dibim bi peyvên temam ên Xwedê, ji xerabiya her tiştê ku ew afirandiye.» (Sê caran sibeh û êvar were xwendin)',
+    audhu2: '«Ez dibim bi peyvên temam ên Xwedê, ji her şeytanî û zîhrekî, û ji her çavekî xirab.» (Pêxember s.a. ew ji bo Hesen û Huseyn dixwend)',
     tasbihcombo: '«Paqijî ji Xwedê re ye û pesn ji Xwedê re ye. Ji bilî Xwedê tu xuda tune ye, û Xwedê mezintir e. Ne hêz û ne jî tîner heye ji bilî bi Xwedê. Ez ji Xwedayê Mezin lêborînê dixwazim û ber bi wî ve vedigerim. Paqijî ji Xwedê re ye û pesn ji Xwedê re ye, paqijî ji Xwedayê Mezin re ye. Xwedê ji me re bes e, û ew çêtirîn wekîl û çêtirîn alîkar e.»',
     kifayah: '«Ya Xwedê, min bi helala xwe ji herama xwe serbixwe bike, û bi qenciya xwe min ji kesên din ji xeynî te serbixwe bike.»',
     qunut: '«Ya Xwedê! Me di nav yên ku te rêberî kirine de rêberî bike, û me di nav yên ku te parastine de biparêze, û me di nav yên ku te dostaniya wan kirî de dostaniya me bike, û di tiştê ku te daye me de bereketê bide me, û me ji xirabiya tiştê ku te qedera wê kirî biparêze. Bêguman tu qederê dikî û li ser te qeder nayê kirin. Û bi rastî ew ê ku tu dostê wî bî qet şermezar nabe, û ew ê ku tu dijminê wî bî qet serbilind nabe. Pîroz î û bilind î, ya Xwedayê me! Sipas ji te re ye ji bo tiştê ku te qeder kir, û em ji te lêborînê dixwazin û ber bi te ve vedigerin. Û selat li ser axayê me Muhammed pêxemberê ummî û li ser malbat û hevalên wî be.»',
@@ -1572,6 +1607,8 @@ const SECTION_REGISTRY = {
   ruqya2:      { key: 'ruqya2',      title: 'Skyddsbön 2',                           surah: null, ayahStart: null, ayahEnd: null, trKey: 'ruqya2',   type: 'dua' },
   ruqya3:      { key: 'ruqya3',      title: 'Skyddsbön 3',                           surah: null, ayahStart: null, ayahEnd: null, trKey: 'ruqya3',   type: 'dua' },
   ruqya4:      { key: 'ruqya4',      title: 'Skyddsbön 4',                           surah: null, ayahStart: null, ayahEnd: null, trKey: 'ruqya4',   type: 'dua' },
+  audhu1:      { key: 'audhu1',      title: 'Aʿūdhu bi-kalimāt (morgon/kväll)',     surah: null, ayahStart: null, ayahEnd: null, trKey: 'audhu1',   type: 'dua' },
+  audhu2:      { key: 'audhu2',      title: 'Aʿūdhu bi-kalimāt (skydd för barn)',    surah: null, ayahStart: null, ayahEnd: null, trKey: 'audhu2',   type: 'dua' },
   qalam51:     { key: 'qalam51',     title: 'سورة القلم ٦٨:٥١–٥٢ · Al-Qalam',         surah: 68,  ayahStart: 51,  ayahEnd: 52,  trKey: 'qalam51',     type: 'sura' },
   tasbihcombo: { key: 'tasbihcombo', title: 'Tasbīḥ & dhikr',                        surah: null, ayahStart: null, ayahEnd: null, trKey: 'tasbihcombo', type: 'dua' },
   kifayah:     { key: 'kifayah',     title: 'Duāʾ al-kifāya',                        surah: null, ayahStart: null, ayahEnd: null, trKey: 'kifayah',   type: 'dua' },
@@ -4900,6 +4937,32 @@ function updateTextModeContent(){
   txEl.style.display = text ? '' : 'none';
 }
 
+/* NY: göm toolbaren automatiskt vid inaktivitet (musen/fingret rör sig → visas igen) */
+let tmIdleTimer = null;
+function showTmChrome(){
+  const ov = document.getElementById('textModeOverlay');
+  if(!ov) return;
+  ov.querySelectorAll('.tm-size-bar, .tm-close').forEach(el => el.classList.remove('tm-idle'));
+}
+function scheduleTmIdleHide(){
+  const ov = document.getElementById('textModeOverlay');
+  if(!ov || !textModeOn) return;
+  if(tmIdleTimer) clearTimeout(tmIdleTimer);
+  showTmChrome();
+  tmIdleTimer = setTimeout(() => {
+    if(!textModeOn) return;
+    ov.querySelectorAll('.tm-size-bar, .tm-close').forEach(el => el.classList.add('tm-idle'));
+  }, 3000);
+}
+function initTmIdleHide(){
+  const ov = document.getElementById('textModeOverlay');
+  if(!ov || ov.__idleInit) return;
+  ov.__idleInit = true;
+  const wake = () => scheduleTmIdleHide();
+  ['mousemove','mousedown','touchstart','touchmove','scroll','keydown','wheel'].forEach(ev => {
+    ov.addEventListener(ev, wake, { passive: true });
+  });
+}
 function toggleTextMode(){
   textModeOn = !textModeOn;
   const ov = document.getElementById('textModeOverlay');
@@ -4911,7 +4974,8 @@ function toggleTextMode(){
     applyTextModeBg();
     updateTextModeContent();
     initTmToolbarPad();
-    updateTmToolbarPad();
+    initTmIdleHide();
+    scheduleTmIdleHide();
     setTimeout(updateTmToolbarPad, 300);
     prepareWordSync(currentAyaData?.surahNum, currentAyaData?.ayahNum);
     try{
