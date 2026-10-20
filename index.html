@@ -622,6 +622,7 @@
     #textModeOverlay .tm-size-bar button{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
     #textModeOverlay .tm-size-bar button:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-size-bar button:active{transform:scale(.92)}
+    #textModeOverlay .tm-size-bar .tm-stop-btn{border-color:rgba(255,120,120,.65);background:rgba(255,80,80,.22);color:#ffd7d7}
     #textModeOverlay .tm-size-display{min-width:52px;text-align:center;font-size:14px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
     @media (max-width:768px){
       #textModeOverlay .tm-arabic{font-size:calc(36px * var(--tm-scale, 1));line-height:2.3}
@@ -807,6 +808,7 @@
   <div class="tm-size-bar">
     <button class="wake-btn" onclick="toggleWakeLockManual()" title="Håll skärmen vaken (avaktivera skärmsläckare)"><i class="fas fa-mug-hot"></i></button>
     <button class="sync-toggle-btn" id="syncToggleBtnTm" onclick="toggleWordSync()" title="Ljud/ord-synkning av/på"><i class="fas fa-wave-square"></i></button>
+    <button class="tm-stop-btn" onclick="stopSuraPlayback()" title="Stoppa uppspelning"><i class="fas fa-stop"></i></button>
     <button class="sync-offset-btn" onclick="adjustWordSyncOffset(-0.2)" title="Ord-synk tidigare"><i class="fas fa-backward-step"></i></button>
     <button class="sync-offset-btn" style="width:auto;padding:0 10px;font-size:12px;font-weight:900;border-radius:50px" title="Ord-synk-förskjutning"><span class="sync-offset-val">+0.0s</span></button>
     <button class="sync-offset-btn" onclick="adjustWordSyncOffset(0.2)" title="Ord-synk senare"><i class="fas fa-forward-step"></i></button>
