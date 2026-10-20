@@ -626,6 +626,8 @@
     #textModeOverlay .tm-size-bar button:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-size-bar button:active{transform:scale(.92)}
     #textModeOverlay .tm-size-bar .tm-stop-btn{border-color:rgba(255,120,120,.65);background:rgba(255,80,80,.22);color:#ffd7d7}
+    #textModeOverlay .tm-size-bar .tm-playpause-btn{border-color:rgba(120,255,180,.6);background:rgba(34,192,138,.25);color:#d4ffe6}
+    #textModeOverlay .tm-size-bar .tm-playpause-btn:hover{background:rgba(34,192,138,.45)}
     #textModeOverlay .tm-size-display{min-width:52px;text-align:center;font-size:14px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
     @media (max-width:768px){
       #textModeOverlay .tm-arabic{font-size:calc(36px * var(--tm-scale, 1));line-height:2.3}
@@ -811,6 +813,9 @@
   <div class="tm-size-bar">
     <button class="wake-btn" onclick="toggleWakeLockManual()" title="Håll skärmen vaken (avaktivera skärmsläckare)"><i class="fas fa-mug-hot"></i></button>
     <button class="sync-toggle-btn" id="syncToggleBtnTm" onclick="toggleWordSync()" title="Ljud/ord-synkning av/på"><i class="fas fa-wave-square"></i></button>
+    <button class="tm-nav-btn" onclick="tmPrevTrack()" title="Föregående vers"><i class="fas fa-backward"></i></button>
+    <button class="tm-playpause-btn" onclick="tmTogglePlayPause()" title="Spela/pausa"><i class="fas fa-play" id="tmPlayPauseIcon"></i></button>
+    <button class="tm-nav-btn" onclick="tmNextTrack()" title="Nästa vers"><i class="fas fa-forward"></i></button>
     <button class="tm-stop-btn" onclick="stopSuraPlayback()" title="Stoppa uppspelning"><i class="fas fa-stop"></i></button>
     <button class="sync-offset-btn" onclick="adjustWordSyncOffset(-0.2)" title="Ord-synk tidigare"><i class="fas fa-backward-step"></i></button>
     <button class="sync-offset-btn" style="width:auto;padding:0 10px;font-size:12px;font-weight:900;border-radius:50px" title="Ord-synk-förskjutning"><span class="sync-offset-val">+0.0s</span></button>
@@ -2907,6 +2912,70 @@ async function fetchAyahsForRange(surah, startAyah, endAyah){
    UPPSPELNINGSMOTOR
    ============================================================ */
 let audioQueue = [], currentAudio = null, audioLoop = false, audioDoneCb = null, activePlayBtn = null;
+let lastPlayedTrack = null;
+
+/* NY: transport-knappar (play/pausa, nästa, föregående) för helskärms-toolbaren */
+function updateTmPlayIcon(){
+  const icon = document.getElementById('tmPlayPauseIcon');
+  if(icon) icon.className = (currentAudio && currentAudio.paused) ? 'fas fa-play' : 'fas fa-pause';
+}
+function attachAudioEvents(audioEl, onEnd){
+  audioEl.onended = onEnd;
+  audioEl.onerror = onEnd;
+  audioEl.onplay = updateTmPlayIcon;
+  audioEl.onpause = updateTmPlayIcon;
+}
+function playTrackNow(t, onEnd){
+  currentAudio = new Audio(t.url);
+  attachAudioEvents(currentAudio, onEnd);
+  if (t.bismillah) showBismillahBanner(true);
+  if (t.onPlay) t.onPlay();
+  currentAudio.play().then(() => { startSyncLoop(currentAudio); updateTmPlayIcon(); }).catch(() => {
+    toast('⚠️ Kunde inte spela ljud');
+    currentAudio = null;
+    updateTmPlayIcon();
+    playNextInQueue();
+  });
+  updateTmPlayIcon();
+}
+function tmTogglePlayPause(){
+  if(!currentAudio){ toast('⚠️ Inget ljud spelas just nu'); return; }
+  if(currentAudio.paused){
+    currentAudio.play().then(() => { startSyncLoop(currentAudio); updateTmPlayIcon(); }).catch(() => {});
+  } else {
+    currentAudio.pause();
+    stopSyncLoop();
+    clearWordSync();
+  }
+  updateTmPlayIcon();
+}
+function tmNextTrack(){
+  if(!currentAudio){ toast('⚠️ Ingen uppspelning pågår'); return; }
+  const h = currentAudio.onended;
+  currentAudio.onended = null; currentAudio.onerror = null;
+  try{ currentAudio.pause(); }catch(e){}
+  stopSyncLoop(); clearWordSync(); currentAudio = null;
+  updateTmPlayIcon();
+  if(h) h(); else playNextInQueue();
+}
+function tmPrevTrack(){
+  if(!lastPlayedTrack){ toast('⚠️ Ingen tidigare vers'); return; }
+  const t = lastPlayedTrack;
+  if(currentAudio){
+    currentAudio.onended = null; currentAudio.onerror = null;
+    try{ currentAudio.pause(); }catch(e){}
+    stopSyncLoop(); clearWordSync(); currentAudio = null;
+  }
+  /* spela föregående vers igen; när den är klar fortsätter kön som vanligt */
+  playTrackNow(t, () => {
+    stopSyncLoop();
+    if (t.bismillah) showBismillahBanner(false);
+    clearWordSync();
+    currentAudio = null;
+    updateTmPlayIcon();
+    playNextInQueue();
+  });
+}
 let audioLoopTracks = null;
 let savedSuraTracks = null;
 let suraPlaybackActive = false;
@@ -2929,6 +2998,8 @@ function resetAudioEngine(){
   clearWordSync();
   audioQueue = []; 
   audioDoneCb = null; 
+  lastPlayedTrack = null;
+  updateTmPlayIcon();
   if (activePlayBtn){ resetPlayBtn(activePlayBtn); activePlayBtn = null; }
   showBismillahBanner(false);
 }
@@ -2977,13 +3048,17 @@ function playNextInQueue(){
     return;
   }
   const t = audioQueue.shift();
+  if(!t.bismillah) lastPlayedTrack = t;
   currentAudio = new Audio(t.url);
+  currentAudio.onplay = updateTmPlayIcon;
+  currentAudio.onpause = updateTmPlayIcon;
 
   currentAudio.onended = () => {
     stopSyncLoop();
     if (t.bismillah) showBismillahBanner(false);
     clearWordSync();
     currentAudio = null;
+    updateTmPlayIcon();
     playNextInQueue();
   };
   currentAudio.onerror = () => {
@@ -2991,6 +3066,7 @@ function playNextInQueue(){
     if (t.bismillah) showBismillahBanner(false);
     clearWordSync();
     currentAudio = null;
+    updateTmPlayIcon();
     playNextInQueue();
   };
   
@@ -2998,9 +3074,11 @@ function playNextInQueue(){
   if (t.onPlay) t.onPlay();
   currentAudio.play().then(() => {
     startSyncLoop(currentAudio);
+    updateTmPlayIcon();
   }).catch(() => { 
     toast('⚠️ Kunde inte spela ljud');
     currentAudio = null;
+    updateTmPlayIcon();
     playNextInQueue();
   });
 }
