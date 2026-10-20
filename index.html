@@ -2545,10 +2545,31 @@ async function fetchAyahTajweed(surah, ayah){
   tajweedPending.set(key, p);
   return p;
 }
+/* NY: håll arabisk kusivsammanfogning över span-gränser (mobila webbläsare fogar inte över element) */
+const AR_JOIN_CHAR = /[\u0622-\u064A\u066E-\u06D3]/;
+const AR_NONJOIN_FWD = '\u0622\u0623\u0625\u0626\u0627\u0621\u062F\u0630\u0631\u0632\u0648\u0624\u0629\u0649\u06CC\u0671\u0672\u0673\u0675\u0676\u0677';
+function fixArabicJoinBoundaries(html){
+  if(!html) return html;
+  const MARKS = '[\u064B-\u065F\u0670\u06D6-\u06ED]*';
+  /* gräns FÖRE ett span: föregående bokstav (med diakritika) sammanfogar framåt */
+  const reBefore = new RegExp('([\\u0622-\\u064A\\u066E-\\u06D3]' + MARKS + ')(<span [^>]*>)', 'g');
+  html = html.replace(reBefore, (m, run, tag) => {
+    const ch = run[0];
+    return (AR_JOIN_CHAR.test(ch) && !AR_NONJOIN_FWD.includes(ch)) ? run + '\u200D' + tag : m;
+  });
+  /* gräns EFTER ett span: sista bokstaven i spant (med diakritika) sammanfogar framåt + nästa bokstav är arabisk */
+  const reAfter = new RegExp('([\\u0622-\\u064A\\u066E-\\u06D3]' + MARKS + ')(<\\/span>)([\\u0622-\\u064A\\u066E-\\u06D3])', 'g');
+  html = html.replace(reAfter, (m, run, tag, nxt) => {
+    const ch = run[0];
+    return (AR_JOIN_CHAR.test(ch) && !AR_NONJOIN_FWD.includes(ch)) ? run + tag + '\u200D' + nxt : m;
+  });
+  return html;
+}
 function parseTajweedHtml(markup){
   if(!markup) return '';
-  return escapeHtml(markup)
+  const html = escapeHtml(markup)
     .replace(/\[([a-z]+)(?::\d+)?\[([^\]]*)\]/g, (m, rule, txt) => '<span class="tw-' + rule + '">' + txt + '</span>');
+  return fixArabicJoinBoundaries(html);
 }
 function tajweedSync(surah, ayah){
   const t = tajweedCache.get(surah + ':' + ayah);
@@ -2857,7 +2878,7 @@ function highlightGodWords(text){
     }
   });
   out += escapeHtml(text.slice(last));
-  return out;
+  return fixArabicJoinBoundaries(out);
 }
 
 /* ============================================================
