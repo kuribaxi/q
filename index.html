@@ -589,7 +589,7 @@
     .restore-chrome-btn.show{display:flex}
 
     /* ===== NY: TEXT-LÄGE (hel skärm, bara versens text) ===== */
-    #textModeOverlay{position:fixed;inset:0;z-index:9990;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px 80px;overflow-y:auto;text-align:center}
+    #textModeOverlay{position:fixed;inset:0;z-index:9990;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px calc(var(--tm-bar-h, 80px) + 24px + env(safe-area-inset-bottom));overflow-y:auto;text-align:center}
     #textModeOverlay.active{display:flex}
     #textModeOverlay .tm-ref{font-size:14px;font-weight:800;letter-spacing:.1em;opacity:.65;margin-bottom:20px;text-transform:uppercase;color:#fff}
     #textModeOverlay .tm-arabic{font-family:var(--quran-font);font-size:calc(54px * var(--tm-scale, 1));line-height:2.4;direction:rtl;color:#fff !important;max-width:1000px;margin:0 auto 24px;word-break:break-word;text-shadow:0 2px 8px rgba(0,0,0,.35);font-feature-settings:"liga" 1, "calt" 1}
@@ -627,7 +627,7 @@
     @media (max-width:768px){
       #textModeOverlay .tm-arabic{font-size:calc(36px * var(--tm-scale, 1));line-height:2.3}
       #textModeOverlay .tm-text{font-size:calc(26px * var(--tm-scale, 1));line-height:1.75}
-      #textModeOverlay{padding:56px 18px calc(120px + env(safe-area-inset-bottom))}
+      #textModeOverlay{padding:56px 18px calc(var(--tm-bar-h, 120px) + 24px + env(safe-area-inset-bottom))}
     }
 
     @media (max-width:1100px){
@@ -4764,6 +4764,26 @@ function updateFsIcon(){
    TEXT-LÄGE (hel skärm, bara versens text, vit text)
    ============================================================ */
 let textModeOn = false;
+/* NY: se till att versen aldrig hamnar under toolbaren — mät toolbarens höjd dynamiskt */
+function updateTmToolbarPad(){
+  const ov = document.getElementById('textModeOverlay');
+  const bar = ov ? ov.querySelector('.tm-size-bar') : null;
+  if(!ov || !bar) return;
+  ov.style.setProperty('--tm-bar-h', bar.offsetHeight + 'px');
+}
+function initTmToolbarPad(){
+  const ov = document.getElementById('textModeOverlay');
+  const bar = ov ? ov.querySelector('.tm-size-bar') : null;
+  if(!ov || !bar || bar.__padInit) return;
+  bar.__padInit = true;
+  try{
+    const ro = new ResizeObserver(() => updateTmToolbarPad());
+    ro.observe(bar);
+  }catch(e){}
+  window.addEventListener('resize', () => updateTmToolbarPad());
+  window.addEventListener('orientationchange', () => setTimeout(updateTmToolbarPad, 250));
+  updateTmToolbarPad();
+}
 let textModeBg = '#000000';
 try{ textModeBg = localStorage.getItem('quranTextModeBg') || '#000000'; }catch(e){ textModeBg = '#000000'; }
 let textModeScale = 1;
@@ -4890,6 +4910,9 @@ function toggleTextMode(){
   if(textModeOn){
     applyTextModeBg();
     updateTextModeContent();
+    initTmToolbarPad();
+    updateTmToolbarPad();
+    setTimeout(updateTmToolbarPad, 300);
     prepareWordSync(currentAyaData?.surahNum, currentAyaData?.ayahNum);
     try{
       const el = document.documentElement;
