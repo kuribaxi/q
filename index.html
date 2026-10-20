@@ -460,6 +460,11 @@
 #textModeOverlay .sync-toggle-btn{width:44px;height:44px;font-size:17px}
 #textModeOverlay .wake-btn{width:44px;height:44px;font-size:17px}
 #textModeOverlay .verse-style-btn{width:44px;height:44px;font-size:17px}
+/* NY: ord-synk-förskjutning (+/-) */
+.sync-offset-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);color:#fff;font-family:var(--font);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px)}
+.sync-offset-btn:hover{background:rgba(255,255,255,.32)}
+.sync-offset-btn:active{transform:scale(.9)}
+#textModeOverlay .sync-offset-btn{width:44px;height:44px;font-size:17px}
     /* Ord-synkning: versens ord markeras i takt med ljudet */
     .daily-aya-arabic .aw{transition:background .22s,box-shadow .22s;border-radius:9px;padding:0 5px;margin:0 -1px}
     .daily-aya-arabic .aw.aw-active{background:rgba(255,255,255,.30);box-shadow:0 0 16px rgba(255,255,255,.28)}
@@ -612,15 +617,16 @@
     #textModeOverlay .tm-close:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-close:active{transform:scale(.92)}
     #tmColorInput{position:fixed;left:-100px;top:-100px;width:0;height:0;opacity:0;pointer-events:none}
-    #textModeOverlay .tm-size-bar{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:9992;display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:50px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px)}
-    #textModeOverlay .tm-size-bar button{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    /* FIX: mobilanpassat verktygsfält i text-läge — radbryter istället för att hamna utanför skärmen */
+    #textModeOverlay .tm-size-bar{position:fixed;bottom:max(16px, env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:9992;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:50px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 20px);box-sizing:border-box}
+    #textModeOverlay .tm-size-bar button{width:40px;height:40px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
     #textModeOverlay .tm-size-bar button:hover{background:rgba(255,255,255,.28)}
     #textModeOverlay .tm-size-bar button:active{transform:scale(.92)}
     #textModeOverlay .tm-size-display{min-width:52px;text-align:center;font-size:14px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
     @media (max-width:768px){
-      #textModeOverlay .tm-arabic{font-size:36px;line-height:2.3}
-      #textModeOverlay .tm-text{font-size:26px;line-height:1.75}
-      #textModeOverlay{padding:56px 18px 30px}
+      #textModeOverlay .tm-arabic{font-size:calc(36px * var(--tm-scale, 1));line-height:2.3}
+      #textModeOverlay .tm-text{font-size:calc(26px * var(--tm-scale, 1));line-height:1.75}
+      #textModeOverlay{padding:56px 18px calc(120px + env(safe-area-inset-bottom))}
     }
 
     @media (max-width:1100px){
@@ -762,8 +768,8 @@
       .restore-chrome-btn{width:38px;height:38px;font-size:14px;top:8px;right:8px}
       .sr-fav-btn{width:30px;height:30px;font-size:12px;top:8px;right:8px}
       .sr-ref,.sr-arabic{padding-right:36px}
-      #textModeOverlay .tm-arabic{font-size:28px;line-height:2.2}
-      #textModeOverlay .tm-text{font-size:21px;line-height:1.7}
+      #textModeOverlay .tm-arabic{font-size:calc(28px * var(--tm-scale, 1));line-height:2.2}
+      #textModeOverlay .tm-text{font-size:calc(21px * var(--tm-scale, 1));line-height:1.7}
     }
 
     /* ===== NY TOPBAR & SPEED & ZOOM ===== */
@@ -801,6 +807,9 @@
   <div class="tm-size-bar">
     <button class="wake-btn" onclick="toggleWakeLockManual()" title="Håll skärmen vaken (avaktivera skärmsläckare)"><i class="fas fa-mug-hot"></i></button>
     <button class="sync-toggle-btn" id="syncToggleBtnTm" onclick="toggleWordSync()" title="Ljud/ord-synkning av/på"><i class="fas fa-wave-square"></i></button>
+    <button class="sync-offset-btn" onclick="adjustWordSyncOffset(-0.2)" title="Ord-synk tidigare"><i class="fas fa-backward-step"></i></button>
+    <button class="sync-offset-btn" style="width:auto;padding:0 10px;font-size:12px;font-weight:900;border-radius:50px" title="Ord-synk-förskjutning"><span class="sync-offset-val">+0.0s</span></button>
+    <button class="sync-offset-btn" onclick="adjustWordSyncOffset(0.2)" title="Ord-synk senare"><i class="fas fa-forward-step"></i></button>
     <button class="verse-style-btn" id="verseStyleBtnTm" onclick="toggleVerseStyle()" title="Växla versstil: tazhib/enkel"><i class="fas fa-gem"></i></button>
     <button onclick="changeTextModeSize(-0.1)" title="Minska textstorlek (−)"><i class="fas fa-minus"></i></button>
     <span class="tm-size-display" id="tmSizeDisplay">100%</span>
@@ -910,6 +919,9 @@
       <button class="verse-style-btn" id="verseStyleBtn" onclick="toggleVerseStyle()" title="Växla versstil: tazhib/enkel"><i class="fas fa-gem"></i></button>
       <button class="verse-style-btn wake-btn" onclick="toggleWakeLockManual()" title="Håll skärmen vaken (avaktivera skärmsläckare)"><i class="fas fa-mug-hot"></i></button>
       <button class="sync-toggle-btn" id="syncToggleBtn" onclick="toggleWordSync()" title="Ljud/ord-synkning av/på"><i class="fas fa-wave-square"></i></button>
+      <button class="day-action-btn sync-offset-btn" onclick="adjustWordSyncOffset(-0.2)" title="Ord-synk tidigare"><i class="fas fa-backward-step"></i></button>
+      <button class="day-action-btn sync-offset-btn" style="width:auto;padding:0 10px;font-size:11px;font-weight:900" title="Ord-synk-förskjutning"><span class="sync-offset-val">+0.0s</span></button>
+      <button class="day-action-btn sync-offset-btn" onclick="adjustWordSyncOffset(0.2)" title="Ord-synk senare"><i class="fas fa-forward-step"></i></button>
       <button class="day-action-btn" onclick="suraPlayerBack()" title="Föregående vers"><i class="fas fa-backward-step"></i></button>
       <button class="day-action-btn" id="playSuraBtn" onclick="playSelectedSura(this)" title="Spela sura"><i class="fas fa-play"></i></button>
       <button class="day-action-btn" onclick="stopSuraPlayback()" title="Stoppa"><i class="fas fa-stop"></i></button>
@@ -962,7 +974,7 @@
         <button class="verse-tool" data-role="play" onclick="playSurah(1,this)" title="Spela upp"><i class="fas fa-play"></i></button>
         <button class="verse-tool" onclick="openTafsirChapter(1,'Al-Fātiha')" title="Tafsir"><i class="fas fa-book-open"></i></button>
       </div>
-      <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾</div>
+      <div class="arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرَ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾</div>
     </div>
     <div class="translation" data-tr="fatiha"></div>
   </div>
@@ -1417,7 +1429,7 @@ const TRANSLATIONS = {
     nasr: '«کاتێک یارمەتی خودا و سەرکەوتن دێت، و دەبینیت خەڵکی بە کۆمەڵ دەچنە ناو ئایینی خودا، ئەوا ستایشی پەروەردگارت بکە و داوای لێخۆشبوونی لێ بکە، بێگومان ئەو زۆر تۆبەوەرگرە.»',
     qalam51: '«وە بێگومان ئەوانەی بێباوەڕ بوون، کاتێک قورئانیان بیست، خەریک بوو بە چاوەکانیان بتبەننەوە، و دەیگووت: بەڕاستی ئەمە شێتە.»',
     ruqya1: '«بە ناوی خوا ڕوقیەت بۆ دەکەم، لە هەموو شتێک کە ئازارت دەدات، لە شەڕی هەموو نەفسیک یان چاوی حەسوود. خوا شیفات بدات، بە ناوی خوا ڕوقیەت بۆ دەکەم.»',
-    ruqya2: '«خوایە، پەروەردگاری خەڵکی! ناخۆشی بەرەوە. شیفای بدە، چونکە تۆ شیفادەری. هیچ شیفایەک نییە جگە لە شیفای تۆ – شیفایەک کە هیچ نەخۆشییەک بەجێ نەهێڵێت.»',
+    ruqya2: '«خوایە، پەروەردگاری خەڵقی! ناخۆشی بەرەوە. شیفای بدە، چونکە تۆ شیفادەری. هیچ شیفایەک نییە جگە لە شیفای تۆ – شیفایەک کە هیچ نەخۆشییەک بەجێ نەهێڵێت.»',
     ruqya3: '«بە ناوی ئەو خوایەی کە بە ناوی ئەو هیچ شتێک لە زەوی و ئاسمان زیانی پێ ناگات، و ئەو بیسەر و زانایە.»',
     ruqya4: '«خوایە! هیچ شتێک ئاسان نییە جگە لەوەی تۆ ئاسانی دەکەیت، و تۆ خەفەت ئاسان دەکەیت کاتێک بیەوێت.»',
     tasbihcombo: '«پاکی بۆ خوایە و سوپاس بۆ خوایە. هیچ خوایەک نییە جگە لە خوا، و خوا گەورەترە. هیچ هێز و تواناییەک نییە جگە بە خوا. داوای لێخۆشبوون لە خوای مەزن دەکەم و بۆ لای دەگەڕێمەوە. پاکی بۆ خوایە و سوپاس بۆ خوایە، پاکی بۆ خوای مەزن. خوا بەسمانە، باشترین یارمەتیدەر و باشترین سەرکەوتووکەر.»',
@@ -1491,7 +1503,7 @@ function normalizeArabic(text){
     .replace(/[\u06DD\u06DE\u08E3-\u08FF\uFE70-\uFE7F]/g, '')
     .replace(/[\uFD3E\uFD3F]/g, '')
     .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, '')
-    .replace(/[،؛؟!.:\-_()[\]{}'"»«]/g, ' ')
+    .replace(/[،؛؟!.:\-_()\[\]{}'"»«]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/[أإآٱا]/g, 'ا')
@@ -2056,11 +2068,9 @@ async function toggleSearchResultFavorite(surah, ayah, surahName, event){
       const entries = Object.entries(QURAN_EDITIONS);
       const results = await Promise.allSettled(entries.map(([, ed]) => fetchAyahEdition(surah, ayah, ed)));
       data = { surahNum: surah, ayahNum: ayah, surahName: surahName, arabic: match.arabic };
-      entries.forEach(([key], idx) => {
+      entries.forEach(([key], idx => {
         data[key] = (results[idx].status === 'fulfilled') ? results[idx].value : '';
       });
-      data['ku-KM'] = await fetchKurmanjiTranslation(surah, ayah);
-      if(!data.sv && data.en) data.sv = data.en;
     } else {
       data = await fetchAyaFromApi(surah, ayah);
     }
@@ -2499,7 +2509,7 @@ async function fetchAyahTajweed(surah, ayah){
 function parseTajweedHtml(markup){
   if(!markup) return '';
   return escapeHtml(markup)
-    .replace(/\[([a-z])(?::\d+)?\[([^\]]*)\]/g, (m, rule, txt) => '<span class="tw-' + rule + '">' + txt + '</span>');
+    .replace(/\[([a-z]+)(?::\d+)?\[([^\]]*)\]\]/g, (m, rule, txt) => '<span class="tw-' + rule + '">' + txt + '</span>');
 }
 function tajweedSync(surah, ayah){
   const t = tajweedCache.get(surah + ':' + ayah);
@@ -2525,7 +2535,7 @@ function splitAyahTokens(str){
   const tokens = [];
   let cur = '';
   let i = 0;
-  const ruleStart = /\[[a-z](?::\d+)?$/;
+  const ruleStart = /\[[a-z]+(?::\d+)?$/;
   while(i < str.length){
     const ch = str[i];
     if(ch === '[' && ruleStart.test(cur)){
@@ -2568,6 +2578,24 @@ try{
   const s = localStorage.getItem('quranWordSync');
   if(s === '0') wordSyncEnabled = false;
 }catch(e){}
+
+/* NY: manuell förskjutning för ord-synk (± sekunder, justerbar med +/- knappar) */
+let wordSyncOffset = 0;
+try{
+  const savedOffset = parseFloat(localStorage.getItem('quranWordSyncOffset'));
+  if(!isNaN(savedOffset) && savedOffset >= -3 && savedOffset <= 3) wordSyncOffset = savedOffset;
+}catch(e){}
+function updateWordSyncOffsetDisplay(){
+  document.querySelectorAll('.sync-offset-val').forEach(el => {
+    el.textContent = (wordSyncOffset >= 0 ? '+' : '') + wordSyncOffset.toFixed(1) + 's';
+  });
+}
+function adjustWordSyncOffset(delta){
+  wordSyncOffset = Math.max(-3, Math.min(3, +(wordSyncOffset + delta).toFixed(1)));
+  try{ localStorage.setItem('quranWordSyncOffset', wordSyncOffset); }catch(e){}
+  updateWordSyncOffsetDisplay();
+  toast('⏱️ Ord-synk förskjuten ' + (wordSyncOffset >= 0 ? '+' : '') + wordSyncOffset.toFixed(1) + 's');
+}
 
 let tafsirSyncSpeed = parseFloat(localStorage.getItem('quranTafsirSyncSpeed')) || 1.0;
 const SYNC_SPEEDS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
@@ -2648,11 +2676,11 @@ function updateWordSync(audioEl){
   ].filter(g => g.length);
   if(!groups.length) return;
 
-  /* NY: hämta offset per qari */
+  /* NY: hämta offset per qari + manuell justering (+/- knappar) */
   const q = QARIS.find(x => x.id === currentQari);
   const offset = (q && q.offset) || 0.15;
 
-  const adjustedTime = Math.max(0, audioEl.currentTime - offset);
+  const adjustedTime = Math.max(0, audioEl.currentTime - offset + wordSyncOffset);
   const effectiveDuration = Math.max(0.1, (audioEl.duration - offset) / tafsirSyncSpeed);
   const progress = Math.min(1, (adjustedTime / tafsirSyncSpeed) / effectiveDuration);
   const target = progress * currentWordTotalWeight;
@@ -4783,7 +4811,7 @@ function toggleWakeLockManual(){
     if(!playing && !fs && wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; }
   }
   updateWakeLockBtns();
-  toast(wakeLockManual ? '🔒 Sk\u00e4rmen h\u00e5lls vaken' : '🔓 Sk\u00e4rmsl\u00e4ckare till\u00e5ten');
+  toast(wakeLockManual ? '🔒 Skärmen hålls vaken' : '🔓 Skärmsläckare tillåten');
 }
 function updateWakeLockBtns(){
   document.querySelectorAll('.wake-btn').forEach(b => b.classList.toggle('active', wakeLockManual));
@@ -4944,6 +4972,7 @@ try{
   loadTafsirColors();
 }catch(e){}
 updateVerseStyleBtns();
+updateWordSyncOffsetDisplay();
 try{ if(localStorage.getItem('quranWakeLockManual') === '1'){ wakeLockManual = true; updateWakeLockBtns(); requestWakeLock(); } }catch(e){}
 </script>
 
