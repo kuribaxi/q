@@ -167,7 +167,7 @@
         gap: 12px;
       }
       .top-bar-clock:hover {
-        transform: none; /* Stäng av zoomen på mobil för att undvika overflow */
+        transform: none;
       }
       .top-bar-clock .clock-main {
         display: flex;
@@ -209,11 +209,12 @@
     .modal-card .modal-close{width:100%;height:52px;border-radius:var(--rsm);border:none;background:var(--primary);color:#fff;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:all .2s}
     .modal-card .modal-close:active{opacity:.85;transform:scale(.98)}
 
+    /* TAFSIR MODAL TOPBAR (NY) */
     .tafsir-card{max-width:800px;width:100%;padding:0;display:flex;flex-direction:column;max-height:90vh;overflow:hidden}
     .tafsir-card:fullscreen,.tafsir-card:-webkit-full-screen{max-width:100vw;max-height:100vh;width:100vw;height:100vh;border-radius:0;background:var(--surface)}
     .tafsir-card:fullscreen .tafsir-scroll,.tafsir-card:-webkit-full-screen .tafsir-scroll{flex:1}
     .tafsir-card.tafsir-textmode{background:var(--tafsir-bg-color) !important}
-    .tafsir-card.tafsir-textmode .tafsir-topbar,
+    .tafsir-card.tafsir-textmode .tafsir-topbar-new,
     .tafsir-card.tafsir-textmode .tafsir-translate-bar,
     .tafsir-card.tafsir-textmode .tafsir-tools-bar,
     .tafsir-card.tafsir-textmode .gt-panel,
@@ -228,11 +229,37 @@
     .tafsir-size-bar button:hover{background:rgba(255,255,255,.28)}
     .tafsir-size-bar button:active{transform:scale(.92)}
     .tafsir-size-bar .ts-size-display{min-width:52px;text-align:center;font-size:14px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}
-    .tafsir-topbar{display:flex;justify-content:space-between;align-items:center;padding:22px 24px 14px;flex-shrink:0}
-    .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3}
-    .tafsir-close{width:40px;height:40px;border-radius:11px;border:none;background:var(--surface2);color:var(--text2);cursor:pointer;font-size:16px;flex-shrink:0;transition:all .2s}
-    .tafsir-close:active{transform:scale(.92)}
-    .tafsir-ayah-ref{font-size:13px;font-weight:900;color:var(--primary);background:var(--primary-soft);padding:9px 13px;border-radius:11px;min-width:52px;text-align:center;flex-shrink:0}
+    
+    /* NY TOPBAR STYLE */
+    .tafsir-topbar-new{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:var(--surface2);border-bottom:1.5px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+    
+    .tafsir-topbar-left{display:flex;align-items:center;gap:10px;flex:1;min-width:150px}
+    .tafsir-topbar-left i{font-size:20px;color:var(--primary)}
+    .tafsir-title{font-size:18px;font-weight:900;color:var(--text);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    
+    .tafsir-nav-group{display:flex;align-items:center;gap:6px;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:4px;flex-shrink:0}
+    .tafsir-nav-btn{width:36px;height:36px;border-radius:10px;border:none;background:transparent;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s}
+    .tafsir-nav-btn:hover{background:var(--primary-soft);color:var(--primary)}
+    .tafsir-nav-btn:active{transform:scale(.92)}
+    
+    .tafsir-ayah-input{width:70px;height:36px;border-radius:10px;border:none;background:transparent;text-align:center;font-family:var(--font);font-size:15px;font-weight:800;color:var(--primary);outline:none}
+    .tafsir-ayah-input:focus{background:var(--primary-soft)}
+    
+    .tafsir-topbar-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .tafsir-icon-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s}
+    .tafsir-icon-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+    .tafsir-icon-btn:active{transform:scale(.92)}
+    .tafsir-icon-btn.close-btn:hover{background:var(--rose-soft);color:var(--rose);border-color:var(--rose)}
+
+    /* Hastighetsknapp */
+    .speed-btn{padding:0 12px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:800;transition:all .2s}
+    .speed-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+    .speed-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .speed-btn .speed-val{min-width:36px;text-align:center}
+
+    /* FIX 2: Zoom-knappar i tafsir */
+    .tafsir-zoom-controls{display:flex;align-items:center;gap:4px;margin-right:8px}
+
     .tafsir-translate-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:12px 24px;background:var(--surface2);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);flex-shrink:0}
     .tafsir-translate-bar .label{font-size:12px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-right:4px;display:flex;align-items:center;gap:6px}
     .tafsir-translate-bar button{padding:6px 12px;border-radius:50px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
@@ -642,7 +669,7 @@
       .aya-picker-grid{grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));gap:6px}
       .aya-num-btn{min-height:46px;font-size:14px;border-radius:10px}
       .aya-picker-actions button{height:48px;font-size:14px;min-width:100px}
-      .tafsir-topbar{padding:16px 16px 10px}
+      .tafsir-topbar-new { padding: 10px 12px; }
       .tafsir-title{font-size:16px}
       .tafsir-translate-bar{padding:10px 16px;gap:5px}
       .tafsir-translate-bar button{font-size:11px;padding:5px 10px}
@@ -692,8 +719,14 @@
       .fav-verse-text.ku,.fav-verse-text.ku-KM,.fav-verse-text.fa{font-size:20px;line-height:1.8}
       .modal-card{padding:20px}
       .tafsir-card{padding:0}
-      .tafsir-topbar{padding:14px 14px 8px}
-      .tafsir-title{font-size:15px}
+      .tafsir-topbar-new { padding: 8px 10px; flex-direction: column; align-items: stretch; }
+      .tafsir-topbar-left { justify-content: center; }
+      .tafsir-nav-group { justify-content: space-between; margin: 4px 0; }
+      .tafsir-topbar-right { justify-content: space-between; flex-wrap: wrap; margin-top: 4px;}
+      .tafsir-icon-btn { width: 32px; height: 32px; }
+      .speed-btn { height: 32px; padding: 0 6px; font-size: 10px; }
+      .speed-btn .speed-val { min-width: 24px; }
+      
       .tafsir-translate-bar{padding:8px 14px;gap:4px}
       .tafsir-translate-bar button{font-size:10px;padding:4px 8px}
       .tafsir-translate-bar .label{font-size:10px}
@@ -733,45 +766,25 @@
       #textModeOverlay .tm-text{font-size:21px;line-height:1.7}
     }
 
-    /* ===== FIX 2: Tafsir-knappar ===== */
-    #tafsirHideAllBtn{
-      display:flex;align-items:center;justify-content:center;gap:6px;
-      margin: 0 24px 10px 24px; /* Inuti ramen, men under toppraden */
-      height:42px;border:none;cursor:pointer;
-      background:linear-gradient(90deg,var(--emerald),#0B7F92);
-      color:#fff;font-family:var(--font);font-size:13px;font-weight:800;
-      letter-spacing:.02em;flex-shrink:0;border-radius: var(--rsm);
-    }
-    #tafsirHideAllBtn:hover{filter:brightness(1.08)}
-    #tafsirHideAllBtn:active{opacity:.9}
+    /* ===== NY TOPBAR & SPEED & ZOOM ===== */
+    .tafsir-topbar-new{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:var(--surface2);border-bottom:1.5px solid var(--border);flex-shrink:0;flex-wrap:wrap}
     
-    /* När allt är gömt: bara tafsir-texten kvar */
-    .tafsir-card.tafsir-onlytext .tafsir-topbar,
-    .tafsir-card.tafsir-onlytext .tafsir-translate-bar,
-    .tafsir-card.tafsir-onlytext .tafsir-tools-bar,
-    .tafsir-card.tafsir-onlytext .gt-panel,
-    .tafsir-card.tafsir-onlytext .tafsir-source{display:none !important}
-    .tafsir-card.tafsir-onlytext #tafsirHideAllBtn{display:none !important}
-    .tafsir-card.tafsir-onlytext .tafsir-scroll{padding:4vh 6vw;background:var(--tafsir-bg-color)}
-    .tafsir-card.tafsir-onlytext .tafsir-body{font-size:calc(var(--tafsir-font-size) * 1.05) !important;line-height:2 !important}
+    .speed-btn-container{display:flex;align-items:center;gap:4px}
+    .speed-btn{padding:0 10px;height:34px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:4px;font-family:var(--font);font-size:12px;font-weight:800;transition:all .2s}
+    .speed-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+    .speed-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .speed-btn .speed-val{min-width:32px;text-align:center}
+
+    .tafsir-zoom-controls{display:flex;align-items:center;gap:2px;margin-right:8px}
+    .tafsir-zoom-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;transition:all .2s}
+    .tafsir-zoom-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+    .tafsir-zoom-btn:active{transform:scale(.92)}
     
-    /* Flytande "Visa tafsir"-knapp (flyttad till VÄNSTER sida) */
-    #tafsirShowAllBtn{
-      display:none;position:fixed;bottom:16px;left:16px;z-index:99998;
-      padding:10px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.4);
-      background:rgba(0,0,0,.6);color:#fff;font-family:var(--font);font-size:13px;font-weight:800;
-      cursor:pointer;backdrop-filter:blur(8px);gap:8px;align-items:center;
-      box-shadow:0 6px 24px rgba(0,0,0,.4);
+    @media (max-width: 768px) {
+      .tafsir-topbar-new { padding: 10px 12px; }
+      .speed-btn { height: 32px; padding: 0 8px; font-size: 11px; }
+      .tafsir-ayah-input { width: 60px; }
     }
-    #tafsirShowAllBtn:hover{background:rgba(0,0,0,.78)}
-    #tafsirShowAllBtn:active{transform:scale(.95)}
-    .tafsir-card.tafsir-onlytext ~ #tafsirShowAllBtn,
-    body.tafsir-onlytext-on #tafsirShowAllBtn{display:flex}
-    @media (max-width: 480px){
-      #tafsirHideAllBtn{font-size:12px;height:38px;margin: 0 14px 8px 14px;}
-      #tafsirShowAllBtn{font-size:12px;padding:8px 14px;bottom:12px;left:12px;}
-    }
-    /* ===== SLUT FIX 2 ===== */
   </style>
 </head>
 <body>
@@ -1165,24 +1178,38 @@
 <!-- TAFSIR-MODAL -->
 <div class="modal-ov h" id="tafsirModal" onclick="if(event.target===this)closeTafsir()">
   <div class="modal-card tafsir-card">
-    <div class="tafsir-topbar">
-      <div class="tafsir-title" id="tafsirTitle"><i class="fas fa-book-open"></i> Tafsir</div>
-      <div style="display:flex;gap:8px;flex-shrink:0">
-        <button class="tafsir-close" id="tafsirPrevAyah" onclick="tafsirGoRelative(-1)" title="Föregående vers (←)" style="display:none"><i class="fas fa-chevron-left"></i></button>
-        <span class="tafsir-ayah-ref" id="tafsirAyahRef" style="display:none"></span>
-        <button class="tafsir-close" id="tafsirNextAyah" onclick="tafsirGoRelative(1)" title="Nästa vers (→)" style="display:none"><i class="fas fa-chevron-right"></i></button>
-        <button class="tafsir-close" id="tafsirFsBtn" onclick="toggleTafsirFullscreen()" title="Helskärm"><i class="fas fa-expand" id="tafsirFsIcon"></i></button>
-        <button class="tafsir-close" id="tafsirTextModeBtn" onclick="toggleTafsirTextMode()" title="Helskärm – endast text"><i class="fas fa-book-open"></i></button>
-        <button class="tafsir-close" onclick="closeTafsir()"><i class="fas fa-times"></i></button>
+    <!-- NY TOPBAR -->
+    <div class="tafsir-topbar-new">
+      <div class="tafsir-topbar-left">
+        <i class="fas fa-book-open"></i>
+        <div class="tafsir-title" id="tafsirTitle">Tafsir</div>
+      </div>
+      
+      <div class="tafsir-nav-group">
+        <button class="tafsir-nav-btn" id="tafsirPrevAyah" onclick="tafsirGoRelative(-1)" title="Föregående vers (←)"><i class="fas fa-chevron-left"></i></button>
+        <input type="text" class="tafsir-ayah-input" id="tafsirAyahRef" value="" readonly>
+        <button class="tafsir-nav-btn" id="tafsirNextAyah" onclick="tafsirGoRelative(1)" title="Nästa vers (→)"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      
+      <div class="tafsir-topbar-right">
+        <!-- Zoom-kontroller -->
+        <div class="tafsir-zoom-controls">
+          <button class="tafsir-zoom-btn" onclick="changeTafsirFontSize(-1)" title="Minska textstorlek"><i class="fas fa-minus"></i></button>
+          <button class="tafsir-zoom-btn" onclick="changeTafsirFontSize(1)" title="Öka textstorlek"><i class="fas fa-plus"></i></button>
+        </div>
+        <!-- Hastighetskontroll -->
+        <div class="speed-btn-container">
+          <button class="speed-btn" onclick="cycleTafsirSyncSpeed()" title="Justera ord-synk hastighet">
+            <i class="fas fa-stopwatch"></i> <span class="speed-val" id="tafsirSpeedDisplay">1.0x</span>
+          </button>
+        </div>
+        <button class="tafsir-icon-btn" id="tafsirFsBtn" onclick="toggleTafsirFullscreen()" title="Helskärm"><i class="fas fa-expand" id="tafsirFsIcon"></i></button>
+        <button class="tafsir-icon-btn" id="tafsirTextModeBtn" onclick="toggleTafsirTextMode()" title="Helskärm – endast text"><i class="fas fa-align-left"></i></button>
+        <button class="tafsir-icon-btn" id="tafsirHideAllBtn" onclick="toggleTafsirOnlyText(true)" title="Göm allt utom texten"><i class="fas fa-eye-slash"></i></button>
+        <button class="tafsir-icon-btn close-btn" onclick="closeTafsir()" title="Stäng"><i class="fas fa-times"></i></button>
       </div>
     </div>
     
-    <!-- ===== FIX 2: Göm allt-knapp (placerad inuti ramen) ===== -->
-    <button id="tafsirHideAllBtn" onclick="toggleTafsirOnlyText(true)" title="Göm flikar och verktyg – läs bara texten">
-      <i class="fas fa-eye-slash"></i> Göm allt utom texten
-    </button>
-    <!-- ===== SLUT FIX 2 ===== -->
-
     <div class="tafsir-translate-bar" id="tafsirTranslateBar">
       <span class="label"><i class="fas fa-language"></i> Tafsir:</span>
       <button data-tl="original" class="active" onclick="translateTafsirTo('original')">📄 Original (EN)</button>
@@ -1240,11 +1267,9 @@
   </div>
 </div>
 
-<!-- ===== FIX 2: Flytande "Visa tafsir"-knapp (placerad till vänster) ===== -->
-<button id="tafsirShowAllBtn" onclick="toggleTafsirOnlyText(false)" title="Visa flikar och verktyg igen">
+<button id="tafsirShowAllBtn" onclick="toggleTafsirOnlyText(false)" title="Visa flikar och verktyg igen" style="display:none;position:fixed;bottom:16px;left:16px;z-index:99998;padding:10px 16px;border-radius:50px;border:1.5px solid rgba(255,255,255,.4);background:rgba(0,0,0,.6);color:#fff;font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;backdrop-filter:blur(8px);gap:8px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.4);">
   <i class="fas fa-eye"></i> Visa tafsir
 </button>
-<!-- ===== SLUT FIX 2 ===== -->
 
 <!-- AYA-VÄLJAR-MODAL -->
 <div class="modal-ov h" id="ayaPickerModal" onclick="if(event.target===this)closeAyaPicker()">
@@ -2536,13 +2561,28 @@ function getTajweedWordHtml(surah, ayah){
 }
 
 /* ============================================================
-   FÖRBÄTTRAD ORD-SYNK
+   FÖRBÄTTRAD ORD-SYNK & HASTIGHET
    ============================================================ */
 let wordSyncEnabled = true;
 try{
   const s = localStorage.getItem('quranWordSync');
   if(s === '0') wordSyncEnabled = false;
 }catch(e){}
+
+let tafsirSyncSpeed = parseFloat(localStorage.getItem('quranTafsirSyncSpeed')) || 1.0;
+const SYNC_SPEEDS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
+function cycleTafsirSyncSpeed(){
+  let idx = SYNC_SPEEDS.indexOf(tafsirSyncSpeed);
+  if (idx === -1) idx = 2;
+  idx = (idx + 1) % SYNC_SPEEDS.length;
+  tafsirSyncSpeed = SYNC_SPEEDS[idx];
+  localStorage.setItem('quranTafsirSyncSpeed', tafsirSyncSpeed);
+  
+  const display = document.getElementById('tafsirSpeedDisplay');
+  if(display) display.textContent = tafsirSyncSpeed.toFixed(2).replace('.00', '.0') + 'x';
+  
+  toast('⏱️ Ord-synk hastighet: ' + tafsirSyncSpeed + 'x');
+}
 
 function applyWordSyncState(){
   document.querySelectorAll('.sync-toggle-btn').forEach(b => {
@@ -2555,6 +2595,9 @@ function applyWordSyncState(){
     b.title = wordSyncEnabled ? 'Ljud/ord-synkning PÅ — klicka för av' : 'Ljud/ord-synkning AV — klicka för på';
   });
   if(!wordSyncEnabled) clearWordSync();
+  
+  const display = document.getElementById('tafsirSpeedDisplay');
+  if(display) display.textContent = tafsirSyncSpeed.toFixed(2).replace('.00', '.0') + 'x';
 }
 
 function toggleWordSync(){
@@ -2610,8 +2653,8 @@ function updateWordSync(audioEl){
   const offset = (q && q.offset) || 0.15;
 
   const adjustedTime = Math.max(0, audioEl.currentTime - offset);
-  const effectiveDuration = Math.max(0.1, audioEl.duration - offset);
-  const progress = Math.min(1, adjustedTime / effectiveDuration);
+  const effectiveDuration = Math.max(0.1, (audioEl.duration - offset) / tafsirSyncSpeed);
+  const progress = Math.min(1, (adjustedTime / tafsirSyncSpeed) / effectiveDuration);
   const target = progress * currentWordTotalWeight;
 
   let acc = 0, activeIdx = currentWordWeights.length - 1;
@@ -4310,8 +4353,11 @@ async function openTafsirAyah(surah, ayah, label){
   const title = document.getElementById('tafsirTitle');
   const source = document.getElementById('tafsirSource');
   const body = document.getElementById('tafsirBody');
+  const refInput = document.getElementById('tafsirAyahRef');
 
-  title.innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + escapeHtml(tafsirState.chapterLabel);
+  title.innerHTML = escapeHtml(tafsirState.chapterLabel);
+  if(refInput) refInput.value = surah + ':' + ayah;
+  
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
   body.classList.remove('rtl');
@@ -4354,7 +4400,11 @@ async function openTafsirChapter(surah, chapterName){
   const title = document.getElementById('tafsirTitle');
   const source = document.getElementById('tafsirSource');
   const body = document.getElementById('tafsirBody');
-  title.innerHTML = '<i class="fas fa-book-open"></i> Tafsir · ' + escapeHtml(tafsirState.chapterLabel);
+  const refInput = document.getElementById('tafsirAyahRef');
+  
+  title.innerHTML = escapeHtml(tafsirState.chapterLabel);
+  if(refInput) refInput.value = surah + ':1';
+  
   source.textContent = 'Laddar…';
   body.innerHTML = '<div class="daily-aya-loading">Laddar tafsir…</div>';
   body.classList.remove('rtl');
@@ -4421,13 +4471,15 @@ function tafsirGoRelative(delta){
 function updateTafsirNavButtons(){
   const prev = document.getElementById('tafsirPrevAyah');
   const next = document.getElementById('tafsirNextAyah');
-  const ref = document.getElementById('tafsirAyahRef');
+  const refInput = document.getElementById('tafsirAyahRef');
+  
   const show = !!(tafsirState.surah && tafsirState.ayah);
   if(prev) prev.style.display = show ? '' : 'none';
   if(next) next.style.display = show ? '' : 'none';
-  if(ref){
-    ref.style.display = show ? '' : 'none';
-    if(show) ref.textContent = tafsirState.surah + ':' + tafsirState.ayah;
+  if(refInput){
+    refInput.style.display = show ? '' : 'none';
+    if(show) refInput.value = tafsirState.surah + ':' + tafsirState.ayah;
+    else refInput.value = '';
   }
 }
 document.addEventListener('keydown', e => {
