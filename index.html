@@ -2068,7 +2068,7 @@ async function toggleSearchResultFavorite(surah, ayah, surahName, event){
       const entries = Object.entries(QURAN_EDITIONS);
       const results = await Promise.allSettled(entries.map(([, ed]) => fetchAyahEdition(surah, ayah, ed)));
       data = { surahNum: surah, ayahNum: ayah, surahName: surahName, arabic: match.arabic };
-      entries.forEach(([key], idx => {
+      entries.forEach(([key], idx) => {
         data[key] = (results[idx].status === 'fulfilled') ? results[idx].value : '';
       });
     } else {
