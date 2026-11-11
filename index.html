@@ -937,12 +937,17 @@ function applyPageBg(){
     root.style.setProperty('--page-bg-night', pageBgHslToHex(pageBgHexToHsl(valid).h, Math.min(pageBgHexToHsl(valid).s, 0.45), 0.13));
     body.classList.add('custom-bg');
     body.style.backgroundColor = t.page;
+    /* Fullskärmsläget (aye/översättning) får samma tema – mörk variant av vald färg */
+    var ov = document.getElementById('textModeOverlay');
+    if(ov) ov.style.background = themeColors(valid, true).page;
   } else {
     vars.forEach(function(v){ body.style.removeProperty(v); });
     root.style.removeProperty('--page-bg');
     root.style.removeProperty('--page-bg-night');
     body.classList.remove('custom-bg');
     body.style.backgroundColor = '';
+    var ov2 = document.getElementById('textModeOverlay');
+    if(ov2) ov2.style.background = '';
   }
   var inp = document.getElementById('pageBgInput');
   if(inp) inp.value = valid || PAGE_BG_DEFAULT;
@@ -1022,8 +1027,6 @@ else wirePageBg();
   <i class="fas fa-eye"></i>
 </button>
 
-<input type="color" id="tmColorInput" value="#000000" oninput="setTextModeBg(this.value)">
-
 <!-- NY: TEXT-LÄGE-OVERLAY (hel skärm) -->
 <div id="textModeOverlay">
   <button class="tm-close" onclick="toggleTextMode()" title="Stäng text-läge"><i class="fas fa-times"></i></button>
@@ -1090,9 +1093,6 @@ else wirePageBg();
         </button>
         <button class="icon-btn" onclick="toggleTextMode()" title="Text-läge: endast versens text i hel skärm" id="textModeBtn">
           <i class="fas fa-tv" id="textModeIcon"></i>
-        </button>
-        <button class="icon-btn" onclick="document.getElementById('tmColorInput').click()" title="Välj bakgrundsfärg för text-läget" id="tmColorBtn">
-          <i class="fas fa-palette" id="tmColorIcon"></i>
         </button>
         <button class="icon-btn" onclick="eyeBtnClick(event)" title="Visa/göm toppbar & språkfält" id="toggleSectionsBtn">
           <i class="fas fa-eye" id="toggleSectionsIcon"></i>
@@ -5245,10 +5245,10 @@ document.addEventListener('webkitfullscreenchange', () => { wakeLockTick(); upda
 wakeLockTick();
 
 function applyTextModeBg(){
+  /* Färgen styrs nu av färgtema-knappen (samma färg som huvudsidan) */
+  if(typeof window.applyPageBg === 'function'){ window.applyPageBg(); return; }
   const ov = document.getElementById('textModeOverlay');
   if(ov) ov.style.background = textModeBg;
-  const inp = document.getElementById('tmColorInput');
-  if(inp && inp.value !== textModeBg) inp.value = textModeBg;
 }
 function setTextModeBg(color){
   textModeBg = color;
