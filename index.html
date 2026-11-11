@@ -47,6 +47,8 @@
       --tafsir-font-family: 'Times New Roman', Times, serif;
       --tafsir-text-color: #ffffff;
       --tafsir-bg-color: transparent;
+      --page-bg:#EFEAF9;
+      --page-bg-night:#1A1733;
     }
     body.night {
       --bg:#1A1733; --surface:#2C2761; --surface2:#373072; --border:#4B4392;
@@ -59,12 +61,13 @@
       --arabic-grad-1:#0B6E52;
       --arabic-grad-2:#08596A;
       --arabic-glow:rgba(11,110,82,0.40);
+      --page-bg:var(--page-bg-night);
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html, body{width:100%;min-height:100vh}
     body{
       font-family:var(--font);
-      background:var(--bg);
+      background:var(--page-bg);
       color:var(--text);
       transition:background .3s,color .3s;
       padding:24px 20px calc(var(--bottom-bar-height) + 30px);
@@ -81,6 +84,22 @@
         radial-gradient(circle at 0% 0%, rgba(108,71,232,.20) 0%, transparent 45%),
         radial-gradient(circle at 100% 100%, rgba(34,192,138,.12) 0%, transparent 45%);
     }
+    /* Egen sidbakgrund: bort med de lila gradienterna */
+    body.custom-bg{background-image:none !important}
+
+    /* ---- Panel för sidans bakgrundsfärg ---- */
+    .pagebg-note{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:16px}
+    .pagebg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;margin-bottom:18px}
+    .pagebg-swatch{height:56px;border-radius:13px;border:2px solid var(--border);cursor:pointer;transition:transform .15s,border-color .15s,box-shadow .15s;padding:0;background-clip:padding-box}
+    .pagebg-swatch:hover{transform:scale(1.05)}
+    .pagebg-swatch.active{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+    .pagebg-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+    .pagebg-row input[type="color"]{width:60px;height:46px;padding:0;border:1.5px solid var(--border);border-radius:11px;background:var(--surface2);cursor:pointer}
+    .pagebg-current{font-size:13px;font-weight:900;color:var(--text2);font-variant-numeric:tabular-nums}
+    .pagebg-btn{padding:11px 18px;border-radius:13px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--font);font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+    .pagebg-btn:hover{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+    .pagebg-btn.reset{width:100%}
+    .pagebg-btn.reset:hover{background:var(--rose-soft);color:var(--rose);border-color:var(--rose)}
     body.chrome-hidden{
       padding-top:12px;
       padding-bottom:24px;
@@ -865,6 +884,9 @@
         <button class="icon-btn" onclick="toggleFullscreen()" title="Helskärm" id="fsBtn">
           <i class="fas fa-expand" id="fsIcon"></i>
         </button>
+        <button class="icon-btn" onclick="openPageBg()" title="Byt sidans bakgrundsfärg" id="pageBgBtn">
+          <i class="fas fa-fill-drip" id="pageBgIcon"></i>
+        </button>
         <button class="icon-btn" onclick="toggleNight()" title="Nattläge" id="nightBtn">
           <i class="fas fa-moon" id="nightIcon"></i>
         </button>
@@ -1379,6 +1401,26 @@
       <button class="fav-modal-icon-btn" onclick="closeWeatherModal()" title="Stäng"><i class="fas fa-times"></i></button>
     </div>
     <div id="weatherModalBody"><div class="daily-aya-loading"><i class="fas fa-spinner fa-spin"></i> Laddar…</div></div>
+  </div>
+</div>
+
+<!-- SIDBAKGRUNDS-MODAL -->
+<div class="modal-ov h" id="pageBgModal" onclick="if(event.target===this)closePageBg()">
+  <div class="modal-card" style="max-width:520px">
+    <div class="fav-modal-header">
+      <div class="fav-modal-title"><i class="fas fa-fill-drip" style="color:var(--primary)"></i><span>Sidans bakgrundsfärg</span></div>
+      <button class="fav-modal-icon-btn" onclick="closePageBg()" title="Stäng"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="pagebg-note">Välj en färg för hela sidans bakgrund i stället för den lila. I nattläge används automatiskt en mörk variant av samma färg, så texten förblir läsbar.</div>
+    <div class="pagebg-grid" id="pageBgGrid"></div>
+    <div class="pagebg-row">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer">
+        <input type="color" id="pageBgInput" value="#EFEAF9" oninput="setPageBg(this.value)">
+        <span style="font-size:14px;font-weight:800;color:var(--text)">Egen färg</span>
+      </label>
+      <span class="pagebg-current" id="pageBgCurrent">Lila (standard)</span>
+    </div>
+    <button class="pagebg-btn reset" onclick="resetPageBg()"><i class="fas fa-rotate-left"></i> Återställ till lila</button>
   </div>
 </div>
 
@@ -5114,6 +5156,118 @@ function toggleTextMode(){
 }
 
 /* ============================================================
+   SIDANS BAKGRUNDSFÄRG (byt ut den lila färgen)
+   ============================================================ */
+const PAGE_BG_PRESETS = [
+  {c:'#EFEAF9', n:'Lila (standard)'},
+  {c:'#FFFFFF', n:'Vit'},
+  {c:'#FDF8EF', n:'Kräm'},
+  {c:'#E8F6EE', n:'Grön'},
+  {c:'#E6F0FB', n:'Blå'},
+  {c:'#EEF1F5', n:'Grå'},
+  {c:'#F5EFE6', n:'Beige'},
+  {c:'#FDE8E8', n:'Rosa'}
+];
+const PAGE_BG_DEFAULT = '#EFEAF9';
+let pageBg = null;
+try{ pageBg = localStorage.getItem('quranPageBg') || null; }catch(e){ pageBg = null; }
+
+function pageBgHexToRgb(hex){
+  let h = String(hex || '').replace('#','').trim();
+  if(h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  const n = parseInt(h, 16);
+  if(h.length !== 6 || isNaN(n)) return null;
+  return {r:(n>>16)&255, g:(n>>8)&255, b:n&255};
+}
+function pageBgRgbToHex(r,g,b){
+  const f = v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2,'0');
+  return '#' + f(r) + f(g) + f(b);
+}
+function pageBgHslToHex(h,s,l){
+  const f = n => {
+    const k = (n + h*12) % 12;
+    const a = s * Math.min(l, 1-l);
+    const v = l - a * Math.max(-1, Math.min(k-3, 9-k, 1));
+    return v * 255;
+  };
+  return pageBgRgbToHex(f(0), f(8), f(4));
+}
+/* Mörk nattvariant: samma nyans, låg ljushet */
+function pageBgNightVariant(hex){
+  const rgb = pageBgHexToRgb(hex);
+  if(!rgb) return '#1A1733';
+  const rn = rgb.r/255, gn = rgb.g/255, bn = rgb.b/255;
+  const max = Math.max(rn,gn,bn), min = Math.min(rn,gn,bn);
+  const l = (max + min) / 2;
+  const d = max - min;
+  let h = 0, s = 0;
+  if(d > 0.0001){
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if(max === rn) h = ((gn - bn) / d + (gn < bn ? 6 : 0));
+    else if(max === gn) h = ((bn - rn) / d + 2);
+    else h = ((rn - gn) / d + 4);
+    h = h / 6;
+  }
+  return pageBgHslToHex(h, Math.min(s, 0.45), 0.13);
+}
+function buildPageBgGrid(){
+  const grid = document.getElementById('pageBgGrid');
+  if(!grid) return;
+  grid.innerHTML = PAGE_BG_PRESETS.map(p =>
+    '<button type="button" class="pagebg-swatch" data-color="' + p.c + '" title="' + p.n +
+    '" style="background:' + p.c + '" onclick="setPageBg(\'' + p.c + '\')"></button>'
+  ).join('');
+}
+function applyPageBg(){
+  const root = document.documentElement;
+  const valid = pageBgHexToRgb(pageBg) ? pageBg : null;
+  if(valid){
+    root.style.setProperty('--page-bg', valid);
+    root.style.setProperty('--page-bg-night', pageBgNightVariant(valid));
+    document.body.classList.add('custom-bg');
+  } else {
+    root.style.removeProperty('--page-bg');
+    root.style.removeProperty('--page-bg-night');
+    document.body.classList.remove('custom-bg');
+  }
+  const inp = document.getElementById('pageBgInput');
+  if(inp) inp.value = valid || PAGE_BG_DEFAULT;
+  const lbl = document.getElementById('pageBgCurrent');
+  if(lbl){
+    const preset = valid ? PAGE_BG_PRESETS.find(p => p.c.toLowerCase() === valid.toLowerCase()) : null;
+    lbl.textContent = preset ? preset.n : (valid ? valid.toUpperCase() : 'Lila (standard)');
+  }
+  document.querySelectorAll('.pagebg-swatch').forEach(sw => {
+    sw.classList.toggle('active', !!valid && sw.dataset.color.toLowerCase() === valid.toLowerCase());
+  });
+}
+function setPageBg(color){
+  let c = String(color || '').trim();
+  if(c && c[0] !== '#') c = '#' + c;
+  pageBg = pageBgHexToRgb(c) ? c : null;
+  try{
+    if(pageBg) localStorage.setItem('quranPageBg', pageBg);
+    else localStorage.removeItem('quranPageBg');
+  }catch(e){}
+  applyPageBg();
+}
+function resetPageBg(){
+  setPageBg(null);
+  toast('↩️ Tillbaka till lila bakgrund');
+}
+function openPageBg(){
+  buildPageBgGrid();
+  applyPageBg();
+  const m = document.getElementById('pageBgModal');
+  if(m) m.classList.remove('h');
+}
+function closePageBg(){
+  const m = document.getElementById('pageBgModal');
+  if(m) m.classList.add('h');
+  if(pageBg) toast('🎨 Sidans bakgrundsfärg sparad');
+}
+
+/* ============================================================
    TOAST
    ============================================================ */
 let toastT;
@@ -5141,6 +5295,8 @@ function toast(msg){
    INIT
    ============================================================ */
 applyNight();
+buildPageBgGrid();
+applyPageBg();
 applySectionsVisibility();
 applyChromeVisibility();
 applyTranslationsVisibility();
