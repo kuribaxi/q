@@ -817,6 +817,204 @@
       .tafsir-ayah-input { width: 60px; }
     }
   </style>
+<script>
+/* ============================================================
+   FÄRGTEMA FÖR HELA SIDAN – självständigt skript i <head>.
+   Körs innan allt annat och kräver inget annat på sidan:
+   - Klick hanteras med delegering på dokumentnivå (fungerar alltid).
+   - Färgerna sätts både via CSS-variabler och direkt på body.
+   - Fungerar även om huvudskriptet längre ner stöter på ett fel.
+   ============================================================ */
+(function(){
+'use strict';
+var PAGE_BG_PRESETS = [
+  {c:'#EFEAF9', n:'Lila (standard)'},
+  {c:'#FFFFFF', n:'Vit'},
+  {c:'#FDF8EF', n:'Kräm'},
+  {c:'#E8F6EE', n:'Grön'},
+  {c:'#E6F0FB', n:'Blå'},
+  {c:'#EEF1F5', n:'Grå'},
+  {c:'#F5EFE6', n:'Beige'},
+  {c:'#FDE8E8', n:'Rosa'}
+];
+var PAGE_BG_DEFAULT = '#EFEAF9';
+var pageBg = null;
+try{ pageBg = localStorage.getItem('quranPageBg') || null; }catch(e){ pageBg = null; }
+
+function pageBgHexToRgb(hex){
+  var h = String(hex || '').replace('#','').trim();
+  if(h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  var n = parseInt(h, 16);
+  if(h.length !== 6 || isNaN(n)) return null;
+  return {r:(n>>16)&255, g:(n>>8)&255, b:n&255};
+}
+function pageBgRgbToHex(r,g,b){
+  var f = function(v){ return Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2,'0'); };
+  return '#' + f(r) + f(g) + f(b);
+}
+function pageBgHexToHsl(hex){
+  var rgb = pageBgHexToRgb(hex);
+  if(!rgb) return null;
+  var rn = rgb.r/255, gn = rgb.g/255, bn = rgb.b/255;
+  var max = Math.max(rn,gn,bn), min = Math.min(rn,gn,bn);
+  var l = (max + min) / 2;
+  var d = max - min;
+  var h = 0, s = 0;
+  if(d > 0.0001){
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if(max === rn) h = ((gn - bn) / d + (gn < bn ? 6 : 0));
+    else if(max === gn) h = ((bn - rn) / d + 2);
+    else h = ((rn - gn) / d + 4);
+    h = h / 6;
+  }
+  return {h:h, s:s, l:l};
+}
+function pageBgHslToHex(h,s,l){
+  var f = function(n){
+    var k = (n + h*12) % 12;
+    var a = s * Math.min(l, 1-l);
+    var v = l - a * Math.max(-1, Math.min(k-3, 9-k, 1));
+    return v * 255;
+  };
+  return pageBgRgbToHex(f(0), f(8), f(4));
+}
+/* Tema-färger härledda ur den valda färgen (samma nyans, olika ljushet) */
+function themeColors(hex, night){
+  var hsl = pageBgHexToHsl(hex);
+  if(!hsl) return null;
+  var h = hsl.h;
+  var sDay = Math.min(hsl.s, 0.55);
+  if(night){
+    var sN = Math.min(hsl.s, 0.45);
+    return {
+      page:     pageBgHslToHex(h, sN,      0.12),
+      surface:  pageBgHslToHex(h, sN,      0.19),
+      surface2: pageBgHslToHex(h, sN,      0.24),
+      border:   pageBgHslToHex(h, sN,      0.32),
+      section1: pageBgHslToHex(h, sN,      0.17),
+      section2: pageBgHslToHex(h, sN,      0.22)
+    };
+  }
+  return {
+    page:     pageBgHslToHex(h, sDay,      Math.max(hsl.l, 0.90)),
+    surface:  pageBgHslToHex(h, sDay*0.55, 0.985),
+    surface2: pageBgHslToHex(h, sDay*0.70, 0.945),
+    border:   pageBgHslToHex(h, sDay*0.80, 0.865),
+    section1: pageBgHslToHex(h, sDay*0.50, 0.975),
+    section2: pageBgHslToHex(h, sDay*0.65, 0.935)
+  };
+}
+function buildPageBgGrid(){
+  var grid = document.getElementById('pageBgGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  PAGE_BG_PRESETS.forEach(function(p){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pagebg-swatch';
+    b.setAttribute('data-color', p.c);
+    b.title = p.n;
+    b.style.background = p.c;
+    grid.appendChild(b);
+  });
+}
+function applyPageBg(){
+  var root = document.documentElement;
+  var body = document.body;
+  if(!body) return;
+  var valid = pageBgHexToRgb(pageBg) ? pageBg : null;
+  var night = body.classList.contains('night');
+  var vars = ['--page-bg','--surface','--surface2','--border','--section-bg-1','--section-bg-2'];
+  if(valid){
+    var t = themeColors(valid, night);
+    body.style.setProperty('--page-bg', t.page);
+    body.style.setProperty('--surface', t.surface);
+    body.style.setProperty('--surface2', t.surface2);
+    body.style.setProperty('--border', t.border);
+    body.style.setProperty('--section-bg-1', t.section1);
+    body.style.setProperty('--section-bg-2', t.section2);
+    root.style.setProperty('--page-bg', t.page);
+    root.style.setProperty('--page-bg-night', pageBgHslToHex(pageBgHexToHsl(valid).h, Math.min(pageBgHexToHsl(valid).s, 0.45), 0.13));
+    body.classList.add('custom-bg');
+    body.style.backgroundColor = t.page;
+  } else {
+    vars.forEach(function(v){ body.style.removeProperty(v); });
+    root.style.removeProperty('--page-bg');
+    root.style.removeProperty('--page-bg-night');
+    body.classList.remove('custom-bg');
+    body.style.backgroundColor = '';
+  }
+  var inp = document.getElementById('pageBgInput');
+  if(inp) inp.value = valid || PAGE_BG_DEFAULT;
+  var lbl = document.getElementById('pageBgCurrent');
+  if(lbl){
+    var preset = valid ? PAGE_BG_PRESETS.find(function(p){ return p.c.toLowerCase() === valid.toLowerCase(); }) : null;
+    lbl.textContent = preset ? preset.n : (valid ? valid.toUpperCase() : 'Lila (standard)');
+  }
+  document.querySelectorAll('.pagebg-swatch').forEach(function(sw){
+    sw.classList.toggle('active', !!valid && sw.getAttribute('data-color').toLowerCase() === valid.toLowerCase());
+  });
+}
+function setPageBg(color){
+  var c = String(color || '').trim();
+  if(c && c[0] !== '#') c = '#' + c;
+  pageBg = pageBgHexToRgb(c) ? c : null;
+  try{
+    if(pageBg) localStorage.setItem('quranPageBg', pageBg);
+    else localStorage.removeItem('quranPageBg');
+  }catch(e){}
+  applyPageBg();
+}
+function resetPageBg(){
+  setPageBg(null);
+  try{ toast('↩️ Tillbaka till lila bakgrund'); }catch(e){}
+}
+function openPageBg(){
+  buildPageBgGrid();
+  applyPageBg();
+  var m = document.getElementById('pageBgModal');
+  if(m) m.classList.remove('h');
+}
+function closePageBg(){
+  var m = document.getElementById('pageBgModal');
+  if(m) m.classList.add('h');
+  try{ if(pageBg) toast('🎨 Färgtema sparat'); }catch(e){}
+}
+window.buildPageBgGrid = buildPageBgGrid;
+window.applyPageBg = applyPageBg;
+window.setPageBg = setPageBg;
+window.resetPageBg = resetPageBg;
+window.openPageBg = openPageBg;
+window.closePageBg = closePageBg;
+
+function wirePageBg(){
+  buildPageBgGrid();
+  applyPageBg();
+  /* Delegerad klick-hantering: fungerar oavsett när elementen skapas */
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if(!t || !t.closest) return;
+    if(t.closest('#pageBgBtn')){ e.preventDefault(); openPageBg(); return; }
+    if(t.closest('#pageBgModal .fav-modal-icon-btn')){ closePageBg(); return; }
+    if(t.closest('#pageBgModal .pagebg-btn.reset')){ resetPageBg(); return; }
+    var sw = t.closest('.pagebg-swatch');
+    if(sw && sw.getAttribute('data-color')){ setPageBg(sw.getAttribute('data-color')); return; }
+    if(t.id === 'pageBgModal'){ closePageBg(); }
+  });
+  var inp = document.getElementById('pageBgInput');
+  if(inp){
+    inp.addEventListener('input', function(){ setPageBg(this.value); });
+    inp.addEventListener('change', function(){ setPageBg(this.value); });
+  }
+  /* Håll tema-färgerna uppdaterade när nattläget slås på/av */
+  if(typeof MutationObserver !== 'undefined'){
+    new MutationObserver(function(){ applyPageBg(); }).observe(document.body, {attributes:true, attributeFilter:['class']});
+  }
+}
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wirePageBg);
+else wirePageBg();
+})();
+</script>
 </head>
 <body>
 
@@ -5228,201 +5426,6 @@ updateWordSyncOffsetDisplay();
 try{ if(localStorage.getItem('quranWakeLockManual') === '1'){ wakeLockManual = true; updateWakeLockBtns(); requestWakeLock(); } }catch(e){}
 </script>
 
-<script>
-/* SIDANS BAKGRUNDSFÄRG & TEMAFÄRG – eget, självständigt skript.
-   Vald färg färgar hela sidan: bakgrunden, korten, toppbaren, sektionerna,
-   modalerna och nedersta menyn (ljusa toner på dagtid, mörka i nattläge).
-   Alla klick kopplas direkt i JavaScript och färgerna sätts både via
-   CSS-variabler och direkt på body, så det fungerar även om något annat
-   på sidan stöter på ett fel. */
-(function(){
-'use strict';
-var PAGE_BG_PRESETS = [
-  {c:'#EFEAF9', n:'Lila (standard)'},
-  {c:'#FFFFFF', n:'Vit'},
-  {c:'#FDF8EF', n:'Kräm'},
-  {c:'#E8F6EE', n:'Grön'},
-  {c:'#E6F0FB', n:'Blå'},
-  {c:'#EEF1F5', n:'Grå'},
-  {c:'#F5EFE6', n:'Beige'},
-  {c:'#FDE8E8', n:'Rosa'}
-];
-var PAGE_BG_DEFAULT = '#EFEAF9';
-var pageBg = null;
-try{ pageBg = localStorage.getItem('quranPageBg') || null; }catch(e){ pageBg = null; }
-
-function pageBgHexToRgb(hex){
-  var h = String(hex || '').replace('#','').trim();
-  if(h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
-  var n = parseInt(h, 16);
-  if(h.length !== 6 || isNaN(n)) return null;
-  return {r:(n>>16)&255, g:(n>>8)&255, b:n&255};
-}
-function pageBgRgbToHex(r,g,b){
-  var f = function(v){ return Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2,'0'); };
-  return '#' + f(r) + f(g) + f(b);
-}
-function pageBgHexToHsl(hex){
-  var rgb = pageBgHexToRgb(hex);
-  if(!rgb) return null;
-  var rn = rgb.r/255, gn = rgb.g/255, bn = rgb.b/255;
-  var max = Math.max(rn,gn,bn), min = Math.min(rn,gn,bn);
-  var l = (max + min) / 2;
-  var d = max - min;
-  var h = 0, s = 0;
-  if(d > 0.0001){
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    if(max === rn) h = ((gn - bn) / d + (gn < bn ? 6 : 0));
-    else if(max === gn) h = ((bn - rn) / d + 2);
-    else h = ((rn - gn) / d + 4);
-    h = h / 6;
-  }
-  return {h:h, s:s, l:l};
-}
-function pageBgHslToHex(h,s,l){
-  var f = function(n){
-    var k = (n + h*12) % 12;
-    var a = s * Math.min(l, 1-l);
-    var v = l - a * Math.max(-1, Math.min(k-3, 9-k, 1));
-    return v * 255;
-  };
-  return pageBgRgbToHex(f(0), f(8), f(4));
-}
-/* Tema-färger härledda ur den valda färgen (samma nyans, olika ljushet) */
-function themeColors(hex, night){
-  var hsl = pageBgHexToHsl(hex);
-  if(!hsl) return null;
-  var h = hsl.h;
-  var sDay = Math.min(hsl.s, 0.55);
-  if(night){
-    var sN = Math.min(hsl.s, 0.45);
-    return {
-      page:      pageBgHslToHex(h, sN,      0.12),
-      surface:   pageBgHslToHex(h, sN,      0.19),
-      surface2:  pageBgHslToHex(h, sN,      0.24),
-      border:    pageBgHslToHex(h, sN,      0.32),
-      section1:  pageBgHslToHex(h, sN,      0.17),
-      section2:  pageBgHslToHex(h, sN,      0.22)
-    };
-  }
-  return {
-    page:      pageBgHslToHex(h, sDay,      Math.max(hsl.l, 0.90)),
-    surface:   pageBgHslToHex(h, sDay*0.55, 0.985),
-    surface2:  pageBgHslToHex(h, sDay*0.70, 0.945),
-    border:    pageBgHslToHex(h, sDay*0.80, 0.865),
-    section1:  pageBgHslToHex(h, sDay*0.50, 0.975),
-    section2:  pageBgHslToHex(h, sDay*0.65, 0.935)
-  };
-}
-function buildPageBgGrid(){
-  var grid = document.getElementById('pageBgGrid');
-  if(!grid) return;
-  grid.innerHTML = '';
-  PAGE_BG_PRESETS.forEach(function(p){
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'pagebg-swatch';
-    b.setAttribute('data-color', p.c);
-    b.title = p.n;
-    b.style.background = p.c;
-    b.addEventListener('click', function(){ setPageBg(p.c); });
-    grid.appendChild(b);
-  });
-}
-function applyPageBg(){
-  var root = document.documentElement;
-  var body = document.body;
-  var valid = pageBgHexToRgb(pageBg) ? pageBg : null;
-  var night = body.classList.contains('night');
-  var vars = ['--page-bg','--surface','--surface2','--border','--section-bg-1','--section-bg-2'];
-  if(valid){
-    var t = themeColors(valid, night);
-    /* CSS-variabler på body (vinner över både :root och body.night-reglerna) */
-    body.style.setProperty('--page-bg', t.page);
-    body.style.setProperty('--surface', t.surface);
-    body.style.setProperty('--surface2', t.surface2);
-    body.style.setProperty('--border', t.border);
-    body.style.setProperty('--section-bg-1', t.section1);
-    body.style.setProperty('--section-bg-2', t.section2);
-    root.style.setProperty('--page-bg', t.page);
-    root.style.setProperty('--page-bg-night', pageBgNightVariant(valid));
-    body.classList.add('custom-bg');
-    /* Direkt garanti: bakgrundsfärg som inline-stil på body */
-    body.style.backgroundColor = t.page;
-  } else {
-    vars.forEach(function(v){ body.style.removeProperty(v); });
-    root.style.removeProperty('--page-bg');
-    root.style.removeProperty('--page-bg-night');
-    body.classList.remove('custom-bg');
-    body.style.backgroundColor = '';
-  }
-  var inp = document.getElementById('pageBgInput');
-  if(inp) inp.value = valid || PAGE_BG_DEFAULT;
-  var lbl = document.getElementById('pageBgCurrent');
-  if(lbl){
-    var preset = valid ? PAGE_BG_PRESETS.find(function(p){ return p.c.toLowerCase() === valid.toLowerCase(); }) : null;
-    lbl.textContent = preset ? preset.n : (valid ? valid.toUpperCase() : 'Lila (standard)');
-  }
-  document.querySelectorAll('.pagebg-swatch').forEach(function(sw){
-    sw.classList.toggle('active', !!valid && sw.getAttribute('data-color').toLowerCase() === valid.toLowerCase());
-  });
-}
-function setPageBg(color){
-  var c = String(color || '').trim();
-  if(c && c[0] !== '#') c = '#' + c;
-  pageBg = pageBgHexToRgb(c) ? c : null;
-  try{
-    if(pageBg) localStorage.setItem('quranPageBg', pageBg);
-    else localStorage.removeItem('quranPageBg');
-  }catch(e){}
-  applyPageBg();
-}
-function resetPageBg(){
-  setPageBg(null);
-  try{ toast('↩️ Tillbaka till lila bakgrund'); }catch(e){}
-}
-function openPageBg(){
-  buildPageBgGrid();
-  applyPageBg();
-  var m = document.getElementById('pageBgModal');
-  if(m) m.classList.remove('h');
-}
-function closePageBg(){
-  var m = document.getElementById('pageBgModal');
-  if(m) m.classList.add('h');
-  try{ if(pageBg) toast('🎨 Färgtema sparat'); }catch(e){}
-}
-window.buildPageBgGrid = buildPageBgGrid;
-window.applyPageBg = applyPageBg;
-window.setPageBg = setPageBg;
-window.resetPageBg = resetPageBg;
-window.openPageBg = openPageBg;
-window.closePageBg = closePageBg;
-
-function initPageBg(){
-  buildPageBgGrid();
-  applyPageBg();
-  var btn = document.getElementById('pageBgBtn');
-  if(btn) btn.addEventListener('click', openPageBg);
-  var inp = document.getElementById('pageBgInput');
-  if(inp){ inp.addEventListener('input', function(){ setPageBg(this.value); }); inp.addEventListener('change', function(){ setPageBg(this.value); }); }
-  var resetBtn = document.querySelector('#pageBgModal .pagebg-btn.reset');
-  if(resetBtn) resetBtn.addEventListener('click', resetPageBg);
-  var closeIcon = document.querySelector('#pageBgModal .fav-modal-icon-btn');
-  if(closeIcon) closeIcon.addEventListener('click', closePageBg);
-  var ov = document.getElementById('pageBgModal');
-  if(ov) ov.addEventListener('click', function(e){ if(e.target === ov) closePageBg(); });
-  /* Uppdatera tema-färgerna när nattläget slås på/av */
-  if(typeof MutationObserver !== 'undefined'){
-    new MutationObserver(function(){ applyPageBg(); }).observe(document.body, {attributes:true, attributeFilter:['class']});
-  }
-  var nightBtn = document.getElementById('nightBtn');
-  if(nightBtn) nightBtn.addEventListener('click', function(){ setTimeout(applyPageBg, 50); });
-}
-if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPageBg);
-else initPageBg();
-})();
-</script>
 
 </body>
 </html>
