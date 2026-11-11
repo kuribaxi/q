@@ -2256,7 +2256,7 @@ function clearQuranSearch(){
 let currentAyaData = null;
 let displayedAya = null;
 let tafsirRequestId = 0;
-let currentLang = localStorage.getItem('quranLang') || 'sv';
+let currentLang = 'sv'; try{ currentLang = localStorage.getItem('quranLang') || 'sv'; }catch(e){}
 
 function renderDailyAya(data){
   currentAyaData = data;
@@ -2482,7 +2482,7 @@ const QARIS = [
   { id:'ar.abdullahbasfar', name:'Abdullah Basfar', br:192, offset:0.15 },
   { id:'ar.aymanswoaid', name:'Ayman Swoaid', br:64, offset:0.1 }
 ];
-let currentQari = localStorage.getItem('quranQari') || QARIS[0].id;
+let currentQari = QARIS[0].id; try{ currentQari = localStorage.getItem('quranQari') || QARIS[0].id; }catch(e){}
 function populateQariSelect(){
   const sel = document.getElementById('qariSelect');
   if(!sel) return;
@@ -2705,7 +2705,7 @@ function adjustWordSyncOffset(delta){
   toast('⏱️ Ord-synk förskjuten ' + (wordSyncOffset >= 0 ? '+' : '') + wordSyncOffset.toFixed(1) + 's');
 }
 
-let tafsirSyncSpeed = parseFloat(localStorage.getItem('quranTafsirSyncSpeed')) || 1.0;
+let tafsirSyncSpeed = 1.0; try{ tafsirSyncSpeed = parseFloat(localStorage.getItem('quranTafsirSyncSpeed')) || 1.0; }catch(e){}
 const SYNC_SPEEDS = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
 function cycleTafsirSyncSpeed(){
   let idx = SYNC_SPEEDS.indexOf(tafsirSyncSpeed);
@@ -2826,7 +2826,7 @@ function stopSyncLoop(){
   }
 }
 
-let verseStyle = localStorage.getItem('quranVerseStyle') || 'tazhib';
+let verseStyle = 'tazhib'; try{ verseStyle = localStorage.getItem('quranVerseStyle') || 'tazhib'; }catch(e){}
 function updateVerseStyleBtns(){
   const tazhib = verseStyle !== 'enkel';
   document.querySelectorAll('.verse-style-btn').forEach(b => b.classList.toggle('active', !tazhib));
@@ -5155,6 +5155,81 @@ function toggleTextMode(){
   }
 }
 
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastT;
+function toast(msg){
+  let el = document.getElementById('qToast');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'qToast';
+    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:#1E1535;color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.35);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  requestAnimationFrame(()=>{
+    el.style.opacity = '1';
+    el.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>{
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2400);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+applyNight();
+try{ if(typeof buildPageBgGrid==='function') buildPageBgGrid(); }catch(e){}
+try{ if(typeof applyPageBg==='function') applyPageBg(); }catch(e){}
+applySectionsVisibility();
+applyChromeVisibility();
+applyTranslationsVisibility();
+applyTextModeBg();
+applyWordSyncState();
+updateFsIcon();
+setLang(currentLang);
+populateSuraSelect();
+populatePlaySuraSelect();
+populateQariSelect();
+updateFavBadge();
+updateTafsirFsIcon();
+updateAllSectionFavBtns();
+updateDailySuraFavBtn();
+fetchRandomAya();
+renderVkKeyboard();
+updateSuraLoopButton();
+updateDailyLoopButton();
+
+try{
+  const savedFont = localStorage.getItem('quranTafsirFont');
+  if(savedFont){
+    tafsirFontFamily = savedFont;
+    document.documentElement.style.setProperty('--tafsir-font-family', savedFont);
+    document.querySelectorAll('.tafsir-tools-bar .font-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.font === savedFont);
+    });
+  }
+  const savedSize = localStorage.getItem('quranTafsirFontSize');
+  if(savedSize){
+    tafsirFontSize = parseInt(savedSize, 10) || 19;
+    document.documentElement.style.setProperty('--tafsir-font-size', tafsirFontSize + 'px');
+    const display = document.getElementById('tafsirSizeDisplay');
+    if(display) display.textContent = tafsirFontSize + 'px';
+  }
+  loadTafsirColors();
+}catch(e){}
+updateVerseStyleBtns();
+updateWordSyncOffsetDisplay();
+try{ if(localStorage.getItem('quranWakeLockManual') === '1'){ wakeLockManual = true; updateWakeLockBtns(); requestWakeLock(); } }catch(e){}
+</script>
+
+<script>
+/* SIDANS BAKGRUNDSFÄRG – eget skript så att funktionen fungerar även om huvudskriptet stöter på ett fel. */
 /* ============================================================
    SIDANS BAKGRUNDSFÄRG (byt ut den lila färgen)
    ============================================================ */
@@ -5253,7 +5328,7 @@ function setPageBg(color){
 }
 function resetPageBg(){
   setPageBg(null);
-  toast('↩️ Tillbaka till lila bakgrund');
+  try{ toast('↩️ Tillbaka till lila bakgrund'); }catch(e){}
 }
 function openPageBg(){
   buildPageBgGrid();
@@ -5264,79 +5339,16 @@ function openPageBg(){
 function closePageBg(){
   const m = document.getElementById('pageBgModal');
   if(m) m.classList.add('h');
-  if(pageBg) toast('🎨 Sidans bakgrundsfärg sparad');
+  try{ if(pageBg) toast('🎨 Sidans bakgrundsfärg sparad'); }catch(e){}
 }
-
-/* ============================================================
-   TOAST
-   ============================================================ */
-let toastT;
-function toast(msg){
-  let el = document.getElementById('qToast');
-  if(!el){
-    el = document.createElement('div');
-    el.id = 'qToast';
-    el.style.cssText = 'position:fixed;bottom:calc(var(--bottom-bar-height) + 20px);left:50%;transform:translateX(-50%) translateY(20px);background:#1E1535;color:#fff;padding:12px 22px;border-radius:14px;font-size:15px;font-weight:700;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,.35);opacity:0;transition:all .3s;pointer-events:none;font-family:var(--font);max-width:90vw;text-align:center';
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-  requestAnimationFrame(()=>{
-    el.style.opacity = '1';
-    el.style.transform = 'translateX(-50%) translateY(0)';
-  });
-  clearTimeout(toastT);
-  toastT = setTimeout(()=>{
-    el.style.opacity = '0';
-    el.style.transform = 'translateX(-50%) translateY(20px)';
-  }, 2400);
-}
-
-/* ============================================================
-   INIT
-   ============================================================ */
-applyNight();
+window.buildPageBgGrid = buildPageBgGrid;
+window.applyPageBg = applyPageBg;
+window.setPageBg = setPageBg;
+window.resetPageBg = resetPageBg;
+window.openPageBg = openPageBg;
+window.closePageBg = closePageBg;
 buildPageBgGrid();
 applyPageBg();
-applySectionsVisibility();
-applyChromeVisibility();
-applyTranslationsVisibility();
-applyTextModeBg();
-applyWordSyncState();
-updateFsIcon();
-setLang(currentLang);
-populateSuraSelect();
-populatePlaySuraSelect();
-populateQariSelect();
-updateFavBadge();
-updateTafsirFsIcon();
-updateAllSectionFavBtns();
-updateDailySuraFavBtn();
-fetchRandomAya();
-renderVkKeyboard();
-updateSuraLoopButton();
-updateDailyLoopButton();
-
-try{
-  const savedFont = localStorage.getItem('quranTafsirFont');
-  if(savedFont){
-    tafsirFontFamily = savedFont;
-    document.documentElement.style.setProperty('--tafsir-font-family', savedFont);
-    document.querySelectorAll('.tafsir-tools-bar .font-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.font === savedFont);
-    });
-  }
-  const savedSize = localStorage.getItem('quranTafsirFontSize');
-  if(savedSize){
-    tafsirFontSize = parseInt(savedSize, 10) || 19;
-    document.documentElement.style.setProperty('--tafsir-font-size', tafsirFontSize + 'px');
-    const display = document.getElementById('tafsirSizeDisplay');
-    if(display) display.textContent = tafsirFontSize + 'px';
-  }
-  loadTafsirColors();
-}catch(e){}
-updateVerseStyleBtns();
-updateWordSyncOffsetDisplay();
-try{ if(localStorage.getItem('quranWakeLockManual') === '1'){ wakeLockManual = true; updateWakeLockBtns(); requestWakeLock(); } }catch(e){}
 </script>
 
 </body>
